@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.coal.mapper.CoalNumberPlateMapper">
+
+    <resultMap type="CoalNumberPlate" id="CoalNumberPlateResult">
+        <result property="id"    column="id"    />
+        <result property="coalNumber"    column="coal_number"    />
+        <result property="plate"    column="plate"    />
+        <result property="carryingUnit"    column="carrying_unit"    />
+        <result property="finished"    column="finished"    />
+        <result property="dateTime"    column="date_time"    />
+        <result property="dateTimeFinished"    column="date_time_finished"    />
+        <result property="weight"    column="weight"    />
+        <result property="printTimes"    column="print_times"    />
+        <result property="spoilt"    column="spoilt"    />
+        <result property="driver"    column="driver"    />
+        <result property="phone"    column="phone"    />
+        <result property="loadPlace"    column="load_place"    />
+        <result property="sn"    column="sn"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="driveNum"    column="drive_num"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="operator"    column="operator"    />
+
+    </resultMap>
+
+    <sql id="selectCoalNumberPlateVo">
+        select id, coal_number, plate, carrying_unit, finished, date_time, date_time_finished, weight, print_times, spoilt, driver, phone, load_place, sn, remarks,status,operator,drive_num from s_coal_number_plate
+    </sql>
+    <select id="selectCoalNumberPlateList" parameterType="CoalNumberPlate" resultMap="CoalNumberPlateResult">
+        <include refid="selectCoalNumberPlateVo"/>
+        <where>
+            <if test="coalNumber != null  and coalNumber != ''"> and coal_number = #{coalNumber}</if>
+            <if test="plate != null  and plate != ''"> and plate = #{plate}</if>
+            <if test="carryingUnit != null  and carryingUnit != ''"> and carrying_unit = #{carryingUnit}</if>
+            <if test="finished != null  and finished != ''"> and finished = #{finished}</if>
+            <if test="dateTime != null  and dateTime != ''"> and date_time = #{dateTime}</if>
+            <if test="dateTimeFinished != null  and dateTimeFinished != ''"> and date_time_finished = #{dateTimeFinished}</if>
+            <if test="weight != null  and weight != ''"> and weight = #{weight}</if>
+            <if test="printTimes != null  and printTimes != ''"> and print_times = #{printTimes}</if>
+            <if test="spoilt != null  and spoilt != ''"> and spoilt = #{spoilt}</if>
+            <if test="driver != null  and driver != ''"> and driver = #{driver}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="loadPlace != null  and loadPlace != ''"> and load_place = #{loadPlace}</if>
+            <if test="sn != null  and sn != ''"> and sn = #{sn}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="status != null  and status != ''">#{status},</if>
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+        </where>
+    </select>
+
+    <select id="selectCoalNumberPlateById" parameterType="String" resultMap="CoalNumberPlateResult">
+        <include refid="selectCoalNumberPlateVo"/>
+        where coal_number = #{coalNumber}
+    </select>
+
+    <insert id="insertCoalNumberPlate" parameterType="CoalNumberPlate" useGeneratedKeys="true" keyProperty="id">
+        insert into s_coal_number_plate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="coalNumber != null  and coalNumber != ''">coal_number,</if>
+            <if test="plate != null  and plate != ''">plate,</if>
+            <if test="carryingUnit != null  and carryingUnit != ''">carrying_unit,</if>
+            <if test="finished != null  and finished != ''">finished,</if>
+            <if test="dateTime != null  and dateTime != ''">date_time,</if>
+            <if test="dateTimeFinished != null  and dateTimeFinished != ''">date_time_finished,</if>
+            <if test="weight != null  and weight != ''">weight,</if>
+            <if test="printTimes != null  and printTimes != ''">print_times,</if>
+            <if test="spoilt != null  and spoilt != ''">spoilt,</if>
+            <if test="driver != null  and driver != ''">driver,</if>
+            <if test="phone != null  and phone != ''">phone,</if>
+            <if test="loadPlace != null  and loadPlace != ''">load_place,</if>
+            <if test="sn != null  and sn != ''">sn,</if>
+            <if test="remarks != null  and remarks != ''">remarks,</if>
+            <if test="driveNum != null  and driveNum != ''">drive_num,</if>
+            <if test="status != null  and status != ''">status,</if>
+            <if test="operator != null  and operator != ''">operator,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="coalNumber != null  and coalNumber != ''">#{coalNumber},</if>
+            <if test="plate != null  and plate != ''">#{plate},</if>
+            <if test="carryingUnit != null  and carryingUnit != ''">#{carryingUnit},</if>
+            <if test="finished != null  and finished != ''">#{finished},</if>
+            <if test="dateTime != null  and dateTime != ''">#{dateTime},</if>
+            <if test="dateTimeFinished != null  and dateTimeFinished != ''">#{dateTimeFinished},</if>
+            <if test="weight != null  and weight != ''">#{weight},</if>
+            <if test="printTimes != null  and printTimes != ''">#{printTimes},</if>
+            <if test="spoilt != null  and spoilt != ''">#{spoilt},</if>
+            <if test="driver != null  and driver != ''">#{driver},</if>
+            <if test="phone != null  and phone != ''">#{phone},</if>
+            <if test="loadPlace != null  and loadPlace != ''">#{loadPlace},</if>
+            <if test="sn != null  and sn != ''">#{sn},</if>
+            <if test="remarks != null  and remarks != ''">#{remarks},</if>
+            <if test="driveNum != null  and driveNum != ''">#{driveNum},</if>
+            <if test="status != null  and status != ''">#{status},</if>
+            <if test="operator != null  and operator != ''">#{operator},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCoalNumberPlate" parameterType="CoalNumberPlate">
+        update s_coal_number_plate
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="coalNumber != null  and coalNumber != ''">coal_number = #{coalNumber},</if>
+            <if test="plate != null  and plate != ''">plate = #{plate},</if>
+            <if test="carryingUnit != null  and carryingUnit != ''">carrying_unit = #{carryingUnit},</if>
+            <if test="finished != null  and finished != ''">finished = #{finished},</if>
+            <if test="dateTime != null  and dateTime != ''">date_time = #{dateTime},</if>
+            <if test="dateTimeFinished != null  and dateTimeFinished != ''">date_time_finished = #{dateTimeFinished},</if>
+            <if test="weight != null  and weight != ''">weight = #{weight},</if>
+            <if test="printTimes != null  and printTimes != ''">print_times = #{printTimes},</if>
+            <if test="spoilt != null  and spoilt != ''">spoilt = #{spoilt},</if>
+            <if test="driver != null  and driver != ''">driver = #{driver},</if>
+            <if test="phone != null  and phone != ''">phone = #{phone},</if>
+            <if test="loadPlace != null  and loadPlace != ''">load_place = #{loadPlace},</if>
+            <if test="sn != null  and sn != ''">sn = #{sn},</if>
+            <if test="remarks != null  and remarks != ''">remarks = #{remarks},</if>
+            <if test="operator != null  and operator != ''">operator = #{operator},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCoalNumberPlateById" parameterType="Long">
+        delete from s_coal_number_plate where id = #{id}
+    </delete>
+    <update id="updateCoalNumberPlateByIds" parameterType="Long">
+         update s_coal_number_plate
+         set spoilt ='1'
+         where id = in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="updateCoalNumberPlateByNum" parameterType="String">
+        update s_coal_number_plate
+        set spoilt = '1'
+        where  coal_number in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+         and finished='1'
+    </update>
+
+    <delete id="deleteCoalNumberPlateByIds" parameterType="String">
+        delete from s_coal_number_plate where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

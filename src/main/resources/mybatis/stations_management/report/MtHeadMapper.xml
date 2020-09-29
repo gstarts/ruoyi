@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.report.mapper.MtHeadMapper">
+
+    <resultMap type="MtHead" id="MtHeadResult">
+        <result property="pid" column="pid"/>
+        <result property="id" column="shid"/>
+        <result property="messageid" column="MessageID"/>
+        <result property="functioncode" column="FunctionCode"/>
+        <result property="messagetype" column="MessageType"/>
+        <result property="senderid" column="SenderID"/>
+        <result property="receiverid" column="ReceiverID"/>
+        <result property="sendtime" column="SendTime"/>
+        <result property="version" column="Version"/>
+        <result property="declarationofficeid" column="DeclarationOfficeID"/>
+        <result property="feedback" column="feedback"/>
+        <result property="feedbackMsg" column="feedback_msg"/>
+        <result property="remark" column="remark"/>
+        <association property="mtBorderTransport" javaType="MtBorderTransport" resultMap="mtBorderTransportResult"/>
+        <association property="mtCarrier" javaType="MtCarrier" resultMap="MtCarrierResult"/>
+<!--        <association property="mtCoal" javaType="MtCoal" resultMap="MtCoalResult"/>-->
+        <association property="mtLoading" javaType="MtLoading" resultMap="MtLoadingResult"/>
+        <association property="master" javaType="MtMaster" resultMap="MtMasterResult"/>
+        <association property="mtRepresen" javaType="MtRepresen" resultMap="MtRepresenResult"/>
+<!--        <association property="mtTransport" javaType="MtTransport" resultMap="MtTransportResult"/>-->
+        <association property="mtInformation" javaType="MtInformation" resultMap="MtInformationResult"/>
+        <association property="iMtGovernmentprocedure" javaType="IMtGovernmentprocedure" resultMap="IMtGovernmentprocedureResult"/>
+        <collection property="mtTransport" resultMap="MtTransportResult"></collection>
+        <collection property="mtCoal" resultMap="MtCoalResult"></collection>
+    </resultMap>
+
+    <resultMap id="mtBorderTransportResult" type="MtBorderTransport">
+        <result property="pId" column="p_id"/>
+        <result property="id" column="stid"/>
+        <result property="arrivaldatetime" column="ArrivalDateTime"/>
+        <result property="name" column="stname"/>
+        <result property="typecode" column="stcode"/>
+        <result property="key" column="stkey"/>
+    </resultMap>
+
+    <resultMap type="MtCarrier" id="MtCarrierResult">
+        <result property="pId" column="p_id"/>
+        <result property="id" column="smcid"/>
+        <result property="key" column="smckey"/>
+    </resultMap>
+
+    <resultMap type="MtCoal" id="MtCoalResult">
+        <result property="pId" column="p_id"/>
+        <result property="id" column="ID"/>
+        <result property="characteristiccode" column="CharacteristicCode"/>
+        <result property="supplierpartytypecode" column="SupplierPartyTypeCode"/>
+        <result property="tareweight" column="TareWeight"/>
+        <result property="key" column="key"/>
+    </resultMap>
+
+    <resultMap type="MtLoading" id="MtLoadingResult">
+        <result property="id" column="slid"/>
+        <result property="pId" column="p_id"/>
+        <result property="key" column="slkey"/>
+    </resultMap>
+
+    <resultMap type="MtMaster" id="MtMasterResult">
+        <result property="pId" column="p_id"/>
+        <result property="id" column="smid"/>
+        <result property="name" column="smname"/>
+        <result property="key" column="smkey"/>
+    </resultMap>
+
+    <resultMap type="MtRepresen" id="MtRepresenResult">
+        <result property="pId" column="p_id"/>
+        <result property="name" column="srname"/>
+        <result property="key" column="srkey"/>
+    </resultMap>
+
+    <resultMap type="MtTransport" id="MtTransportResult">
+        <result property="pId" column="p_id"/>
+        <result property="id" column="ID"/>
+        <result property="typecode" column="TypeCode"/>
+        <result property="tareweight" column="TareWeight"/>
+        <result property="key" column="key"/>
+    </resultMap>
+
+
+    <resultMap type="IMtGovernmentprocedure" id="IMtGovernmentprocedureResult">
+        <result property="key"    column="igkey"    />
+        <result property="pId"    column="p_id"    />
+        <result property="currentcode"    column="CurrentCode"    />
+    </resultMap>
+
+    <resultMap type="MtInformation" id="MtInformationResult">
+        <result property="key"    column="infokey"    />
+        <result property="pId"    column="p_id"    />
+        <result property="content"    column="Content"    />
+    </resultMap>
+
+
+    <sql id="selectMtHeadVo">
+        select smh.pid, smh.ID shid, smh.MessageID, smh.FunctionCode, smh.MessageType, smh.SenderID, smh.ReceiverID, smh.SendTime, smh.Version, smh.DeclarationOfficeID, smh.feedback, smh.feedback_msg, smh.remark,
+        smbt.ArrivalDateTime,
+        smbt.TypeCode stcode,
+        smbt.Name stname
+        from i_mt_head smh  JOIN i_mt_border_transport smbt ON smh.pid = smbt.p_id
+    </sql>
+<!--  已转至Rmft4406HeadMapper，表更换，此sql作废留借鉴  -->
+    <select id="selectMtHeadList1" parameterType="MtHead" resultMap="MtHeadResult">
+        <include refid="selectMtHeadVo"/>
+        <where>
+            <if test="id != null  and id != ''">and smh.Id LIKE
+                CONCAT('%',#{id},'%')
+            </if>
+            <if test="messageid != null  and messageid != ''">and MessageID = #{messageid}</if>
+            <if test="functioncode != null  and functioncode != ''">and FunctionCode = #{functioncode}</if>
+            <if test="messagetype != null  and messagetype != ''">and MessageType = #{messagetype}</if>
+            <if test="senderid != null  and senderid != ''">and SenderID = #{senderid}</if>
+            <if test="receiverid != null  and receiverid != ''">and ReceiverID = #{receiverid}</if>
+            <if test="sendtime != null  and sendtime != ''">and SendTime = #{sendtime}</if>
+            <if test="version != null  and version != ''">and Version = #{version}</if>
+            <if test="declarationofficeid != null  and declarationofficeid != ''">and DeclarationOfficeID =
+                #{declarationofficeid}
+            </if>
+            <!--            <if test="feedback != null  and feedback != ''">and feedback = #{feedback}</if>-->
+            <if test="feedbackMsg != null  and feedbackMsg != ''">and feedback_msg = #{feedbackMsg}</if>
+            <if test="name != null  and name != ''">and Name LIKE
+                CONCAT('%',#{name},'%')
+            </if>
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+
+            and feedback != 'FF' and feedback != '20'
+
+        </where>
+    </select>
+    <!--  已转至Rmft4406HeadMapper，表更换，此sql作废留借鉴  -->
+    <select id="selectMtHeadById1" parameterType="Long" resultMap="MtHeadResult">
+        SELECT
+    	sh.pid,
+    	sh.ID shid,
+    	sh.DeclarationOfficeID,
+    	sh.remark,
+    	sl.`key` slkey,
+    	sl.ID slid,
+    	st.`key` stkey,
+    	st.ArrivalDateTime,
+    	st.ID stid,
+    	st.`Name` stname,
+    	st.TypeCode stcode,
+    	sm.`key` smkey,
+    	sm.ID smid,
+    	sm.`Name` smname,
+    	sr.`key` srkey,
+    	sr.`Name` srname,
+    	smc.`key` smckey,
+    	smc.ID smcid,
+    	ig.`key` igkey,
+    	ig.CurrentCode
+    FROM
+    	i_mt_head sh
+    LEFT JOIN i_mt_loading sl ON sl.p_id = sh.pid
+    LEFT JOIN i_mt_border_transport st ON sh.pid = st.p_id
+    LEFT JOIN i_mt_master sm ON sh.pid = sm.p_id
+    LEFT JOIN i_mt_represen sr ON sh.pid = sr.p_id
+    LEFT JOIN i_mt_carrier smc ON sh.pid = smc.p_id
+    LEFT JOIN i_mt_governmentprocedure ig ON sh.pid = ig.p_id
+    WHERE
+	pid = #{pid}
+    </select>
+
+    <!--  已转至Rmft4406HeadMapper，表更换，此sql作废留借鉴  -->
+    <select id="selectXml1"  resultMap="MtHeadResult">
+        SELECT
+            ihead.MessageID,
+            ihead.FunctionCode,
+            ihead.MessageType,
+            ihead.SenderID,
+            ihead.ReceiverID,
+            ihead.SendTime,
+            ihead.Version,
+            ihead.DeclarationOfficeID,
+            ihead.ID shid,
+            icarrier.ID smcid,
+            iborder.ArrivalDateTime,
+            iborder.ID stid,
+            iborder.`Name` stname,
+            iborder.TypeCode stcode,
+            imaster.ID smid,
+            imaster.`Name` smname,
+            itransport.ID,
+            itransport.TareWeight,
+            itransport.TypeCode,
+            igovernmentprocedure.CurrentCode,
+            icoal.CharacteristicCode,
+            icoal.SupplierPartyTypeCode,
+            icoal.TareWeight,
+            iloading.ID slid,
+            irepersen.`Name` srname,
+            iation.Content
+        FROM
+            i_mt_head ihead
+        LEFT JOIN i_mt_information iation ON ihead.pid = iation.p_id
+        LEFT JOIN i_mt_carrier icarrier ON ihead.pid = icarrier.p_id
+        LEFT JOIN i_mt_border_transport iborder ON ihead.pid = iborder.p_id
+        LEFT JOIN i_mt_master imaster ON ihead.pid = imaster.p_id
+        LEFT JOIN i_mt_transport itransport ON ihead.pid = itransport.p_id
+        LEFT JOIN i_mt_governmentprocedure igovernmentprocedure ON ihead.pid = igovernmentprocedure.p_id
+        LEFT JOIN i_mt_coal icoal ON ihead.pid = icoal.p_id
+        LEFT JOIN i_mt_loading iloading ON ihead.pid = iloading.p_id
+        LEFT JOIN i_mt_represen irepersen ON ihead.pid = irepersen.p_id
+    </select>
+
+    <!--  已转至Rmft4406HeadMapper，表更换，此sql作废留借鉴  -->
+    <insert id="insertMtHead1" parameterType="MtHead">
+        insert into s_mt_head
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null ">pid,</if>
+            <if test="id != null  and id != ''">ID,</if>
+            <if test="messageid != null  and messageid != ''">MessageID,</if>
+            <if test="functioncode != null  and functioncode != ''">FunctionCode,</if>
+            <if test="messagetype != null  and messagetype != ''">MessageType,</if>
+            <if test="senderid != null  and senderid != ''">SenderID,</if>
+            <if test="receiverid != null  and receiverid != ''">ReceiverID,</if>
+            <if test="sendtime != null  and sendtime != ''">SendTime,</if>
+            <if test="version != null  and version != ''">Version,</if>
+            <if test="declarationofficeid != null  and declarationofficeid != ''">DeclarationOfficeID,</if>
+            <if test="feedback != null  and feedback != ''">feedback,</if>
+            <if test="feedbackMsg != null  and feedbackMsg != ''">feedback_msg,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null ">#{pid},</if>
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="messageid != null  and messageid != ''">#{messageid},</if>
+            <if test="functioncode != null  and functioncode != ''">#{functioncode},</if>
+            <if test="messagetype != null  and messagetype != ''">#{messagetype},</if>
+            <if test="senderid != null  and senderid != ''">#{senderid},</if>
+            <if test="receiverid != null  and receiverid != ''">#{receiverid},</if>
+            <if test="sendtime != null  and sendtime != ''">#{sendtime},</if>
+            <if test="version != null  and version != ''">#{version},</if>
+            <if test="declarationofficeid != null  and declarationofficeid != ''">#{declarationofficeid},</if>
+            <if test="feedback != null  and feedback != ''">#{feedback},</if>
+            <if test="feedbackMsg != null  and feedbackMsg != ''">#{feedbackMsg},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+        </trim>
+    </insert>
+
+    <!--  已转至Rmft4406HeadMapper，表更换，此sql作废留借鉴  -->
+    <update id="updateMtHead1" parameterType="MtHead">
+        update s_mt_head
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null  and id != ''">ID = #{id},</if>
+            <if test="messageid != null  and messageid != ''">MessageID = #{messageid},</if>
+            <if test="functioncode != null  and functioncode != ''">FunctionCode = #{functioncode},</if>
+            <if test="messagetype != null  and messagetype != ''">MessageType = #{messagetype},</if>
+            <if test="senderid != null  and senderid != ''">SenderID = #{senderid},</if>
+            <if test="receiverid != null  and receiverid != ''">ReceiverID = #{receiverid},</if>
+            <if test="sendtime != null  and sendtime != ''">SendTime = #{sendtime},</if>
+            <if test="version != null  and version != ''">Version = #{version},</if>
+            <if test="declarationofficeid != null  and declarationofficeid != ''">DeclarationOfficeID =
+                #{declarationofficeid},
+            </if>
+            <if test="feedback != null  and feedback != ''">feedback = #{feedback},</if>
+            <if test="feedbackMsg != null  and feedbackMsg != ''">feedback_msg = #{feedbackMsg},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where pid = #{pid}
+    </update>
+
+
+    <!--  暂未有删除功能，此sql暂时保留  -->
+    <delete id="deleteMtHeadById" parameterType="Long">
+        delete from s_mt_head where pid = #{pid}
+    </delete>
+    <!--  暂未有删除功能，此sql暂时保留  -->
+    <delete id="deleteMtHeadByIds" parameterType="String">
+        delete from s_mt_head where pid in
+        <foreach item="pid" collection="array" open="(" separator="," close=")">
+            #{pid}
+        </foreach>
+    </delete>
+
+    <select id="selectMtTransportById1" parameterType="Long" resultMap="MtTransportResult">
+       SELECT
+	st.KEY,
+	st.p_id,
+	st.ID,
+	st.TypeCode,
+    	st.TareWeight
+    FROM
+    	i_mt_transport st
+    WHERE
+    	st.p_id = #{pid}
+        </select>
+
+    <select id="MtTransportByIdDetail1" parameterType="Long" resultMap="MtTransportResult">
+            SELECT
+    	st.KEY,
+    	st.p_id,
+    	st.ID,
+    	st.TypeCode,
+    	st.TareWeight
+    FROM
+    	i_mt_transport st
+    WHERE
+	st.key =#{key}
+
+    </select>
+
+    <select id="selectCoaltById1" parameterType="Long" resultMap="MtCoalResult">
+    SELECT
+    sc.key,
+    	sc.p_id,
+    	sc.ID,
+    	sc.CharacteristicCode,
+    	sc.SupplierPartyTypeCode,
+    	sc.TareWeight
+    FROM
+    	i_mt_coal sc
+    WHERE
+	sc.p_id = #{pid}
+
+    </select>
+    <select id="getCoalDetail1" parameterType="Long" resultMap="MtCoalResult">
+        SELECT
+    sc.key,
+    	sc.p_id,
+    	sc.ID,
+    	sc.CharacteristicCode,
+    	sc.SupplierPartyTypeCode,
+    	sc.TareWeight
+    FROM
+    	i_mt_coal sc
+    WHERE
+	sc.key = #{key}
+    </select>
+
+<!--  修改方法暂时不使用  -->
+    <update id="updateMtTransport1" parameterType="MtTransport">
+        update s_mt_transport st
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null ">st.ID = #{id},</if>
+            <if test="typecode != null  and typecode != ''">st.TypeCode = #{typecode},</if>
+            <if test="tareweight != null  and tareweight != ''">st.TareWeight = #{tareweight},</if>
+        </trim>
+        where st.key = #{key}
+    </update>
+
+    <update id="updateMtCoal" parameterType="MtCoal">
+        update s_mt_coal sc
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null  and id != ''">sc.ID = #{id},</if>
+            <if test="characteristiccode != null  and characteristiccode != ''">sc.CharacteristicCode =
+                #{characteristiccode},
+            </if>
+            <if test="supplierpartytypecode != null  and supplierpartytypecode != ''">sc.SupplierPartyTypeCode =
+                #{supplierpartytypecode},
+            </if>
+            <if test="tareweight != null  and tareweight != ''">sc.TareWeight = #{tareweight},</if>
+        </trim>
+        where sc.key = #{key}
+    </update>
+
+
+    <update id="updateMtBorderTransport" parameterType="MtBorderTransport">
+        update s_mt_border_transport smt
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="arrivaldatetime != null  and arrivaldatetime != ''">smt.ArrivalDateTime = #{arrivaldatetime},</if>
+            <if test="id != null  and id != ''">smt.ID = #{id},</if>
+            <if test="name != null  and name != ''">smt.Name = #{name},</if>
+            <if test="typecode != null  and typecode != ''">TypeCode = #{typecode},</if>
+        </trim>
+        where smt.key = #{key}
+    </update>
+
+
+    <update id="updateMtCarrier" parameterType="MtCarrier">
+        update s_mt_carrier sc
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null  and id != ''">sc.ID = #{id},</if>
+        </trim>
+        where sc.key = #{key}
+    </update>
+
+    <update id="updateMtLoading" parameterType="MtLoading">
+        update s_mt_loading sl
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null  and id != ''">sl.ID = #{id},</if>
+        </trim>
+        where sl.key = #{key}
+    </update>
+
+    <update id="updateMtMaster" parameterType="MtMaster">
+        update s_mt_master sm
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null  and id != ''">sm.ID = #{id},</if>
+            <if test="name != null  and name != ''">sm.Name = #{name},</if>
+        </trim>
+        where sm.key = #{key}
+    </update>
+
+    <update id="updateMtRepresen" parameterType="MtRepresen">
+        update s_mt_represen sr
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">sr.Name = #{name},</if>
+        </trim>
+        where sr.key = #{key}
+    </update>
+
+    <update id="updateIMtGovernmentprocedure" parameterType="IMtGovernmentprocedure">
+        update i_mt_governmentprocedure ig
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pId != null ">ig.p_id = #{pId},</if>
+            <if test="currentcode != null  and currentcode != ''">ig.CurrentCode = #{currentcode},</if>
+        </trim>
+        where ig.key = #{key}
+    </update>
+
+
+
+</mapper>

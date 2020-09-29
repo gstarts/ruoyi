@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.enterprise.mapper.SEnterpriseInfoMapper">
+
+    <resultMap type="SEnterpriseInfo" id="SEnterpriseInfoResult">
+        <result property="id"    column="id"    />
+        <result property="eName"    column="e_name"    />
+        <result property="eType"    column="e_type"    />
+        <result property="eEname"    column="e_ename"    />
+        <result property="eAbbreviation"    column="e_abbreviation"    />
+        <result property="eAddress"    column="e_address"    />
+        <result property="eLegalPerson"    column="e_legal_person"    />
+        <result property="eLegalPersonPhone"    column="e_legal_person_phone"    />
+        <result property="eBusinessPerson"    column="e_business_person"    />
+        <result property="eBusinessPersonPhone"    column="e_business_person_phone"    />
+        <result property="eRegisterTime"    column="e_register_time"    />
+        <result property="eBusinessScope"    column="e_business_scope"    />
+        <result property="eCustomsNo"    column="e_customs_no"    />
+        <result property="eOrganizationNo"    column="e_organization_no"    />
+        <result property="eIsMember"    column="e_is_member"    />
+        <result property="eIsCargoOwner"    column="e_is_cargo_owner"    />
+        <result property="eIsForwarder"    column="e_is_forwarder"    />
+        <result property="eIsTrailer"    column="e_is_trailer"    />
+        <result property="eRemarks"    column="e_remarks"    />
+        <result property="version"    column="VERSION"    />
+        <result property="crtime"    column="CRTIME"    />
+        <result property="cruser"    column="CRUSER"    />
+        <result property="crusername"    column="CRUSERNAME"    />
+        <result property="del"    column="DEL"    />
+    </resultMap>
+
+    <sql id="selectSEnterpriseInfoVo">
+        select id, e_name, e_type, e_ename, e_abbreviation, e_address, e_legal_person, e_legal_person_phone, e_business_person, e_business_person_phone, e_register_time, e_business_scope, e_customs_no, e_organization_no, e_is_member, e_is_cargo_owner, e_is_forwarder, e_is_trailer, e_remarks, VERSION, CRTIME, CRUSER, CRUSERNAME, DEL from s_enterprise_info
+    </sql>
+
+    <select id="selectSEnterpriseInfoList" parameterType="SEnterpriseInfo" resultMap="SEnterpriseInfoResult">
+        <include refid="selectSEnterpriseInfoVo"/>
+        <where>
+            and DEL = 0
+            <if test="eName != null  and eName != ''"> and e_name like concat('%', #{eName}, '%')</if>
+            <if test="eType != null  and eType != ''"> and e_type = #{eType}</if>
+            <if test="eRegisterTime != null "> and e_register_time = #{eRegisterTime}</if>
+            <if test="eIsMember != null  and eIsMember != ''"> and e_is_member = #{eIsMember}</if>
+            <if test="eIsCargoOwner != null  and eIsCargoOwner != ''"> and e_is_cargo_owner = #{eIsCargoOwner}</if>
+            <if test="eIsForwarder != null  and eIsForwarder != ''"> and e_is_forwarder = #{eIsForwarder}</if>
+        </where>
+    </select>
+
+    <select id="selectSEnterpriseInfoById" parameterType="Long" resultMap="SEnterpriseInfoResult">
+        <include refid="selectSEnterpriseInfoVo"/>
+        where id = #{id}
+        and DEL = 0
+    </select>
+
+    <insert id="insertSEnterpriseInfo" parameterType="SEnterpriseInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into s_enterprise_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="eName != null  and eName != ''">e_name,</if>
+            <if test="eType != null  and eType != ''">e_type,</if>
+            <if test="eEname != null  and eEname != ''">e_ename,</if>
+            <if test="eAbbreviation != null  and eAbbreviation != ''">e_abbreviation,</if>
+            <if test="eAddress != null  and eAddress != ''">e_address,</if>
+            <if test="eLegalPerson != null  and eLegalPerson != ''">e_legal_person,</if>
+            <if test="eLegalPersonPhone != null  and eLegalPersonPhone != ''">e_legal_person_phone,</if>
+            <if test="eBusinessPerson != null  and eBusinessPerson != ''">e_business_person,</if>
+            <if test="eBusinessPersonPhone != null  and eBusinessPersonPhone != ''">e_business_person_phone,</if>
+            <if test="eRegisterTime != null ">e_register_time,</if>
+            <if test="eBusinessScope != null  and eBusinessScope != ''">e_business_scope,</if>
+            <if test="eCustomsNo != null  and eCustomsNo != ''">e_customs_no,</if>
+            <if test="eOrganizationNo != null  and eOrganizationNo != ''">e_organization_no,</if>
+            <if test="eIsMember != null  and eIsMember != ''">e_is_member,</if>
+            <if test="eIsCargoOwner != null  and eIsCargoOwner != ''">e_is_cargo_owner,</if>
+            <if test="eIsForwarder != null  and eIsForwarder != ''">e_is_forwarder,</if>
+            <if test="eIsTrailer != null  and eIsTrailer != ''">e_is_trailer,</if>
+            <if test="eRemarks != null  and eRemarks != ''">e_remarks,</if>
+            <if test="version != null ">VERSION,</if>
+            <if test="crtime != null ">CRTIME,</if>
+            <if test="cruser != null  and cruser != ''">CRUSER,</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME,</if>
+            <if test="del != null ">DEL,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="eName != null  and eName != ''">#{eName},</if>
+            <if test="eType != null  and eType != ''">#{eType},</if>
+            <if test="eEname != null  and eEname != ''">#{eEname},</if>
+            <if test="eAbbreviation != null  and eAbbreviation != ''">#{eAbbreviation},</if>
+            <if test="eAddress != null  and eAddress != ''">#{eAddress},</if>
+            <if test="eLegalPerson != null  and eLegalPerson != ''">#{eLegalPerson},</if>
+            <if test="eLegalPersonPhone != null  and eLegalPersonPhone != ''">#{eLegalPersonPhone},</if>
+            <if test="eBusinessPerson != null  and eBusinessPerson != ''">#{eBusinessPerson},</if>
+            <if test="eBusinessPersonPhone != null  and eBusinessPersonPhone != ''">#{eBusinessPersonPhone},</if>
+            <if test="eRegisterTime != null ">#{eRegisterTime},</if>
+            <if test="eBusinessScope != null  and eBusinessScope != ''">#{eBusinessScope},</if>
+            <if test="eCustomsNo != null  and eCustomsNo != ''">#{eCustomsNo},</if>
+            <if test="eOrganizationNo != null  and eOrganizationNo != ''">#{eOrganizationNo},</if>
+            <if test="eIsMember != null  and eIsMember != ''">#{eIsMember},</if>
+            <if test="eIsCargoOwner != null  and eIsCargoOwner != ''">#{eIsCargoOwner},</if>
+            <if test="eIsForwarder != null  and eIsForwarder != ''">#{eIsForwarder},</if>
+            <if test="eIsTrailer != null  and eIsTrailer != ''">#{eIsTrailer},</if>
+            <if test="eRemarks != null  and eRemarks != ''">#{eRemarks},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="crtime != null ">#{crtime},</if>
+            <if test="cruser != null  and cruser != ''">#{cruser},</if>
+            <if test="crusername != null  and crusername != ''">#{crusername},</if>
+            <if test="del != null ">#{del},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSEnterpriseInfo" parameterType="SEnterpriseInfo">
+        update s_enterprise_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="eName != null  and eName != ''">e_name = #{eName},</if>
+            <if test="eType != null  and eType != ''">e_type = #{eType},</if>
+            <if test="eEname != null  and eEname != ''">e_ename = #{eEname},</if>
+            <if test="eAbbreviation != null  and eAbbreviation != ''">e_abbreviation = #{eAbbreviation},</if>
+            <if test="eAddress != null  and eAddress != ''">e_address = #{eAddress},</if>
+            <if test="eLegalPerson != null  and eLegalPerson != ''">e_legal_person = #{eLegalPerson},</if>
+            <if test="eLegalPersonPhone != null  and eLegalPersonPhone != ''">e_legal_person_phone = #{eLegalPersonPhone},</if>
+            <if test="eBusinessPerson != null  and eBusinessPerson != ''">e_business_person = #{eBusinessPerson},</if>
+            <if test="eBusinessPersonPhone != null  and eBusinessPersonPhone != ''">e_business_person_phone = #{eBusinessPersonPhone},</if>
+            <if test="eRegisterTime != null ">e_register_time = #{eRegisterTime},</if>
+            <if test="eBusinessScope != null  and eBusinessScope != ''">e_business_scope = #{eBusinessScope},</if>
+            <if test="eCustomsNo != null  and eCustomsNo != ''">e_customs_no = #{eCustomsNo},</if>
+            <if test="eOrganizationNo != null  and eOrganizationNo != ''">e_organization_no = #{eOrganizationNo},</if>
+            <if test="eIsMember != null  and eIsMember != ''">e_is_member = #{eIsMember},</if>
+            <if test="eIsCargoOwner != null  and eIsCargoOwner != ''">e_is_cargo_owner = #{eIsCargoOwner},</if>
+            <if test="eIsForwarder != null  and eIsForwarder != ''">e_is_forwarder = #{eIsForwarder},</if>
+            <if test="eIsTrailer != null  and eIsTrailer != ''">e_is_trailer = #{eIsTrailer},</if>
+            <if test="eRemarks != null  and eRemarks != ''">e_remarks = #{eRemarks},</if>
+            <if test="version != null ">VERSION = #{version},</if>
+            <if test="crtime != null ">CRTIME = #{crtime},</if>
+            <if test="cruser != null  and cruser != ''">CRUSER = #{cruser},</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME = #{crusername},</if>
+            <if test="del != null ">DEL = #{del},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteSEnterpriseInfoById" parameterType="Long">
+        update  s_enterprise_info set DEL=1  where id = #{id}
+    </update>
+
+    <delete id="deleteSEnterpriseInfoByIds" parameterType="String">
+        update  s_enterprise_info  set DEL=1  where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

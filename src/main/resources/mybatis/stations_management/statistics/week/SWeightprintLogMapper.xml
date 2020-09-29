@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.statistics.week.mapper.SWeightprintLogMapper">
+    
+    <resultMap type="SWeightprintLog" id="SWeightprintLogResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleNo"    column="vehicle_no"    />
+        <result property="calculateNum"    column="calculate_num"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="format"    column="format"    />
+        <result property="grossWeight"    column="gross_weight"    />
+        <result property="tareWeight"    column="tare_weight"    />
+        <result property="netWeight"    column="net_weight"    />
+        <result property="carrier"    column="carrier"    />
+        <result property="deliveryCompany"    column="delivery_company"    />
+        <result property="receiptCompany"    column="receipt_company"    />
+        <result property="flow"    column="flow"    />
+        <result property="calculateName"    column="calculate_name"    />
+        <result property="remarke"    column="remarke"    />
+        <result property="mjTime"    column="mj_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectSWeightprintLogVo">
+        select id, vehicle_no, calculate_num, goods_name, format, gross_weight, tare_weight, net_weight, carrier, delivery_company, receipt_company, flow, calculate_name, remarke, mj_time, status from s_weightprint_log
+    </sql>
+
+    <select id="selectSWeightprintLogList" parameterType="SWeightprintLog" resultMap="SWeightprintLogResult">
+        <include refid="selectSWeightprintLogVo"/>
+        <where>  
+            <if test="vehicleNo != null  and vehicleNo != ''"> and vehicle_no = #{vehicleNo}</if>
+            <if test="calculateNum != null  and calculateNum != ''"> and calculate_num = #{calculateNum}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="format != null  and format != ''"> and format = #{format}</if>
+            <if test="grossWeight != null "> and gross_weight = #{grossWeight}</if>
+            <if test="tareWeight != null "> and tare_weight = #{tareWeight}</if>
+            <if test="netWeight != null "> and net_weight = #{netWeight}</if>
+            <if test="carrier != null  and carrier != ''"> and carrier = #{carrier}</if>
+            <if test="deliveryCompany != null  and deliveryCompany != ''"> and delivery_company = #{deliveryCompany}</if>
+            <if test="receiptCompany != null  and receiptCompany != ''"> and receipt_company = #{receiptCompany}</if>
+            <if test="flow != null  and flow != ''"> and flow = #{flow}</if>
+            <if test="calculateName != null  and calculateName != ''"> and calculate_name like concat('%', #{calculateName}, '%')</if>
+            <if test="remarke != null  and remarke != ''"> and remarke = #{remarke}</if>
+<!--            <if test="mjTime != null "> and mj_time = #{mjTime}</if>-->
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(mj_time,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(mj_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+            </if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectSWeightprintLogById" parameterType="Long" resultMap="SWeightprintLogResult">
+        <include refid="selectSWeightprintLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSWeightprintLog" parameterType="SWeightprintLog" useGeneratedKeys="true" keyProperty="id">
+        insert into s_weightprint_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="vehicleNo != null  and vehicleNo != ''">vehicle_no,</if>
+            <if test="calculateNum != null  and calculateNum != ''">calculate_num,</if>
+            <if test="goodsName != null  and goodsName != ''">goods_name,</if>
+            <if test="format != null  and format != ''">format,</if>
+            <if test="grossWeight != null ">gross_weight,</if>
+            <if test="tareWeight != null ">tare_weight,</if>
+            <if test="netWeight != null ">net_weight,</if>
+            <if test="carrier != null  and carrier != ''">carrier,</if>
+            <if test="deliveryCompany != null  and deliveryCompany != ''">delivery_company,</if>
+            <if test="receiptCompany != null  and receiptCompany != ''">receipt_company,</if>
+            <if test="flow != null  and flow != ''">flow,</if>
+            <if test="calculateName != null  and calculateName != ''">calculate_name,</if>
+            <if test="remarke != null  and remarke != ''">remarke,</if>
+            <if test="mjTime != null ">mj_time,</if>
+            <if test="status != null  and status != ''">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="vehicleNo != null  and vehicleNo != ''">#{vehicleNo},</if>
+            <if test="calculateNum != null  and calculateNum != ''">#{calculateNum},</if>
+            <if test="goodsName != null  and goodsName != ''">#{goodsName},</if>
+            <if test="format != null  and format != ''">#{format},</if>
+            <if test="grossWeight != null ">#{grossWeight},</if>
+            <if test="tareWeight != null ">#{tareWeight},</if>
+            <if test="netWeight != null ">#{netWeight},</if>
+            <if test="carrier != null  and carrier != ''">#{carrier},</if>
+            <if test="deliveryCompany != null  and deliveryCompany != ''">#{deliveryCompany},</if>
+            <if test="receiptCompany != null  and receiptCompany != ''">#{receiptCompany},</if>
+            <if test="flow != null  and flow != ''">#{flow},</if>
+            <if test="calculateName != null  and calculateName != ''">#{calculateName},</if>
+            <if test="remarke != null  and remarke != ''">#{remarke},</if>
+            <if test="mjTime != null ">#{mjTime},</if>
+            <if test="status != null  and status != ''">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSWeightprintLog" parameterType="SWeightprintLog">
+        update s_weightprint_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleNo != null  and vehicleNo != ''">vehicle_no = #{vehicleNo},</if>
+            <if test="calculateNum != null  and calculateNum != ''">calculate_num = #{calculateNum},</if>
+            <if test="goodsName != null  and goodsName != ''">goods_name = #{goodsName},</if>
+            <if test="format != null  and format != ''">format = #{format},</if>
+            <if test="grossWeight != null ">gross_weight = #{grossWeight},</if>
+            <if test="tareWeight != null ">tare_weight = #{tareWeight},</if>
+            <if test="netWeight != null ">net_weight = #{netWeight},</if>
+            <if test="carrier != null  and carrier != ''">carrier = #{carrier},</if>
+            <if test="deliveryCompany != null  and deliveryCompany != ''">delivery_company = #{deliveryCompany},</if>
+            <if test="receiptCompany != null  and receiptCompany != ''">receipt_company = #{receiptCompany},</if>
+            <if test="flow != null  and flow != ''">flow = #{flow},</if>
+            <if test="calculateName != null  and calculateName != ''">calculate_name = #{calculateName},</if>
+            <if test="remarke != null  and remarke != ''">remarke = #{remarke},</if>
+            <if test="mjTime != null ">mj_time = #{mjTime},</if>
+            <if test="status != null  and status != ''">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSWeightprintLogById" parameterType="Long">
+        delete from s_weightprint_log where id = #{id}
+    </delete>
+
+    <delete id="deleteSWeightprintLogByIds" parameterType="String">
+        delete from s_weightprint_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.report.mapper.Rmft4406ConsignmentMapper">
+    
+    <resultMap type="Rmft4406Consignment" id="Rmft4406ConsignmentResult">
+        <result property="id"    column="ID"    />
+        <result property="messageId"    column="MessageID"    />
+        <result property="governmentProcedure"    column="GovernmentProcedure"    />
+    </resultMap>
+
+    <sql id="selectRmft4406ConsignmentVo">
+        select ID, MessageID, GovernmentProcedure from i_rmft4406_consignment
+    </sql>
+
+    <select id="selectRmft4406ConsignmentList" parameterType="Rmft4406Consignment" resultMap="Rmft4406ConsignmentResult">
+        <include refid="selectRmft4406ConsignmentVo"/>
+        <where>  
+            <if test="messageId != null  and messageId != ''"> and MessageID = #{messageId}</if>
+            <if test="governmentProcedure != null  and governmentProcedure != ''"> and GovernmentProcedure = #{governmentProcedure}</if>
+        </where>
+    </select>
+    
+    <select id="selectRmft4406ConsignmentById" parameterType="Long" resultMap="Rmft4406ConsignmentResult">
+        <include refid="selectRmft4406ConsignmentVo"/>
+        where ID = #{id}
+    </select>
+        
+    <insert id="insertRmft4406Consignment" parameterType="Rmft4406Consignment" useGeneratedKeys="true" keyProperty="id">
+        insert into i_rmft4406_consignment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">ID,</if>
+            <if test="messageId != null  and messageId != ''">MessageID,</if>
+            <if test="governmentProcedure != null  and governmentProcedure != ''">GovernmentProcedure,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="messageId != null  and messageId != ''">#{messageId},</if>
+            <if test="governmentProcedure != null  and governmentProcedure != ''">#{governmentProcedure},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRmft4406Consignment" parameterType="Rmft4406Consignment">
+        update i_rmft4406_consignment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="messageId != null  and messageId != ''">MessageID = #{messageId},</if>
+            <if test="governmentProcedure != null  and governmentProcedure != ''">GovernmentProcedure = #{governmentProcedure},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteRmft4406ConsignmentById" parameterType="Long">
+        delete from i_rmft4406_consignment where ID = #{id}
+    </delete>
+
+    <delete id="deleteRmft4406ConsignmentByIds" parameterType="String">
+        delete from i_rmft4406_consignment where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

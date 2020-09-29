@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.enterprise.mapper.SStationConfigMapper">
+    
+    <resultMap type="SStationConfig" id="SStationConfigResult">
+        <result property="id"    column="id"    />
+        <result property="stationId"    column="station_id"    />
+        <result property="isDeclare"    column="is_declare"    />
+        <result property="isEntry"    column="is_entry"    />
+        <result property="isDeclareGoods"    column="is_declare_goods"    />
+        <association property="atationinfo" javaType="StationInfo" resultMap="StationInfoResult"></association>
+    </resultMap>
+
+    <resultMap type="StationInfo" id="StationInfoResult">
+        <result property="id"    column="id"    />
+        <result property="stationName"    column="station_name"    />
+        <result property="customsmaster"    column="CustomsMaster"    />
+        <result property="contractorcode"    column="ContractorCode"    />
+        <result property="contractorcodescc"    column="ContractorCodeScc"    />
+        <result property="supvloctcode"    column="SupvLoctCode"    />
+        <result property="opuserid"    column="OpUserId"    />
+        <result property="senderid"    column="SenderID"    />
+        <result property="receiverid"    column="ReceiverID"    />
+        <result property="version"    column="Version"    />
+    </resultMap>
+
+    <sql id="selectSStationConfigVo">
+        select
+         info.station_name,fig.id, station_id, is_declare,
+         is_entry, is_declare_goods
+        from
+         s_station_config fig
+        left join
+        s_station_info info
+        on
+        fig.id=info.id
+    </sql>
+
+    <select id="selectSStationConfigList" parameterType="SStationConfig" resultMap="SStationConfigResult">
+        <include refid="selectSStationConfigVo"/>
+<!--        <where>  -->
+<!--            <if test="stationId != null "> and station_id = #{stationId}</if>-->
+<!--            <if test="isDeclare != null  and isDeclare != ''"> and is_declare = #{isDeclare}</if>-->
+<!--            <if test="isEntry != null  and isEntry != ''"> and is_entry = #{isEntry}</if>-->
+<!--            <if test="isDeclareGoods != null  and isDeclareGoods != ''"> and is_declare_goods = #{isDeclareGoods}</if>-->
+<!--        </where>-->
+    </select>
+    
+    <select id="selectSStationConfigById" parameterType="Long" resultMap="SStationConfigResult">
+        <include refid="selectSStationConfigVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSStationConfig" parameterType="SStationConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into s_station_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stationId != null ">station_id,</if>
+            <if test="isDeclare != null  and isDeclare != ''">is_declare,</if>
+            <if test="isEntry != null  and isEntry != ''">is_entry,</if>
+            <if test="isDeclareGoods != null  and isDeclareGoods != ''">is_declare_goods,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stationId != null ">#{stationId},</if>
+            <if test="isDeclare != null  and isDeclare != ''">#{isDeclare},</if>
+            <if test="isEntry != null  and isEntry != ''">#{isEntry},</if>
+            <if test="isDeclareGoods != null  and isDeclareGoods != ''">#{isDeclareGoods},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSStationConfig" parameterType="SStationConfig">
+        update s_station_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="isDeclare != null  and isDeclare != ''">is_declare = #{isDeclare},</if>
+            <if test="isEntry != null  and isEntry != ''">is_entry = #{isEntry},</if>
+            <if test="isDeclareGoods != null  and isDeclareGoods != ''">is_declare_goods = #{isDeclareGoods},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSStationConfigById" parameterType="Long">
+        delete from s_station_config where id = #{id}
+    </delete>
+
+    <delete id="deleteSStationConfigByIds" parameterType="String">
+        delete from s_station_config where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

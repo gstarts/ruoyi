@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.declare.mapper.AnimalsHeadMapper">
+
+    <resultMap type="AnimalsHead" id="AnimalsHeadResult">
+        <result property="id"    column="id"    />
+        <result property="msgid"    column="msgid"    />
+        <result property="msgtype"    column="msgtype"    />
+        <result property="customscode"    column="customscode"    />
+        <result property="supvloctcode"    column="supvloctcode"    />
+        <result property="decldate"    column="decldate"    />
+        <result property="declaredatatype"    column="declaredatatype"    />
+        <result property="totalmsgno"    column="totalmsgno"    />
+        <result property="curmsgno"    column="curmsgno"    />
+        <result property="recvdecldata"    column="recvdecldata"    />
+        <result property="result"    column="result"    />
+        <result property="remark"    column="remark"    />
+        <result property="version"    column="version"    />
+        <result property="crtime"    column="crtime"    />
+        <result property="cruser"    column="cruser"    />
+        <result property="crusername"    column="crusername"    />
+        <result property="del"    column="del"    />
+    </resultMap>
+
+    <sql id="selectAnimalsHeadVo">
+        select id, msgid, msgtype, customscode, supvloctcode, decldate, declaredatatype, totalmsgno, curmsgno, recvdecldata, result, remark, version, crtime, cruser, crusername, del from i_animals_head
+    </sql>
+
+    <select id="selectAnimalsHeadList" parameterType="AnimalsHead" resultMap="AnimalsHeadResult">
+        <include refid="selectAnimalsHeadVo"/>
+        <where>
+            <if test="msgid != null  and msgid != ''"> and msgid = #{msgid}</if>
+            <if test="msgtype != null  and msgtype != ''"> and msgtype = #{msgtype}</if>
+            <if test="customscode != null  and customscode != ''"> and customscode = #{customscode}</if>
+            <if test="supvloctcode != null  and supvloctcode != ''"> and supvloctcode = #{supvloctcode}</if>
+            <if test="decldate != null  and decldate != ''"> and decldate = #{decldate}</if>
+            <if test="declaredatatype != null  and declaredatatype != ''"> and declaredatatype = #{declaredatatype}</if>
+            <if test="totalmsgno != null  and totalmsgno != ''"> and totalmsgno = #{totalmsgno}</if>
+            <if test="curmsgno != null  and curmsgno != ''"> and curmsgno = #{curmsgno}</if>
+            <if test="recvdecldata != null  and recvdecldata != ''"> and recvdecldata = #{recvdecldata}</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="version != null "> and version = #{version}</if>
+            <if test="crtime != null "> and crtime = #{crtime}</if>
+            <if test="cruser != null  and cruser != ''"> and cruser = #{cruser}</if>
+            <if test="crusername != null  and crusername != ''"> and crusername like concat('%', #{crusername}, '%')</if>
+            <if test="del != null "> and del = #{del}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectAnimalsHeadById" parameterType="Long" resultMap="AnimalsHeadResult">
+        <include refid="selectAnimalsHeadVo"/>
+        where id = #{id}
+
+    </select>
+
+    <insert id="insertAnimalsHead" parameterType="AnimalsHead" useGeneratedKeys="true" keyProperty="id">
+        insert into i_animals_head
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">id,</if>
+            <if test="msgid != null  and msgid != ''">msgid,</if>
+            <if test="msgtype != null  and msgtype != ''">msgtype,</if>
+            <if test="customscode != null  and customscode != ''">customscode,</if>
+            <if test="supvloctcode != null  and supvloctcode != ''">supvloctcode,</if>
+            <if test="decldate != null  and decldate != ''">decldate,</if>
+            <if test="declaredatatype != null  and declaredatatype != ''">declaredatatype,</if>
+            <if test="totalmsgno != null  and totalmsgno != ''">totalmsgno,</if>
+            <if test="curmsgno != null  and curmsgno != ''">curmsgno,</if>
+            <if test="recvdecldata != null  and recvdecldata != ''">recvdecldata,</if>
+            <if test="result != null  and result != ''">result,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="version != null ">version,</if>
+            <if test="crtime != null ">crtime,</if>
+            <if test="cruser != null  and cruser != ''">cruser,</if>
+            <if test="crusername != null  and crusername != ''">crusername,</if>
+            <if test="del != null ">del,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="msgid != null  and msgid != ''">#{msgid},</if>
+            <if test="msgtype != null  and msgtype != ''">#{msgtype},</if>
+            <if test="customscode != null  and customscode != ''">#{customscode},</if>
+            <if test="supvloctcode != null  and supvloctcode != ''">#{supvloctcode},</if>
+            <if test="decldate != null  and decldate != ''">#{decldate},</if>
+            <if test="declaredatatype != null  and declaredatatype != ''">#{declaredatatype},</if>
+            <if test="totalmsgno != null  and totalmsgno != ''">#{totalmsgno},</if>
+            <if test="curmsgno != null  and curmsgno != ''">#{curmsgno},</if>
+            <if test="recvdecldata != null  and recvdecldata != ''">#{recvdecldata},</if>
+            <if test="result != null  and result != ''">#{result},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="crtime != null ">#{crtime},</if>
+            <if test="cruser != null  and cruser != ''">#{cruser},</if>
+            <if test="crusername != null  and crusername != ''">#{crusername},</if>
+            <if test="del != null ">#{del},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAnimalsHead" parameterType="AnimalsHead">
+        update i_animals_head
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="msgid != null  and msgid != ''">msgid = #{msgid},</if>
+            <if test="msgtype != null  and msgtype != ''">msgtype = #{msgtype},</if>
+            <if test="customscode != null  and customscode != ''">customscode = #{customscode},</if>
+            <if test="supvloctcode != null  and supvloctcode != ''">supvloctcode = #{supvloctcode},</if>
+            <if test="decldate != null  and decldate != ''">decldate = #{decldate},</if>
+            <if test="declaredatatype != null  and declaredatatype != ''">declaredatatype = #{declaredatatype},</if>
+            <if test="totalmsgno != null  and totalmsgno != ''">totalmsgno = #{totalmsgno},</if>
+            <if test="curmsgno != null  and curmsgno != ''">curmsgno = #{curmsgno},</if>
+            <if test="recvdecldata != null  and recvdecldata != ''">recvdecldata = #{recvdecldata},</if>
+            <if test="result != null  and result != ''">result = #{result},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="crtime != null ">crtime = #{crtime},</if>
+            <if test="cruser != null  and cruser != ''">cruser = #{cruser},</if>
+            <if test="crusername != null  and crusername != ''">crusername = #{crusername},</if>
+            <if test="del != null ">del = #{del},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAnimalsHeadById" parameterType="Long">
+        delete from i_animals_head where id = #{id}
+    </delete>
+
+    <update id="declareAnimals" parameterType="String">
+            update i_animals_head set result = '1'
+            where id in
+            <foreach collection="array" item="id" index="index"
+                                open="(" close=")" separator=",">
+                #{id}
+             </foreach>
+    </update>
+
+</mapper>

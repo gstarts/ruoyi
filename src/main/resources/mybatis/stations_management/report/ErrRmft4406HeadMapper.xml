@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.report.mapper.MtBorderTransportMapper">
+
+    <resultMap type="Rmft4406Head" id="Rmft4406HeadResult">
+        <result property="messageId" column="MessageID"/>
+        <result property="functionCode" column="FunctionCode"/>
+        <result property="messageType" column="MessageType"/>
+        <result property="senderId" column="SenderID"/>
+        <result property="receiverId" column="ReceiverID"/>
+        <result property="sendTime" column="SendTime"/>
+        <result property="version" column="Version"/>
+        <result property="declarationOfficeId" column="DeclarationOfficeID"/>
+        <result property="id" column="irhID"/>
+        <result property="additionalInformation" column="AdditionalInformation"/>
+        <result property="carrier" column="Carrier"/>
+        <result property="loadingLocation" column="LoadingLocation"/>
+        <result property="representativePerson" column="RepresentativePerson"/>
+        <result property="unloadingLocation" column="UnloadingLocation"/>
+        <result property="statementCode" column="StatementCode"/>
+        <result property="consignmentId" column="Consignment_ID"/>
+        <result property="borderTransportMeansId" column="BorderTransportMeans_ID"/>
+        <result property="statementDescription" column="StatementDescription"/>
+        <result property="contractorCodeScc" column="ContractorCodeScc"/>
+        <!--        <association property="bordertransportequipment" javaType="Rmft4406Bordertransportequipment"-->
+        <!--                     resultMap="Rmft4406BordertransportequipmentResult"/>-->
+        <association property="borderTransportMeans" javaType="Rmft4406Bordertransportmeans"
+                     resultMap="Rmft4406BordertransportmeansResult"/>
+        <association property="consignment" javaType="Rmft4406Consignment" resultMap="Rmft4406ConsignmentResult"/>
+        <!--        <association property="transportequipment" javaType="Rmft4406Transportequipment"-->
+        <!--                     resultMap="Rmft4406TransportequipmentResult"/>-->
+        <collection property="borderTransportEquipment"  resultMap="Rmft4406BordertransportequipmentResult"></collection>
+        <collection property="transportEquipment" resultMap="Rmft4406TransportequipmentResult"></collection>
+    </resultMap>
+
+    <resultMap type="Rmft4406Bordertransportequipment" id="Rmft4406BordertransportequipmentResult">
+        <result property="id" column="irbttID"/>
+        <result property="borderTransportMeansId" column="irbttBorderTransportMeans_ID"/>
+        <result property="transportId" column="Transport_ID"/>
+        <result property="tareWeight" column="BTareWeight"/>
+        <result property="typeCode" column="BTypeCode"/>
+    </resultMap>
+
+    <resultMap type="Rmft4406Bordertransportmeans" id="Rmft4406BordertransportmeansResult">
+        <result property="id"    column="irbID"    />
+        <result property="consignmentId"    column="irbConsignment_ID"    />
+        <result property="arrivalDateTime"    column="ArrivalDateTime"    />
+        <result property="borderId"    column="border_ID"    />
+        <result property="name"    column="Name"    />
+        <result property="typeCode"    column="irbTypeCode"    />
+        <result property="masterId"    column="Master_ID"    />
+        <result property="masterName"    column="Master_Name"    />
+    </resultMap>
+
+    <resultMap type="Rmft4406Consignment" id="Rmft4406ConsignmentResult">
+        <result property="id" column="ircID"/>
+        <result property="messageId" column="cMessageID"/>
+        <result property="governmentProcedure" column="GovernmentProcedure"/>
+    </resultMap>
+
+    <resultMap type="Rmft4406Transportequipment" id="Rmft4406TransportequipmentResult">
+        <result property="id"    column="irtID"    />
+        <result property="consignmentId"    column="irtConsignment_ID"    />
+        <result property="characteristicCode"    column="CharacteristicCode"    />
+        <result property="fullnessCode"    column="FullnessCode"    />
+        <result property="transportEquipmentId"    column="TransportEquipment_ID"    />
+        <result property="sealId"    column="SealID"    />
+        <result property="supplierPartyTypeCode"    column="SupplierPartyTypeCode"    />
+        <result property="tareWeight"    column="TareWeight"    />
+    </resultMap>
+
+    <sql id="selectRmft4406HeadVo">
+        select irh.MessageID, irh.FunctionCode, irh.MessageType, irh.SenderID, irh.ReceiverID, irh.SendTime, irh.Version, irh.DeclarationOfficeID, irh.ID irhID, irh.AdditionalInformation, irh.Carrier, irh.LoadingLocation, irh.RepresentativePerson, irh.UnloadingLocation, irh.StatementCode, irh.StatementDescription,irh.ContractorCodeScc,
+               irc.ID ircID, irc.MessageID cMessageId, irc.GovernmentProcedure,
+               irb.ID irbID, irb.Consignment_ID, irb.ArrivalDateTime, irb.border_ID, irb.`Name`, irb.TypeCode irbTypeCode, irb.Master_ID, irb.Master_Name,
+               irbtt.ID irbttID, irbtt.BorderTransportMeans_ID, irbtt.Transport_ID, irbtt.TareWeight BTareWeight, irbtt.TypeCode BTypeCode,
+               irt.ID irtID, irt.Consignment_ID, irt.CharacteristicCode, irt.FullnessCode, irt.TransportEquipment_ID, irt.SealID, irt.SupplierPartyTypeCode, irt.TareWeight
+        from i_rmft4406_head irh
+        left join i_rmft4406_consignment irc on irh.MessageID = irc.MessageID
+        left join i_rmft4406_bordertransportmeans irb on irc.ID = irb.Consignment_ID
+        left join i_rmft4406_transportequipment irt on irc.ID = irt.Consignment_ID
+        left join i_rmft4406_bordertransportequipment irbtt on irb.ID = irbtt.BorderTransportMeans_ID
+    </sql>
+
+    <!--异常车辆信息-->
+    <select id="selectErrList" parameterType="Rmft4406Head" resultMap="Rmft4406HeadResult">
+        <include refid="selectRmft4406HeadVo"/>
+        <where>
+            <if test="id != null  and id != ''">and irh.ID = #{id}</if>
+            <if test="name != null  and name != ''">and irb.Name like concat('%', #{name}, '%')</if>
+            <if test="typeCode != null  and typeCode != ''">and irb.TypeCode = #{typeCode}</if>
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+            AND irh.StatementCode ='FF' or irh.StatementCode='20'
+        </where>
+        ORDER BY
+        irb.ArrivalDateTime DESC
+    </select>
+
+
+
+
+    <insert id="insertMtHead" parameterType="Rmft4406Head">
+        insert into i_rmft4406_head
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="messageId != null  and messageId != ''">MessageID,</if>
+            <if test="functionCode != null  and functionCode != ''">FunctionCode,</if>
+            <if test="messageType != null  and messageType != ''">MessageType,</if>
+            <if test="senderId != null  and senderId != ''">SenderID,</if>
+            <if test="receiverId != null  and receiverId != ''">ReceiverID,</if>
+            <if test="sendTime != null  and sendTime != ''">SendTime,</if>
+            <if test="version != null  and version != ''">Version,</if>
+            <if test="declarationOfficeId != null  and declarationOfficeId != ''">DeclarationOfficeID,</if>
+            <if test="id != null  and id != ''">ID,</if>
+            <if test="additionalInformation != null  and additionalInformation != ''">AdditionalInformation,</if>
+            <if test="carrier != null  and carrier != ''">Carrier,</if>
+            <if test="loadingLocation != null  and loadingLocation != ''">LoadingLocation,</if>
+            <if test="representativePerson != null  and representativePerson != ''">RepresentativePerson,</if>
+            <if test="unloadingLocation != null  and unloadingLocation != ''">UnloadingLocation,</if>
+            <if test="statementCode != null  and statementCode != ''">StatementCode,</if>
+            <if test="statementDescription != null  and statementDescription != ''">StatementDescription,</if>
+            <if test="contractorCodeScc != null  and contractorCodeScc != ''">ContractorCodeScc,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="messageId != null  and messageId != ''">#{messageId},</if>
+            <if test="functionCode != null  and functionCode != ''">#{functionCode},</if>
+            <if test="messageType != null  and messageType != ''">#{messageType},</if>
+            <if test="senderId != null  and senderId != ''">#{senderId},</if>
+            <if test="receiverId != null  and receiverId != ''">#{receiverId},</if>
+            <if test="sendTime != null  and sendTime != ''">#{sendTime},</if>
+            <if test="version != null  and version != ''">#{version},</if>
+            <if test="declarationOfficeId != null  and declarationOfficeId != ''">#{declarationOfficeId},</if>
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="additionalInformation != null  and additionalInformation != ''">#{additionalInformation},</if>
+            <if test="carrier != null  and carrier != ''">#{carrier},</if>
+            <if test="loadingLocation != null  and loadingLocation != ''">#{loadingLocation},</if>
+            <if test="representativePerson != null  and representativePerson != ''">#{representativePerson},</if>
+            <if test="unloadingLocation != null  and unloadingLocation != ''">#{unloadingLocation},</if>
+            <if test="statementCode != null  and statementCode != ''">#{statementCode},</if>
+            <if test="statementDescription != null  and statementDescription != ''">#{statementDescription},</if>
+            <if test="contractorCodeScc != null  and contractorCodeScc != ''">#{contractorCodeScc},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMtHead" parameterType="Rmft4406Head">
+        update i_rmft4406_head
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="functionCode != null  and functionCode != ''">FunctionCode = #{functionCode},</if>
+            <if test="messageType != null  and messageType != ''">MessageType = #{messageType},</if>
+            <if test="senderId != null  and senderId != ''">SenderID = #{senderId},</if>
+            <if test="receiverId != null  and receiverId != ''">ReceiverID = #{receiverId},</if>
+            <if test="sendTime != null  and sendTime != ''">SendTime = #{sendTime},</if>
+            <if test="version != null  and version != ''">Version = #{version},</if>
+            <if test="declarationOfficeId != null  and declarationOfficeId != ''">DeclarationOfficeID =
+                #{declarationOfficeId},
+            </if>
+            <if test="id != null  and id != ''">ID = #{id},</if>
+            <if test="additionalInformation != null  and additionalInformation != ''">AdditionalInformation =
+                #{additionalInformation},
+            </if>
+            <if test="carrier != null  and carrier != ''">Carrier = #{carrier},</if>
+            <if test="loadingLocation != null  and loadingLocation != ''">LoadingLocation = #{loadingLocation},</if>
+            <if test="representativePerson != null  and representativePerson != ''">RepresentativePerson =
+                #{representativePerson},
+            </if>
+            <if test="unloadingLocation != null  and unloadingLocation != ''">UnloadingLocation =
+                #{unloadingLocation},
+            </if>
+            <if test="statementCode != null  and statementCode != ''">StatementCode = #{statementCode},</if>
+            <if test="statementDescription != null  and statementDescription != ''">StatementDescription =
+                #{statementDescription},
+            </if>
+        </trim>
+        where MessageID = #{messageId}
+    </update>
+
+    <delete id="deleteRmft4406HeadById" parameterType="String">
+        delete from i_rmft4406_head where MessageID = #{messageId}
+    </delete>
+
+    <delete id="deleteRmft4406HeadByIds" parameterType="String">
+        delete from i_rmft4406_head where MessageID in
+        <foreach item="messageId" collection="array" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </delete>
+
+</mapper>

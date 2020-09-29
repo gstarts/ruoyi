@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.emptycar.mapper.IMtHead06Mapper">
+
+    <resultMap type="IMtHead06" id="IMtHead06Result">
+        <result property="pid" column="pid"/>
+        <result property="id" column="shID"/>
+        <result property="messageid" column="MessageID"/>
+        <result property="functioncode" column="FunctionCode"/>
+        <result property="messagetype" column="MessageType"/>
+        <result property="senderid" column="SenderID"/>
+        <result property="receiverid" column="ReceiverID"/>
+        <result property="sendtime" column="SendTime"/>
+        <result property="version" column="Version"/>
+        <result property="declarationofficeid" column="DeclarationOfficeID"/>
+        <result property="feedback" column="feedback"/>
+        <result property="feedbackMsg" column="feedback_msg"/>
+        <result property="remark" column="remark"/>
+        <association property="iMtBorderTransport06" javaType="IMtBorderTransport06"
+                     resultMap="IMtBorderTransport06Result"/>
+        <association property="iMtCarrier06" javaType="IMtCarrier06" resultMap="IMtCarrier06Result"/>
+        <association property="iMtGovernmentprocedure06" javaType="IMtGovernmentprocedure06"
+                     resultMap="IMtGovernmentprocedure06Result"/>
+        <association property="mtMaster06" javaType="IMtMaster06" resultMap="IMtMaster06Result"/>
+        <association property="iMtLoading06" javaType="IMtLoading06" resultMap="IMtLoading06Result"/>
+        <association property="iMtRepresen06" javaType="IMtRepresen06" resultMap="IMtRepresen06Result"/>
+        <association property="iMtTransport06" javaType="IMtTransport06" resultMap="IMtRepresen06Result"/>
+    </resultMap>
+
+    <resultMap type="IMtBorderTransport06" id="IMtBorderTransport06Result">
+        <result property="key" column="stkey"/>
+        <result property="pId" column="p_id"/>
+        <result property="arrivaldatetime" column="ArrivalDateTime"/>
+        <result property="id" column="stID"/>
+        <result property="name" column="stName"/>
+        <result property="typecode" column="stcode"/>
+    </resultMap>
+
+    <resultMap type="IMtCarrier06" id="IMtCarrier06Result">
+        <result property="key" column="smckey"/>
+        <result property="pId" column="p_id"/>
+        <result property="id" column="smcID"/>
+    </resultMap>
+
+    <resultMap type="IMtGovernmentprocedure06" id="IMtGovernmentprocedure06Result">
+        <result property="key" column="igkey"/>
+        <result property="pId" column="p_id"/>
+        <result property="currentcode" column="CurrentCode"/>
+    </resultMap>
+
+    <resultMap type="IMtMaster06" id="IMtMaster06Result">
+        <result property="key" column="smkey"/>
+        <result property="pId" column="p_id"/>
+        <result property="id" column="smID"/>
+        <result property="name" column="smName"/>
+    </resultMap>
+
+    <resultMap type="IMtLoading06" id="IMtLoading06Result">
+        <result property="key" column="slkey"/>
+        <result property="id" column="slID"/>
+        <result property="pId" column="p_id"/>
+    </resultMap>
+
+    <resultMap type="IMtRepresen06" id="IMtRepresen06Result">
+        <result property="key" column="srkey"/>
+        <result property="pId" column="p_id"/>
+        <result property="name" column="srName"/>
+    </resultMap>
+
+    <resultMap type="IMtTransport06" id="IMtTransport06Result">
+        <result property="key" column="key"/>
+        <result property="pId" column="p_id"/>
+        <result property="id" column="ID"/>
+        <result property="typecode" column="TypeCode"/>
+        <result property="tareweight" column="TareWeight"/>
+    </resultMap>
+
+    <sql id="selectIMtHead06Vo">
+        select pid, ID, MessageID, FunctionCode, MessageType, SenderID, ReceiverID, SendTime, Version, DeclarationOfficeID, feedback, feedback_msg, remark from i_mt_head_06
+    </sql>
+
+    <sql id="selectMtHeadVo">
+        select imh.pid, imh.ID, imh.MessageID, imh.FunctionCode, imh.MessageType, imh.SenderID, imh.ReceiverID, imh.SendTime, imh.Version, imh.DeclarationOfficeID, imh.feedback, imh.feedback_msg, imh.remark,
+        imbt.ArrivalDateTime,
+        imbt.TypeCode,
+        imbt.Name stName
+        from i_mt_head_06 imh  JOIN i_mt_border_transport_06 imbt ON imh.pid = imbt.p_id
+    </sql>
+    <!--    查询空车信息    -->
+    <select id="selectIMtHead06List" parameterType="IMtHead06" resultMap="IMtHead06Result">
+        <include refid="selectMtHeadVo"/>
+        <where>
+            <if test="id != null  and id != ''">and imh.Id LIKE
+                CONCAT('%',#{id},'%')
+            </if>
+            <if test="messageid != null  and messageid != ''">and MessageID = #{messageid}</if>
+            <if test="functioncode != null  and functioncode != ''">and FunctionCode = #{functioncode}</if>
+            <if test="messagetype != null  and messagetype != ''">and MessageType = #{messagetype}</if>
+            <if test="senderid != null  and senderid != ''">and SenderID = #{senderid}</if>
+            <if test="receiverid != null  and receiverid != ''">and ReceiverID = #{receiverid}</if>
+            <if test="sendtime != null  and sendtime != ''">and SendTime = #{sendtime}</if>
+            <if test="version != null  and version != ''">and Version = #{version}</if>
+            <if test="declarationofficeid != null  and declarationofficeid != ''">and DeclarationOfficeID =
+                #{declarationofficeid}
+            </if>
+            <!--   <if test="feedback != null  and feedback != ''">and feedback = #{feedback}</if>-->
+            <if test="feedbackMsg != null  and feedbackMsg != ''">and feedback_msg = #{feedbackMsg}</if>
+<!--            <if test="iMtBorderTransport06 != null  and iMtBorderTransport06 != ''">-->
+                <if test="name != null  and name != ''">and imbt.Name LIKE
+                    CONCAT('%',#{name},'%')
+                </if>
+<!--            </if>-->
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+            and feedback != 'FF' and feedback != '20'
+        </where>
+    </select>
+    <insert id="insertIMtHead06" parameterType="IMtHead06">
+        insert into i_mt_head_06
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null ">pid,</if>
+            <if test="id != null  and id != ''">ID,</if>
+            <if test="messageid != null  and messageid != ''">MessageID,</if>
+            <if test="functioncode != null  and functioncode != ''">FunctionCode,</if>
+            <if test="messagetype != null  and messagetype != ''">MessageType,</if>
+            <if test="senderid != null  and senderid != ''">SenderID,</if>
+            <if test="receiverid != null  and receiverid != ''">ReceiverID,</if>
+            <if test="sendtime != null  and sendtime != ''">SendTime,</if>
+            <if test="version != null  and version != ''">Version,</if>
+            <if test="declarationofficeid != null  and declarationofficeid != ''">DeclarationOfficeID,</if>
+            <if test="feedback != null  and feedback != ''">feedback,</if>
+            <if test="feedbackMsg != null  and feedbackMsg != ''">feedback_msg,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null ">#{pid},</if>
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="messageid != null  and messageid != ''">#{messageid},</if>
+            <if test="functioncode != null  and functioncode != ''">#{functioncode},</if>
+            <if test="messagetype != null  and messagetype != ''">#{messagetype},</if>
+            <if test="senderid != null  and senderid != ''">#{senderid},</if>
+            <if test="receiverid != null  and receiverid != ''">#{receiverid},</if>
+            <if test="sendtime != null  and sendtime != ''">#{sendtime},</if>
+            <if test="version != null  and version != ''">#{version},</if>
+            <if test="declarationofficeid != null  and declarationofficeid != ''">#{declarationofficeid},</if>
+            <if test="feedback != null  and feedback != ''">#{feedback},</if>
+            <if test="feedbackMsg != null  and feedbackMsg != ''">#{feedbackMsg},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateIMtHead06" parameterType="IMtHead06">
+        update i_mt_head_06
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null  and id != ''">ID = #{id},</if>
+            <if test="messageid != null  and messageid != ''">MessageID = #{messageid},</if>
+            <if test="functioncode != null  and functioncode != ''">FunctionCode = #{functioncode},</if>
+            <if test="messagetype != null  and messagetype != ''">MessageType = #{messagetype},</if>
+            <if test="senderid != null  and senderid != ''">SenderID = #{senderid},</if>
+            <if test="receiverid != null  and receiverid != ''">ReceiverID = #{receiverid},</if>
+            <if test="sendtime != null  and sendtime != ''">SendTime = #{sendtime},</if>
+            <if test="version != null  and version != ''">Version = #{version},</if>
+            <if test="declarationofficeid != null  and declarationofficeid != ''">DeclarationOfficeID =
+                #{declarationofficeid},
+            </if>
+            <if test="feedback != null  and feedback != ''">feedback = #{feedback},</if>
+            <if test="feedbackMsg != null  and feedbackMsg != ''">feedback_msg = #{feedbackMsg},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where pid = #{pid}
+    </update>
+
+    <delete id="deleteIMtHead06ById" parameterType="Long">
+        delete from i_mt_head_06 where pid = #{pid}
+    </delete>
+
+    <delete id="deleteIMtHead06ByIds" parameterType="String">
+        delete from i_mt_head_06 where pid in
+        <foreach item="pid" collection="array" open="(" separator="," close=")">
+            #{pid}
+        </foreach>
+    </delete>
+
+    <!--    空车修改sql-->
+    <select id="selectIMtHead06ById" parameterType="Long" resultMap="IMtHead06Result">
+    SELECT
+    sh.pid,
+    sh.ID shid,
+    sh.DeclarationOfficeID,
+    sh.remark,
+    sl.`key` slkey,
+    sl.ID slID,
+    st.`key` stkey,
+    st.ArrivalDateTime,
+    st.ID stID,
+    st.`Name` stName,
+    st.TypeCode stcode,
+    sm.`key` smkey,
+    sm.ID smID,
+    sm.`Name` smName,
+    sr.`key` srkey,
+    sr.`Name` srName,
+    smc.`key` smckey,
+    smc.ID smcID,
+    ig.`key` igkey,
+    ig.CurrentCode
+    FROM
+    i_mt_head_06 sh
+    LEFT JOIN i_mt_loading_06 sl ON sl.p_id = sh.pid
+    LEFT JOIN i_mt_border_transport_06 st ON sh.pid = st.p_id
+    LEFT JOIN i_mt_master_06 sm ON sh.pid = sm.p_id
+    LEFT JOIN i_mt_represen_06 sr ON sh.pid = sr.p_id
+    LEFT JOIN i_mt_carrier_06 smc ON sh.pid = smc.p_id
+    LEFT JOIN i_mt_governmentprocedure_06 ig ON sh.pid = ig.p_id
+    WHERE
+    pid = #{pid}
+    </select>
+
+
+    <select id="selectMtTransportById" parameterType="Long" resultMap="IMtTransport06Result">
+    SELECT
+	st.`key`,
+	st.p_id,
+	st.ID,
+	st.TypeCode,
+	st.TareWeight
+	FROM
+	i_mt_transport_06 st
+   WHERE
+    	st.p_id = #{pid}
+   </select>
+
+    <select id="MtTransportByIdDetail" parameterType="Long" resultMap="IMtTransport06Result">
+   SELECT
+	st.`key`,
+	st.p_id,
+	st.ID,
+	st.TypeCode,
+	st.TareWeight
+    FROM
+	i_mt_transport_06 st
+    WHERE
+    st.key =#{key}
+    </select>
+
+    <update id="updateMtTransport" parameterType="IMtTransport06">
+        update i_mt_transport_06 st
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null ">st.ID = #{id},</if>
+            <if test="typecode != null  and typecode != ''">st.TypeCode = #{typecode},</if>
+            <if test="tareweight != null  and tareweight != ''">st.TareWeight = #{tareweight},</if>
+        </trim>
+        where st.key = #{key}
+    </update>
+
+
+    <update id="updateIMtBorderTransport06" parameterType="IMtBorderTransport06">
+        update i_mt_border_transport_06 mt
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pId != null ">mt.p_id = #{pId},</if>
+            <if test="arrivaldatetime != null  and arrivaldatetime != ''">mt.ArrivalDateTime = #{arrivaldatetime},</if>
+            <if test="id != null  and id != ''">mt.ID = #{id},</if>
+            <if test="name != null  and name != ''">mt.Name = #{name},</if>
+            <if test="typecode != null  and typecode != ''">mt.TypeCode = #{typecode},</if>
+        </trim>
+        where mt.key = #{key}
+    </update>
+
+    <update id="updateIMtCarrier06" parameterType="IMtCarrier06">
+        update i_mt_carrier_06 mc
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pId != null ">mc.p_id = #{pId},</if>
+            <if test="id != null  and id != ''">mc.ID = #{id},</if>
+        </trim>
+        where mc.key = #{key}
+    </update>
+
+    <update id="updateIMtGovernmentprocedure06" parameterType="IMtGovernmentprocedure06">
+        update i_mt_governmentprocedure_06 ig
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pId != null ">ig.p_id = #{pId},</if>
+            <if test="currentcode != null  and currentcode != ''">ig.CurrentCode = #{currentcode},</if>
+        </trim>
+        where ig.key = #{key}
+    </update>
+
+    <update id="updateIMtLoading06" parameterType="IMtLoading06">
+        update i_mt_loading_06 ml
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null  and id != ''">ml.ID = #{id},</if>
+            <if test="pId != null ">ml.p_id = #{pId},</if>
+        </trim>
+        where ml.key = #{key}
+    </update>
+
+    <update id="updateIMtMaster06" parameterType="IMtMaster06">
+        update i_mt_master_06 ms
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pId != null ">ms.p_id = #{pId},</if>
+            <if test="id != null  and id != ''">ms.ID = #{id},</if>
+            <if test="name != null  and name != ''">ms.Name = #{name},</if>
+        </trim>
+        where ms.key = #{key}
+    </update>
+
+
+    <update id="updateIMtRepresen06" parameterType="IMtRepresen06">
+        update i_mt_represen_06 mr
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pId != null ">mr.p_id = #{pId},</if>
+            <if test="name != null  and name != ''">mr.Name = #{name},</if>
+        </trim>
+        where mr.key = #{key}
+    </update>
+</mapper>

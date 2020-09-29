@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.declare.mapper.ContainerHeadMapper">
+
+    <resultMap type="ContainerHead" id="ContainerHeadResult">
+        <result property="id"    column="id"    />
+        <result property="msgid"    column="msgid"    />
+        <result property="msgtype"    column="msgtype"    />
+        <result property="customscode"    column="customscode"    />
+        <result property="supvloctcode"    column="supvloctcode"    />
+        <result property="decldate"    column="decldate"    />
+        <result property="declaredatatype"    column="declaredatatype"    />
+        <result property="totalmsgno"    column="totalmsgno"    />
+        <result property="curmsgno"    column="curmsgno"    />
+        <result property="status"    column="status"    />
+        <result property="receiptdecldate"    column="receiptdecldate"    />
+        <result property="result"    column="result"    />
+        <result property="remark"    column="remark"    />
+        <result property="version"    column="version"    />
+        <result property="crtime"    column="crtime"    />
+        <result property="cruser"    column="cruser"    />
+        <result property="crusername"    column="crusername"    />
+        <result property="del"    column="del"    />
+    </resultMap>
+
+    <sql id="selectContainerHeadVo">
+        select id, msgid, msgtype, customscode, supvloctcode, decldate, declaredatatype, totalmsgno, curmsgno, status, receiptdecldate, result, remark, version, crtime, cruser, crusername, del from i_container_head
+    </sql>
+
+    <select id="selectContainerHeadList" parameterType="ContainerHead" resultMap="ContainerHeadResult">
+        <include refid="selectContainerHeadVo"/>
+        <where>
+            <if test="msgid != null  and msgid != ''"> and msgid = #{msgid}</if>
+            <if test="msgtype != null  and msgtype != ''"> and msgtype = #{msgtype}</if>
+            <if test="customscode != null  and customscode != ''"> and customscode = #{customscode}</if>
+            <if test="supvloctcode != null  and supvloctcode != ''"> and supvloctcode = #{supvloctcode}</if>
+            <if test="decldate != null  and decldate != ''"> and decldate = #{decldate}</if>
+            <if test="declaredatatype != null  and declaredatatype != ''"> and declaredatatype = #{declaredatatype}</if>
+            <if test="totalmsgno != null  and totalmsgno != ''"> and totalmsgno = #{totalmsgno}</if>
+            <if test="curmsgno != null  and curmsgno != ''"> and curmsgno = #{curmsgno}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="receiptdecldate != null  and receiptdecldate != ''"> and receiptdecldate = #{receiptdecldate}</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="version != null "> and version = #{version}</if>
+<!--            <if test="crtime != null "> and crtime = #{crtime}</if>-->
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(crtime,'%y%M%d%H%m%s') &gt;= date_format(#{beginTime},'%y%M%d%H%m%s')</if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(crtime,'%y%M%d%H%m%s') &lt;= date_format(#{endTime},'%y%M%d%H%m%s')</if>
+            <if test="cruser != null  and cruser != ''"> and cruser = #{cruser}</if>
+            <if test="crusername != null  and crusername != ''"> and crusername like concat('%', #{crusername}, '%')</if>
+            <if test="del != null "> and del = #{del}</if>
+        </where>
+        order by crtime desc
+    </select>
+
+    <select id="selectContainerHeadById" parameterType="Long" resultMap="ContainerHeadResult">
+        <include refid="selectContainerHeadVo"/>
+        where id = #{id}
+        order by crtime desc
+    </select>
+
+    <insert id="insertContainerHead" parameterType="ContainerHead">
+        insert into i_container_head
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="msgid != null  and msgid != ''">msgid,</if>
+            <if test="msgtype != null  and msgtype != ''">msgtype,</if>
+            <if test="customscode != null  and customscode != ''">customscode,</if>
+            <if test="supvloctcode != null  and supvloctcode != ''">supvloctcode,</if>
+            <if test="decldate != null  and decldate != ''">decldate,</if>
+            <if test="declaredatatype != null  and declaredatatype != ''">declaredatatype,</if>
+            <if test="totalmsgno != null  and totalmsgno != ''">totalmsgno,</if>
+            <if test="curmsgno != null  and curmsgno != ''">curmsgno,</if>
+            <if test="status != null  and status != ''">status,</if>
+            <if test="receiptdecldate != null  and receiptdecldate != ''">receiptdecldate,</if>
+            <if test="result != null  and result != ''">result,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="version != null ">version,</if>
+            <if test="crtime != null ">crtime,</if>
+            <if test="cruser != null  and cruser != ''">cruser,</if>
+            <if test="crusername != null  and crusername != ''">crusername,</if>
+            <if test="del != null ">del,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="msgid != null  and msgid != ''">#{msgid},</if>
+            <if test="msgtype != null  and msgtype != ''">#{msgtype},</if>
+            <if test="customscode != null  and customscode != ''">#{customscode},</if>
+            <if test="supvloctcode != null  and supvloctcode != ''">#{supvloctcode},</if>
+            <if test="decldate != null  and decldate != ''">#{decldate},</if>
+            <if test="declaredatatype != null  and declaredatatype != ''">#{declaredatatype},</if>
+            <if test="totalmsgno != null  and totalmsgno != ''">#{totalmsgno},</if>
+            <if test="curmsgno != null  and curmsgno != ''">#{curmsgno},</if>
+            <if test="status != null  and status != ''">#{status},</if>
+            <if test="receiptdecldate != null  and receiptdecldate != ''">#{receiptdecldate},</if>
+            <if test="result != null  and result != ''">#{result},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="crtime != null ">#{crtime},</if>
+            <if test="cruser != null  and cruser != ''">#{cruser},</if>
+            <if test="crusername != null  and crusername != ''">#{crusername},</if>
+            <if test="del != null ">#{del},</if>
+         </trim>
+    </insert>
+
+    <update id="updateContainerHead" parameterType="ContainerHead">
+        update i_container_head
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="msgid != null  and msgid != ''">msgid = #{msgid},</if>
+            <if test="msgtype != null  and msgtype != ''">msgtype = #{msgtype},</if>
+            <if test="customscode != null  and customscode != ''">customscode = #{customscode},</if>
+            <if test="supvloctcode != null  and supvloctcode != ''">supvloctcode = #{supvloctcode},</if>
+            <if test="decldate != null  and decldate != ''">decldate = #{decldate},</if>
+            <if test="declaredatatype != null  and declaredatatype != ''">declaredatatype = #{declaredatatype},</if>
+            <if test="totalmsgno != null  and totalmsgno != ''">totalmsgno = #{totalmsgno},</if>
+            <if test="curmsgno != null  and curmsgno != ''">curmsgno = #{curmsgno},</if>
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="receiptdecldate != null  and receiptdecldate != ''">receiptdecldate = #{receiptdecldate},</if>
+            <if test="result != null  and result != ''">result = #{result},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="crtime != null ">crtime = #{crtime},</if>
+            <if test="cruser != null  and cruser != ''">cruser = #{cruser},</if>
+            <if test="crusername != null  and crusername != ''">crusername = #{crusername},</if>
+            <if test="del != null ">del = #{del},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteContainerHeadById" parameterType="Long">
+        delete from i_container_head where id = #{id}
+    </delete>
+
+    <update id="declareContainers" parameterType="String">
+        update  i_container_head  set  result = '1'  where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+</mapper>

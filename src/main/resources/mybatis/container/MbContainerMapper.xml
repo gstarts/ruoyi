@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.container.mapper.MbContainerMapper">
+
+    <resultMap type="MbContainer" id="MbContainerResult">
+        <result property="id" column="id"/>
+        <result property="headId" column="head_id"/>
+        <result property="code" column="code"/>
+        <result property="sizeCode" column="size_code"/>
+        <result property="fromCode" column="from_code"/>
+        <result property="weight" column="weight"/>
+        <result property="inTime" column="in_time"/>
+        <result property="outTime" column="out_time"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+        <association property="mhContainer" javaType="MhContainer" resultMap="MhContainerResult"/>
+    </resultMap>
+
+    <resultMap type="MhContainer" id="MhContainerResult">
+        <result property="id" column="id"/>
+        <result property="plate" column="plate"/>
+        <result property="carryingUnit" column="carrying_unit"/>
+        <result property="shipCode" column="ship_code"/>
+        <result property="operator" column="operator"/>
+        <result property="remark" column="mhRemark"/>
+        <result property="decStatus" column="dec_status"/>
+        <result property="ieDirection" column="ie_direction"/>
+    </resultMap>
+
+    <sql id="selectMbContainerVo">
+        select smb.id, code, dec_status, ie_direction, head_id, smh.plate, smh.carrying_unit, size_code, from_code, weight, in_time, out_time, status, smb.remark from s_mb_container smb left join s_mh_container smh
+        on smb.head_id = smh.id
+    </sql>
+
+    <select id="selectMbContainerList" parameterType="MbContainer" resultMap="MbContainerResult">
+        <include refid="selectMbContainerVo"/>
+        <where>
+            <if test="headId != null ">and head_id = #{headId}</if>
+            <if test="sizeCode != null  and sizeCode != ''">and size_code = #{sizeCode}</if>
+            <if test="fromCode != null  and fromCode != ''">and from_code = #{fromCode}</if>
+            <if test="weight != null  and weight != ''">and weight = #{weight}</if>
+            <if test="inTime != null  and inTime != ''">and in_time = #{inTime}</if>
+            <if test="outTime != null  and outTime != ''">and out_time = #{outTime}</if>
+            <if test="status != null  and status != ''">AND status like concat('%', #{status}, '%')</if>
+            <if test="plate != null  and plate != ''">AND plate like concat('%', #{plate}, '%')</if>
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(in_time,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(out_time,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectMbContainerById" parameterType="Long" resultMap="MbContainerResult">
+        <include refid="selectMbContainerVo"/>
+        where smb.head_id = #{id}
+    </select>
+
+    <!--  查询集装箱体  -->
+    <select id="selectMbContainerBodyById" parameterType="Long" resultMap="MbContainerResult">
+        <include refid="selectMbContainerVo"/>
+        where smb.id = #{id}
+    </select>
+
+    <!--  查询集装箱体  -->
+    <select id="selectMbContainerCode" parameterType="String" resultMap="MbContainerResult">
+        select code from s_mb_container
+        where code = #{code}
+    </select>
+
+    <insert id="insertMbContainer" parameterType="MbContainer">
+        insert into s_mb_container
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="headId != null ">head_id,</if>
+            <if test="code != null ">code,</if>
+            <if test="sizeCode != null  and sizeCode != ''">size_code,</if>
+            <if test="fromCode != null  and fromCode != ''">from_code,</if>
+            <if test="weight != null  and weight != ''">weight,</if>
+            <if test="inTime != null  and inTime != ''">in_time,</if>
+            <if test="outTime != null  and outTime != ''">out_time,</if>
+            <if test="status != null  and status != ''">status,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="headId != null ">#{headId},</if>
+            <if test="code != null ">#{code},</if>
+            <if test="sizeCode != null  and sizeCode != ''">#{sizeCode},</if>
+            <if test="fromCode != null  and fromCode != ''">#{fromCode},</if>
+            <if test="weight != null  and weight != ''">#{weight},</if>
+            <if test="inTime != null  and inTime != ''">#{inTime},</if>
+            <if test="outTime != null  and outTime != ''">#{outTime},</if>
+            <if test="status != null  and status != ''">#{status},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMbContainer" parameterType="MbContainer">
+        update s_mb_container
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="headId != null ">head_id = #{headId},</if>
+            <if test="sizeCode != null  and sizeCode != ''">size_code = #{sizeCode},</if>
+            <if test="fromCode != null  and fromCode != ''">from_code = #{fromCode},</if>
+            <if test="weight != null  and weight != ''">weight = #{weight},</if>
+            <if test="inTime != null  and inTime != ''">in_time = #{inTime},</if>
+            <if test="outTime != null  and outTime != ''">out_time = #{outTime},</if>
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMbContainerById" parameterType="Long">
+        delete from s_mb_container where id = #{id}
+    </delete>
+
+    <delete id="deleteMbContainerByIds" parameterType="String">
+        DELETE
+        smb,
+        smh
+        FROM
+        s_mb_container smb,
+        s_mh_container smh
+
+        WHERE
+        smb.head_id = smh.id
+        AND
+        smb.id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

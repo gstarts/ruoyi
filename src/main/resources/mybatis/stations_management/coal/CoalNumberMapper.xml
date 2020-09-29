@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.coal.mapper.CoalNumberMapper">
+
+    <resultMap type="CoalNumber" id="CoalNumberResult">
+        <result property="coalNumber"    column="coal_number"    />
+        <result property="receivingUnit"    column="receiving_unit"    />
+        <result property="custom"    column="custom"    />
+        <result property="variety"    column="variety"    />
+        <result property="contract"    column="contract"    />
+        <result property="weight"    column="weight"    />
+        <result property="dateTime"    column="date_time"    />
+        <result property="operator"    column="operator"    />
+        <result property="spoilt"    column="spoilt"    />
+        <result property="remark"    column="remark"    />
+        <result property="securityKey"    column="security_key"    />
+        <result property="finished"    column="finished"    />
+        <collection property="cNumberPlate" resultMap="cNumberPlateResult"></collection>
+<!--        <association property="cNumberPlate"  javaType="CoalNumberPlate" resultMap="cNumberPlateResult" />-->
+    </resultMap>
+
+    <resultMap id="cNumberPlateResult" type="CoalNumberPlate">
+
+        <result property="id"    column="id"    />
+        <result property="coalNumber"    column="coal_number"    />
+        <result property="plate"    column="plate"    />
+        <result property="carryingUnit"    column="carrying_unit"    />
+        <result property="finished"    column="finished"    />
+        <result property="dateTime"    column="date_time"    />
+        <result property="dateTimeFinished"    column="date_time_finished"    />
+        <result property="weight"    column="weight"    />
+        <result property="printTimes"    column="print_times"    />
+        <result property="spoilt"    column="spoilt"    />
+        <result property="driver"    column="driver"    />
+        <result property="phone"    column="phone"    />
+        <result property="loadPlace"    column="load_place"    />
+        <result property="sn"    column="sn"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="operator"    column="operator"    />
+
+    </resultMap>
+
+    <sql id="selectCoalNumberVo">
+        select sn.coal_number, snp.plate, receiving_unit, custom, variety, contract, sn.weight, sn.date_time,sn.operator, sn.spoilt, remark, security_key, sn.finished
+        from s_coal_number sn left join s_coal_number_plate  snp on sn.coal_number = snp.coal_number
+    </sql>
+<!--  查询是否有重复的大提煤单  -->
+    <select id="selectCoalNumberAll" parameterType="CoalNumber" resultMap="CoalNumberResult">
+       SELECT coal_number FROM s_coal_number WHERE coal_number =#{coalNumber};
+    </select>
+    <!-- 所有数据sql -->
+    <select id="selectCoalNumber" parameterType="CoalNumber" resultMap="CoalNumberResult">
+        select sn.coal_number, snp.plate, receiving_unit, custom, variety, contract, sn.weight, sn.date_time,sn.operator, sn.spoilt, remark, security_key, sn.finished
+        from s_coal_number sn left join s_coal_number_plate  snp on sn.coal_number = snp.coal_number
+        <where>
+            <if test="coalNumber != null  and coalNumber != ''"> and coal_number = #{coalNumber}</if>
+            <if test="receivingUnit != null  and receivingUnit != ''"> and receiving_unit = #{receivingUnit}</if>
+            <if test="custom != null  and custom != ''"> and custom = #{custom}</if>
+            <if test="variety != null  and variety != ''"> and variety = #{variety}</if>
+            <if test="contract != null  and contract != ''"> and contract = #{contract}</if>
+            <if test="weight != null  and weight != ''"> and weight = #{weight}</if>
+            <!--        <if test="dateTime != null  and dateTime != ''"> and date_time = #{dateTime}</if>-->
+            <!--        <if test="dateTime != null "> AND date_format(date_time,'%y%m%d') like concat('%', date_format(#{dateTime},'%y%m%d'),'%')</if>-->
+
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(sn.date_time,'%y%M%d%H%m%s') &gt;= date_format(#{beginTime},'%y%M%d%H%m%s')</if>
+
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(sn.date_time,'%y%M%d%H%m%s') &lt;= date_format(#{endTime},'%y%M%d%H%m%s')</if>
+
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+            <!--        <if test="spoilt != null  and spoilt != ''"> and spoilt = #{spoilt}</if>-->
+            <if test="spoilt != null and spoilt != ''">and sn.spoilt != 2</if>
+            <if test="securityKey != null  and securityKey != ''"> and security_key = #{securityKey}</if>
+            <if test="finished != null  and finished != ''"> and finished = #{finished}</if>
+            <if test="plate != null  and plate != ''"> AND snp.plate like concat('%', #{plate}, '%')</if>
+        </where>
+        order by date_time desc
+
+    </select>
+
+    <select id="selectCoalNumberList" parameterType="CoalNumber" resultMap="CoalNumberResult">
+        <include refid="selectCoalNumberVo"/>
+        <where>
+            <if test="coalNumber != null  and coalNumber != ''"> and coal_number = #{coalNumber}</if>
+            <if test="receivingUnit != null  and receivingUnit != ''"> and receiving_unit = #{receivingUnit}</if>
+            <if test="custom != null  and custom != ''"> and custom = #{custom}</if>
+            <if test="variety != null  and variety != ''"> and variety = #{variety}</if>
+            <if test="contract != null  and contract != ''"> and contract = #{contract}</if>
+            <if test="weight != null  and weight != ''"> and weight = #{weight}</if>
+<!--        <if test="dateTime != null  and dateTime != ''"> and date_time = #{dateTime}</if>-->
+<!--        <if test="dateTime != null "> AND date_format(date_time,'%y%m%d') like concat('%', date_format(#{dateTime},'%y%m%d'),'%')</if>-->
+
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(sn.date_time,'%y%M%d%H%m%s') &gt;= date_format(#{beginTime},'%y%M%d%H%m%s')</if>
+
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(sn.date_time,'%y%M%d%H%m%s') &lt;= date_format(#{endTime},'%y%M%d%H%m%s')</if>
+
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+<!--        <if test="spoilt != null  and spoilt != ''"> and spoilt = #{spoilt}</if>-->
+            <if test="spoilt != null and spoilt != ''">and sn.spoilt = #{spoilt}</if>
+            <if test="securityKey != null  and securityKey != ''"> and security_key = #{securityKey}</if>
+            <if test="finished != null  and finished != ''"> and finished = #{finished}</if>
+            <if test="plate != null  and plate != ''"> AND snp.plate like concat('%', #{plate}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectCoalNumberById" parameterType="String" resultMap="CoalNumberResult">
+        select sn.coal_number, snp.coal_number coal_number ,snp.plate, receiving_unit, custom, variety, contract, sn.weight,snp.weight, sn.date_time,sn.operator, sn.spoilt, remark, security_key, sn.finished
+         from s_coal_number sn left join s_coal_number_plate  snp on sn.coal_number = snp.coal_number
+        where sn.coal_number = #{coalNumber}
+    </select>
+
+    <insert id="insertCoalNumber" parameterType="CoalNumber">
+        insert into s_coal_number
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="coalNumber != null  and coalNumber != ''">coal_number,</if>
+            <if test="receivingUnit != null  and receivingUnit != ''">receiving_unit,</if>
+            <if test="custom != null  and custom != ''">custom,</if>
+            <if test="variety != null  and variety != ''">variety,</if>
+            <if test="contract != null  and contract != ''">contract,</if>
+            <if test="weight != null  and weight != ''">weight,</if>
+            <if test="dateTime != null  and dateTime != ''">date_time,</if>
+            <if test="operator != null  and operator != ''">operator,</if>
+            <if test="spoilt != null  and spoilt != ''">spoilt,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="securityKey != null  and securityKey != ''">security_key,</if>
+            <if test="finished != null  and finished != ''">finished,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="coalNumber != null  and coalNumber != ''">#{coalNumber},</if>
+            <if test="receivingUnit != null  and receivingUnit != ''">#{receivingUnit},</if>
+            <if test="custom != null  and custom != ''">#{custom},</if>
+            <if test="variety != null  and variety != ''">#{variety},</if>
+            <if test="contract != null  and contract != ''">#{contract},</if>
+            <if test="weight != null  and weight != ''">#{weight},</if>
+            <if test="dateTime != null  and dateTime != ''">#{dateTime},</if>
+            <if test="operator != null  and operator != ''">#{operator},</if>
+            <if test="spoilt != null  and spoilt != ''">#{spoilt},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="securityKey != null  and securityKey != ''">#{securityKey},</if>
+            <if test="finished != null  and finished != ''">#{finished},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCoalNumber" parameterType="CoalNumber">
+        update s_coal_number
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="receivingUnit != null  and receivingUnit != ''">receiving_unit = #{receivingUnit},</if>
+            <if test="custom != null  and custom != ''">custom = #{custom},</if>
+            <if test="variety != null  and variety != ''">variety = #{variety},</if>
+            <if test="contract != null  and contract != ''">contract = #{contract},</if>
+            <if test="weight != null  and weight != ''">weight = #{weight},</if>
+            <if test="dateTime != null  and dateTime != ''">date_time = #{dateTime},</if>
+            <if test="operator != null  and operator != ''">operator = #{operator},</if>
+            <if test="spoilt != null  and spoilt != ''">spoilt = #{spoilt},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="securityKey != null  and securityKey != ''">security_key = #{securityKey},</if>
+            <if test="finished != null  and finished != ''">finished = #{finished},</if>
+        </trim>
+        where coal_number = #{coalNumber}
+    </update>
+
+    <delete id="deleteCoalNumberById" parameterType="String">
+        delete from s_coal_number where coal_number = #{coalNumber}
+    </delete>
+
+    <update id="updateCoalNumberByIds" parameterType="String">
+        update s_coal_number
+       SET
+            spoilt = '1'
+
+        where coal_number = #{coalNumber}
+
+    </update>
+
+    <update id="updateCoalNumberByNum" parameterType="string">
+         update s_coal_number
+       SET
+            finished = '1'
+
+        where coal_number  in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <delete id="deleteCoalNumberByIds" parameterType="String">
+        delete from s_coal_number where coal_number in
+        <foreach item="coalNumber" collection="array" open="(" separator="," close=")">
+            #{coalNumber}
+        </foreach>
+    </delete>
+
+</mapper>

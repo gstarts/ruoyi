@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.stock.mapper.StockInfoMapper">
+
+    <resultMap type="StockInfo" id="StockInfoResult">
+        <result property="id" column="id"/>
+        <result property="warehouseName" column="w_name"/>
+        <result property="enterpriseName" column="e_name"/>
+        <result property="enterpriseId" column="enterprise_id"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="sourceId" column="source_id"/>
+        <result property="iWeight" column="i_weight"/>
+        <result property="eWeight" column="e_weight"/>
+        <result property="optime" column="optime"/>
+        <result property="period" column="period"/>
+        <result property="time" column="time"/>
+    </resultMap>
+    <!--   散杂货库存信息 -->
+    <sql id="bulkGoodsStock">
+        SELECT
+        sei.e_name e_name,
+        swi.w_name w_name ,
+        stf.enterprise_id enterprise_id,
+        stf.warehouse_id warehouse_id,
+        <if test="period==''|| period==null ">'' time,</if>
+        <if test="period==0">DATE_FORMAT(stf.optime,'%Y-%m-%d') time, 0 period,</if>
+        <if test="period==1">DATE_FORMAT(stf.optime,'%Y-%u') time, 1 period,</if>
+        <if test="period==2">DATE_FORMAT(stf.optime,'%Y-%m') time, 2 period,</if>
+        <if test="period==3">DATE_FORMAT(stf.optime,'%Y') time, 3 period,</if>
+        sum(
+        CASE
+        stf.direction
+        WHEN 'I' THEN
+        cast(stf.weight AS signed )
+        ELSE
+        0
+        END
+        ) i_weight,
+        sum(
+        CASE
+        stf.direction
+        WHEN 'E' THEN
+        cast(stf.weight AS signed )
+        ELSE
+        0
+        END
+        ) e_weight
+        FROM
+        s_stock_flow stf
+        LEFT JOIN s_enterprise_info sei ON stf.enterprise_id = sei.id
+        LEFT JOIN s_warehouse_info swi ON stf.warehouse_id = swi.id
+    </sql>
+
+    <select id="selectStockInfoList" parameterType="StockInfo" resultMap="StockInfoResult">
+        <include refid="bulkGoodsStock"/>
+        GROUP BY
+        enterprise_id,
+        warehouse_id
+        <if test="period !=null and period !=''  ">
+            ,time
+        </if>
+        <if test="period==0 and optime !=null ">HAVING time = (SELECT DATE_FORMAT(#{optime}, '%Y-%m-%d') time)</if>
+        <if test="period==1 and optime !=null">HAVING time = (SELECT DATE_FORMAT(#{optime},'%Y-%u') time)</if>
+        <if test="period==2 and optime !=null ">HAVING time = (SELECT DATE_FORMAT(#{optime},'%Y-%m') time)</if>
+        <if test="period==3 and optime !=null">HAVING time = (SELECT DATE_FORMAT(#{optime},'%Y') time)</if>
+        <if test="period!=null and period!='' ">
+            order by time desc
+        </if>
+    </select>
+
+</mapper>

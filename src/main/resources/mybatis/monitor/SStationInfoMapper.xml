@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.monitor.mapper.SStationInfoMapper">
+    
+    <resultMap type="SStationInfo" id="SStationInfoResult">
+        <result property="id"    column="id"    />
+        <result property="stationName"    column="station_name"    />
+        <result property="customsmaster"    column="CustomsMaster"    />
+        <result property="contractorcode"    column="ContractorCode"    />
+        <result property="contractorcodescc"    column="ContractorCodeScc"    />
+        <result property="supvloctcode"    column="SupvLoctCode"    />
+        <result property="opuserid"    column="OpUserId"    />
+        <result property="senderid"    column="SenderID"    />
+        <result property="receiverid"    column="ReceiverID"    />
+        <result property="version"    column="Version"    />
+    </resultMap>
+
+    <sql id="selectSStationInfoVo">
+        select id, station_name, CustomsMaster, ContractorCode, ContractorCodeScc, SupvLoctCode, OpUserId, SenderID, ReceiverID, Version from s_station_info
+    </sql>
+
+    <select id="selectSStationInfoList" parameterType="SStationInfo" resultMap="SStationInfoResult">
+        <include refid="selectSStationInfoVo"/>
+        <where>  
+            <if test="stationName != null  and stationName != ''"> and station_name like concat('%', #{stationName}, '%')</if>
+            <if test="customsmaster != null  and customsmaster != ''"> and CustomsMaster like concat('%', #{customsmaster}, '%')</if>
+            <if test="contractorcode != null  and contractorcode != ''"> and ContractorCode = #{contractorcode}</if>
+            <if test="contractorcodescc != null  and contractorcodescc != ''"> and ContractorCodeScc = #{contractorcodescc}</if>
+            <if test="supvloctcode != null  and supvloctcode != ''"> and SupvLoctCode = #{supvloctcode}</if>
+            <if test="opuserid != null  and opuserid != ''"> and OpUserId = #{opuserid}</if>
+            <if test="senderid != null  and senderid != ''"> and SenderID = #{senderid}</if>
+            <if test="receiverid != null  and receiverid != ''"> and ReceiverID = #{receiverid}</if>
+            <if test="version != null  and version != ''"> and Version = #{version}</if>
+        </where>
+    </select>
+    
+    <select id="selectSStationInfoById" parameterType="Long" resultMap="SStationInfoResult">
+        <include refid="selectSStationInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSStationInfo" parameterType="SStationInfo">
+        insert into s_station_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="stationName != null  and stationName != ''">station_name,</if>
+            <if test="customsmaster != null  and customsmaster != ''">CustomsMaster,</if>
+            <if test="contractorcode != null  and contractorcode != ''">ContractorCode,</if>
+            <if test="contractorcodescc != null  and contractorcodescc != ''">ContractorCodeScc,</if>
+            <if test="supvloctcode != null  and supvloctcode != ''">SupvLoctCode,</if>
+            <if test="opuserid != null  and opuserid != ''">OpUserId,</if>
+            <if test="senderid != null  and senderid != ''">SenderID,</if>
+            <if test="receiverid != null  and receiverid != ''">ReceiverID,</if>
+            <if test="version != null  and version != ''">Version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="stationName != null  and stationName != ''">#{stationName},</if>
+            <if test="customsmaster != null  and customsmaster != ''">#{customsmaster},</if>
+            <if test="contractorcode != null  and contractorcode != ''">#{contractorcode},</if>
+            <if test="contractorcodescc != null  and contractorcodescc != ''">#{contractorcodescc},</if>
+            <if test="supvloctcode != null  and supvloctcode != ''">#{supvloctcode},</if>
+            <if test="opuserid != null  and opuserid != ''">#{opuserid},</if>
+            <if test="senderid != null  and senderid != ''">#{senderid},</if>
+            <if test="receiverid != null  and receiverid != ''">#{receiverid},</if>
+            <if test="version != null  and version != ''">#{version},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSStationInfo" parameterType="SStationInfo">
+        update s_station_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stationName != null  and stationName != ''">station_name = #{stationName},</if>
+            <if test="customsmaster != null  and customsmaster != ''">CustomsMaster = #{customsmaster},</if>
+            <if test="contractorcode != null  and contractorcode != ''">ContractorCode = #{contractorcode},</if>
+            <if test="contractorcodescc != null  and contractorcodescc != ''">ContractorCodeScc = #{contractorcodescc},</if>
+            <if test="supvloctcode != null  and supvloctcode != ''">SupvLoctCode = #{supvloctcode},</if>
+            <if test="opuserid != null  and opuserid != ''">OpUserId = #{opuserid},</if>
+            <if test="senderid != null  and senderid != ''">SenderID = #{senderid},</if>
+            <if test="receiverid != null  and receiverid != ''">ReceiverID = #{receiverid},</if>
+            <if test="version != null  and version != ''">Version = #{version},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSStationInfoById" parameterType="Long">
+        delete from s_station_info where id = #{id}
+    </delete>
+
+    <delete id="deleteSStationInfoByIds" parameterType="String">
+        delete from s_station_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

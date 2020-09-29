@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.monitor.mapper.ChnlInfoMapper">
+
+    <resultMap type="ChnlInfo" id="ChnlInfoResult">
+        <result property="id"    column="id"    />
+        <result property="stationId"    column="station_id"    />
+        <result property="cChnlNo"    column="c_chnl_no"    />
+        <result property="cChnlDirection"    column="c_chnl_direction"    />
+        <result property="status"    column="status"    />
+        <result property="cChnlName"    column="c_chnl_name"    />
+        <result property="cChnlType"    column="c_chnl_type"    />
+        <result property="version"    column="VERSION"    />
+        <result property="crtime"    column="CRTIME"    />
+        <result property="cruser"    column="CRUSER"    />
+        <result property="crusername"    column="CRUSERNAME"    />
+        <result property="del"    column="DEL"    />
+    </resultMap>
+    <resultMap id="resultOptions" type="SysDictData">
+        <result property="dictValue"    column="c_chnl_no"    />
+        <result property="dictLabel"    column="c_chnl_name"    />
+    </resultMap>
+    <sql id="selectChnlInfoVo">
+        select id, station_id, c_chnl_direction, status, c_chnl_no, c_chnl_name, c_chnl_type, VERSION, CRTIME, CRUSER, CRUSERNAME, DEL from s_chnl_info
+    </sql>
+
+    <select id="selectChnlInfoList" parameterType="ChnlInfo" resultMap="ChnlInfoResult">
+        <include refid="selectChnlInfoVo"/>
+        <where>
+            <if test="stationId != null "> and station_id = #{stationId}</if>
+            <if test="cChnlNo != null  and cChnlNo != ''"> and c_chnl_no = #{cChnlNo}</if>
+            <if test="cChnlName != null  and cChnlName != ''"> and c_chnl_name like concat('%', #{cChnlName}, '%')</if>
+            <if test="cChnlType != null  and cChnlType != ''"> and c_chnl_type = #{cChnlType}</if>
+            <if test="version != null "> and VERSION = #{version}</if>
+            <if test="crtime != null "> and CRTIME = #{crtime}</if>
+            <if test="cruser != null  and cruser != ''"> and CRUSER = #{cruser}</if>
+            <if test="crusername != null  and crusername != ''"> and CRUSERNAME like concat('%', #{crusername}, '%')</if>
+            and DEL = 0
+        </where>
+    </select>
+
+    <select id="selectChnlInfoById" parameterType="Long" resultMap="ChnlInfoResult">
+        <include refid="selectChnlInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertChnlInfo" parameterType="ChnlInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into s_chnl_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stationId != null ">station_id,</if>
+            <if test="cChnlNo != null  and cChnlNo != ''">c_chnl_no,</if>
+            <if test="cChnlName != null  and cChnlName != ''">c_chnl_name,</if>
+            <if test="cChnlType != null  and cChnlType != ''">c_chnl_type,</if>
+            <if test="cChnlDirection != null  and cChnlDirection != ''">c_chnl_direction,</if>
+            <if test="version != null ">VERSION,</if>
+            <if test="crtime != null ">CRTIME,</if>
+            <if test="cruser != null  and cruser != ''">CRUSER,</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME,</if>
+            <if test="status != null  and status != ''">status,</if>
+            <if test="del != null ">DEL,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stationId != null ">#{stationId},</if>
+            <if test="cChnlNo != null  and cChnlNo != ''">#{cChnlNo},</if>
+            <if test="cChnlName != null  and cChnlName != ''">#{cChnlName},</if>
+            <if test="cChnlType != null  and cChnlType != ''">#{cChnlType},</if>
+            <if test="cChnlDirection != null  and cChnlDirection != ''">#{cChnlDirection},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="crtime != null ">#{crtime},</if>
+            <if test="cruser != null  and cruser != ''">#{cruser},</if>
+            <if test="crusername != null  and crusername != ''">#{crusername},</if>
+            <if test="status != null  and status != ''">#{status},</if>
+            <if test="del != null ">#{del},</if>
+         </trim>
+    </insert>
+
+    <update id="updateChnlInfo" parameterType="ChnlInfo">
+        update s_chnl_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stationId != null ">station_id = #{stationId},</if>
+            <if test="cChnlNo != null  and cChnlNo != ''">c_chnl_no = #{cChnlNo},</if>
+            <if test="cChnlName != null  and cChnlName != ''">c_chnl_name = #{cChnlName},</if>
+            <if test="cChnlType != null  and cChnlType != ''">c_chnl_type = #{cChnlType},</if>
+            <if test="cChnlDirection != null  and cChnlDirection != ''">c_chnl_direction = #{cChnlDirection},</if>
+            <if test="version != null ">VERSION = #{version},</if>
+            <if test="crtime != null ">CRTIME = #{crtime},</if>
+            <if test="cruser != null  and cruser != ''">CRUSER = #{cruser},</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME = #{crusername},</if>
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="del != null ">DEL = #{del},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChnlInfoById" parameterType="Long">
+        update s_chnl_info set DEL=1 where id=#{id}
+    </delete>
+
+    <delete id="deleteChnlInfoByIds" parameterType="String">
+        update s_chnl_info set DEL=1 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="chnlList"  resultMap="ChnlInfoResult">
+        select
+  id
+  , station_id
+  , status
+  , c_chnl_no
+  , c_chnl_name
+  , c_chnl_type
+  , VERSION
+  , CRTIME
+  , CRUSER
+  , CRUSERNAME
+  , DEL
+from
+  s_chnl_info
+WHERE
+  DEL = 0
+union
+select
+  id
+  , 0 station_id
+  , '' status
+  , '' c_chnl_no
+  , 'XXX场站' c_chnl_name
+  , '' c_chnl_type
+  , 0 VERSION
+  , '' CRTIME
+  , '' CRUSER
+  , '' CRUSERNAME
+  , ''DEL
+from
+  s_station_info
+order by
+
+station_id
+    </select>
+    <select id="getChnlOptions"  resultMap="resultOptions">
+       select c_chnl_name,c_chnl_no from  s_chnl_info
+    </select>
+
+    <select id="getCChnlType" parameterType="ChnlInfo" resultMap="ChnlInfoResult">
+       select c_chnl_type from  s_chnl_info s where c_chnl_no = #{c_chnl_no}
+    </select>
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.container.mapper.MhContainerMapper">
+    
+    <resultMap type="MhContainer" id="MhContainerResult">
+        <result property="id"    column="id"    />
+        <result property="plate"    column="plate"    />
+        <result property="carryingUnit"    column="carrying_unit"    />
+        <result property="shipCode"    column="ship_code"    />
+        <result property="operator"    column="operator"    />
+        <result property="remark"    column="remark"    />
+        <result property="decStatus"    column="dec_status"    />
+        <result property="ieDirection"    column="ie_direction"    />
+        <association property="mbContainer" javaType="MbContainer" resultMap="MbContainerResult"/>
+    </resultMap>
+
+    <resultMap type="MbContainer" id="MbContainerResult">
+        <result property="id"    column="mdId"    />
+        <result property="headId"    column="head_id"    />
+        <result property="code"    column="code"    />
+        <result property="sizeCode"    column="size_code"    />
+        <result property="fromCode"    column="from_code"    />
+        <result property="weight"    column="weight"    />
+        <result property="inTime"    column="in_time"    />
+        <result property="outTime"    column="out_time"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="mdRemark"    />
+    </resultMap>
+
+    <sql id="selectMhContainerVo">
+        select smh.id, smb.code, smb.size_code, smb.from_code, smb.weight, smb.status, smb.in_time, smb.out_time, smb.remark mdRemark, smh.plate, smh.carrying_unit, smh.ship_code, smh.operator, smh.remark, smh.dec_status, smh.ie_direction from s_mh_container smh left join
+        s_mb_container smb on smb.head_id = smh.id
+    </sql>
+
+    <select id="selectMhContainerList" parameterType="MhContainer" resultMap="MhContainerResult">
+        <include refid="selectMhContainerVo"/>
+        <where>  
+            <if test="plate != null  and plate != ''"> and plate = #{plate}</if>
+            <if test="carryingUnit != null  and carryingUnit != ''"> and carrying_unit = #{carryingUnit}</if>
+            <if test="shipCode != null  and shipCode != ''"> and ship_code = #{shipCode}</if>
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+        </where>
+    </select>
+    
+    <select id="selectMhContainerById" parameterType="Long" resultMap="MhContainerResult">
+        <include refid="selectMhContainerVo"/>
+        where smh.id = #{id}
+    </select>
+        
+    <insert id="insertMhContainer" parameterType="MhContainer">
+        insert into s_mh_container
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="plate != null  and plate != ''">plate,</if>
+            <if test="carryingUnit != null  and carryingUnit != ''">carrying_unit,</if>
+            <if test="shipCode != null  and shipCode != ''">ship_code,</if>
+            <if test="operator != null  and operator != ''">operator,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="decStatus != null  and decStatus != ''">dec_status,</if>
+            <if test="ieDirection != null  and ieDirection != ''">ie_direction,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="plate != null  and plate != ''">#{plate},</if>
+            <if test="carryingUnit != null  and carryingUnit != ''">#{carryingUnit},</if>
+            <if test="shipCode != null  and shipCode != ''">#{shipCode},</if>
+            <if test="operator != null  and operator != ''">#{operator},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="decStatus != null  and decStatus != ''">#{decStatus},</if>
+            <if test="ieDirection != null  and ieDirection != ''">#{ieDirection},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMhContainer" parameterType="MhContainer">
+        update s_mh_container
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="plate != null  and plate != ''">plate = #{plate},</if>
+            <if test="carryingUnit != null  and carryingUnit != ''">carrying_unit = #{carryingUnit},</if>
+            <if test="shipCode != null  and shipCode != ''">ship_code = #{shipCode},</if>
+            <if test="operator != null  and operator != ''">operator = #{operator},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="decStatus != null  and decStatus != ''">dec_status = #{decStatus},</if>
+            <if test="ieDirection != null  and ieDirection != ''">ie_direction = #{ieDirection},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMhContainerById" parameterType="Long">
+        delete from s_mh_container where id = #{id}
+    </delete>
+
+    <delete id="deleteMhContainerByIds" parameterType="String">
+        delete from s_mh_container where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.report.mapper.Rmft4406BordertransportmeansMapper">
+    
+    <resultMap type="Rmft4406Bordertransportmeans" id="Rmft4406BordertransportmeansResult">
+        <result property="id"    column="ID"    />
+        <result property="consignmentId"    column="Consignment_ID"    />
+        <result property="arrivalDateTime"    column="ArrivalDateTime"    />
+        <result property="borderId"    column="border_ID"    />
+        <result property="name"    column="Name"    />
+        <result property="typeCode"    column="TypeCode"    />
+        <result property="masterId"    column="Master_ID"    />
+        <result property="masterName"    column="Master_Name"    />
+    </resultMap>
+
+    <sql id="selectRmft4406BordertransportmeansVo">
+        select ID, Consignment_ID, ArrivalDateTime, border_ID, Name, TypeCode, Master_ID, Master_Name from i_rmft4406_bordertransportmeans
+    </sql>
+
+    <select id="selectRmft4406BordertransportmeansList" parameterType="Rmft4406Bordertransportmeans" resultMap="Rmft4406BordertransportmeansResult">
+        <include refid="selectRmft4406BordertransportmeansVo"/>
+        <where>  
+            <if test="consignmentId != null "> and Consignment_ID = #{consignmentId}</if>
+            <if test="arrivalDateTime != null  and arrivalDateTime != ''"> and ArrivalDateTime = #{arrivalDateTime}</if>
+            <if test="borderId != null  and borderId != ''"> and border_ID = #{borderId}</if>
+            <if test="name != null  and name != ''"> and Name like concat('%', #{name}, '%')</if>
+            <if test="typeCode != null  and typeCode != ''"> and TypeCode = #{typeCode}</if>
+            <if test="masterId != null  and masterId != ''"> and Master_ID = #{masterId}</if>
+            <if test="masterName != null  and masterName != ''"> and Master_Name like concat('%', #{masterName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectRmft4406BordertransportmeansById" parameterType="Long" resultMap="Rmft4406BordertransportmeansResult">
+        <include refid="selectRmft4406BordertransportmeansVo"/>
+        where ID = #{id}
+    </select>
+        
+    <insert id="insertRmft4406Bordertransportmeans" parameterType="Rmft4406Bordertransportmeans" useGeneratedKeys="true" keyProperty="id">
+        insert into i_rmft4406_bordertransportmeans
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">ID,</if>
+            <if test="consignmentId != null ">Consignment_ID,</if>
+            <if test="arrivalDateTime != null  and arrivalDateTime != ''">ArrivalDateTime,</if>
+            <if test="borderId != null  and borderId != ''">border_ID,</if>
+            <if test="name != null  and name != ''">Name,</if>
+            <if test="typeCode != null  and typeCode != ''">TypeCode,</if>
+            <if test="masterId != null  and masterId != ''">Master_ID,</if>
+            <if test="masterName != null  and masterName != ''">Master_Name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="consignmentId != null ">#{consignmentId},</if>
+            <if test="arrivalDateTime != null  and arrivalDateTime != ''">#{arrivalDateTime},</if>
+            <if test="borderId != null  and borderId != ''">#{borderId},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="typeCode != null  and typeCode != ''">#{typeCode},</if>
+            <if test="masterId != null  and masterId != ''">#{masterId},</if>
+            <if test="masterName != null  and masterName != ''">#{masterName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRmft4406Bordertransportmeans" parameterType="Rmft4406Bordertransportmeans">
+        update i_rmft4406_bordertransportmeans
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consignmentId != null ">Consignment_ID = #{consignmentId},</if>
+            <if test="arrivalDateTime != null  and arrivalDateTime != ''">ArrivalDateTime = #{arrivalDateTime},</if>
+            <if test="borderId != null  and borderId != ''">border_ID = #{borderId},</if>
+            <if test="name != null  and name != ''">Name = #{name},</if>
+            <if test="typeCode != null  and typeCode != ''">TypeCode = #{typeCode},</if>
+            <if test="masterId != null  and masterId != ''">Master_ID = #{masterId},</if>
+            <if test="masterName != null  and masterName != ''">Master_Name = #{masterName},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteRmft4406BordertransportmeansById" parameterType="Long">
+        delete from i_rmft4406_bordertransportmeans where ID = #{id}
+    </delete>
+
+    <delete id="deleteRmft4406BordertransportmeansByIds" parameterType="String">
+        delete from i_rmft4406_bordertransportmeans where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.stock.mapper.StockFlowMapper">
+
+    <resultMap type="StockFlow" id="StockFlowResult">
+        <result property="id"    column="id"    />
+        <result property="sourceId"    column="source_id"    />
+        <result property="name"    column="name"    />
+        <result property="direction"    column="direction"    />
+        <result property="optime"    column="optime"    />
+        <result property="weight"    column="weight"    />
+        <result property="veLicenseNo"    column="ve_license_no"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectStockFlowVo">
+        select id, name,
+        DATE_FORMAT(optime,'%Y-%m-%d %H:%i:%s')optime,
+        direction, weight,ve_license_no, create_by, create_time, update_by, update_time, remark from s_stock_flow
+    </sql>
+
+    <select id="selectStockFlowList" parameterType="StockInfo" resultMap="StockFlowResult">
+        <include refid="selectStockFlowVo"/>
+        <where>
+            <if test="direction != null  and direction != ''"> and direction = #{direction}</if>
+            <if test="warehouseId != null  and warehouseId != ''"> and warehouse_id= #{warehouseId} </if>
+            <if test="enterpriseId != null  and enterpriseId != ''"> and enterprise_id =#{enterpriseId}</if>
+            <if test="period==0">and DATE_FORMAT(optime,'%Y-%m-%d') =#{time} </if>
+            <if test="period==1">and DATE_FORMAT(optime,'%Y-%u') =#{time} </if>
+            <if test="period==2">and DATE_FORMAT(optime,'%Y-%m') =#{time} </if>
+            <if test="period==4">and DATE_FORMAT(optime,'%Y') =#{time} </if>
+        </where>
+
+    </select>
+
+    <select id="selectStockFlowById" parameterType="Long" resultMap="StockFlowResult">
+        <include refid="selectStockFlowVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertStockFlow" parameterType="StockFlow" useGeneratedKeys="true">
+        insert into s_stock_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null ">warehouse_id,</if>
+            <if test="enterpriseId != null ">enterprise_id,</if>
+            <if test="sourceId != null  and sourceId != ''">source_id,</if>
+            <if test="name != null  and name != ''">name,</if>
+            <if test="veLicenseNo != null  and veLicenseNo != ''">ve_license_no,</if>
+            <if test="direction != null  and direction != ''">direction,</if>
+            <if test="weight != null  and weight != ''">weight,</if>
+            <if test="optime != null  and optime != ''">optime,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null ">#{warehouseId},</if>
+            <if test="enterpriseId != null ">#{enterpriseId},</if>
+            <if test="sourceId != null  and sourceId != ''">#{sourceId},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="veLicenseNo != null  and veLicenseNo != ''">#{veLicenseNo},</if>
+            <if test="direction != null  and direction != ''">#{direction},</if>
+            <if test="weight != null  and weight != ''">#{weight},</if>
+            <if test="optime != null  and optime != ''">#{optime},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateStockFlow" parameterType="StockFlow">
+        update s_stock_flow
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="direction != null  and direction != ''">direction = #{direction},</if>
+            <if test="weight != null  and weight != ''">weight = #{weight},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="updateStockFlowBySourceId">
+        update s_stock_flow
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseId != null ">warehouse_id = #{warehouseId},</if>
+            <if test="enterpriseId != null ">enterprise_id = #{enterpriseId},</if>
+            <if test="sourceId != null  and sourceId != ''">source_id = #{sourceId},</if>
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="veLicenseNo != null  and veLicenseNo != ''">ve_license_no = #{veLicenseNo},</if>
+            <if test="direction != null  and direction != ''">direction = #{direction},</if>
+            <if test="weight != null  and weight != ''">weight = #{weight},</if>
+            <if test="optime != null  and optime != ''">optime = #{optime},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where source_id = #{sourceId}
+    </update>
+
+    <delete id="deleteStockFlowById" parameterType="Long">
+        delete from s_stock_flow where id = #{id}
+    </delete>
+    <delete id="deleteStockFlowBySourceId" parameterType="String">
+        delete from s_stock_flow where source_id = #{sourceId}
+    </delete>
+    <delete id="deleteStockFlowByIds" parameterType="String">
+        delete from s_stock_flow where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteStockFlowBySourceIds" parameterType="String">
+        delete from s_stock_flow where source_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

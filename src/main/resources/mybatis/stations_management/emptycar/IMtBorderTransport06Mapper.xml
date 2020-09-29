@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.emptycar.mapper.IMtBorderTransport06Mapper">
+
+    <resultMap type="IMtBorderTransport06" id="IMtBorderTransport06Result">
+        <result property="key" column="key"/>
+        <result property="pId" column="p_id"/>
+        <result property="arrivaldatetime" column="ArrivalDateTime"/>
+        <result property="id" column="ID"/>
+        <result property="name" column="Name"/>
+        <result property="typecode" column="TypeCode"/>
+        <association property="iMtHead06" javaType="IMtHead06" resultMap="IMtHead06Result"></association>
+    </resultMap>
+    <!--  i_mt_head_06  -->
+    <resultMap type="IMtHead06" id="IMtHead06Result">
+        <result property="pid" column="pid"/>
+        <result property="id" column="ID"/>
+        <result property="messageid" column="MessageID"/>
+        <result property="functioncode" column="FunctionCode"/>
+        <result property="messagetype" column="MessageType"/>
+        <result property="senderid" column="SenderID"/>
+        <result property="receiverid" column="ReceiverID"/>
+        <result property="sendtime" column="SendTime"/>
+        <result property="version" column="Version"/>
+        <result property="declarationofficeid" column="DeclarationOfficeID"/>
+        <result property="feedback" column="feedback"/>
+        <result property="feedbackMsg" column="feedback_msg"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectIMtBorderTransport06Vo">
+        select key, p_id, ArrivalDateTime, ID, Name, TypeCode from i_mt_border_transport_06
+    </sql>
+
+    <sql id="selectBorHeadVo">
+    SELECT
+        head.pid,
+        bor.p_id,
+	    head.ID,
+	    bor.`Name`,
+	    bor.TypeCode,
+	    bor.ArrivalDateTime,
+	    head.feedback_msg,
+	    head.remark
+    FROM
+	    i_mt_border_transport_06 bor
+    LEFT JOIN
+        i_mt_head_06 head
+    ON
+        bor.p_id = head.pid
+    </sql>
+
+    <!--异常车辆信息-->
+    <select id="selectErrList" parameterType="IMtBorderTransport06" resultMap="IMtBorderTransport06Result">
+        <include refid="selectBorHeadVo"/>
+        <where>
+            <if test="id != null  and id != ''">and head.ID = #{id}</if>
+            <if test="name != null  and name != ''">and bor.Name like concat('%', #{name}, '%')</if>
+            <if test="typecode != null  and typecode != ''">and bor.TypeCode = #{typecode}</if>
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+            AND feedback ='FF' or feedback='20'
+        </where>
+        ORDER BY
+        bor.ArrivalDateTime DESC
+    </select>
+
+    <select id="selectIMtBorderTransport06List" parameterType="IMtBorderTransport06"
+            resultMap="IMtBorderTransport06Result">
+        <include refid="selectIMtBorderTransport06Vo"/>
+        <where>
+            <if test="pId != null ">and p_id = #{pId}</if>
+            <if test="arrivaldatetime != null  and arrivaldatetime != ''">and ArrivalDateTime = #{arrivaldatetime}</if>
+            <if test="id != null  and id != ''">and ID = #{id}</if>
+            <if test="name != null  and name != ''">and Name like concat('%', #{name}, '%')</if>
+            <if test="typecode != null  and typecode != ''">and TypeCode = #{typecode}</if>
+        </where>
+    </select>
+
+    <select id="selectIMtBorderTransport06ById" parameterType="Long" resultMap="IMtBorderTransport06Result">
+        <include refid="selectIMtBorderTransport06Vo"/>
+        where key = #{key}
+    </select>
+
+    <insert id="insertIMtBorderTransport06" parameterType="IMtBorderTransport06" useGeneratedKeys="true"
+            keyProperty="key">
+        insert into i_mt_border_transport_06
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pId != null ">p_id,</if>
+            <if test="arrivaldatetime != null  and arrivaldatetime != ''">ArrivalDateTime,</if>
+            <if test="id != null  and id != ''">ID,</if>
+            <if test="name != null  and name != ''">Name,</if>
+            <if test="typecode != null  and typecode != ''">TypeCode,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pId != null ">#{pId},</if>
+            <if test="arrivaldatetime != null  and arrivaldatetime != ''">#{arrivaldatetime},</if>
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="typecode != null  and typecode != ''">#{typecode},</if>
+        </trim>
+    </insert>
+
+    <update id="updateIMtBorderTransport06" parameterType="IMtBorderTransport06">
+        update i_mt_border_transport_06
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pId != null ">p_id = #{pId},</if>
+            <if test="arrivaldatetime != null  and arrivaldatetime != ''">ArrivalDateTime = #{arrivaldatetime},</if>
+            <if test="id != null  and id != ''">ID = #{id},</if>
+            <if test="name != null  and name != ''">Name = #{name},</if>
+            <if test="typecode != null  and typecode != ''">TypeCode = #{typecode},</if>
+        </trim>
+        where key = #{key}
+    </update>
+
+    <delete id="deleteIMtBorderTransport06ById" parameterType="Long">
+        delete from i_mt_border_transport_06 where key = #{key}
+    </delete>
+
+    <delete id="deleteIMtBorderTransport06ByIds" parameterType="String">
+        delete from i_mt_border_transport_06 where key in
+        <foreach item="key" collection="array" open="(" separator="," close=")">
+            #{key}
+        </foreach>
+    </delete>
+
+</mapper>

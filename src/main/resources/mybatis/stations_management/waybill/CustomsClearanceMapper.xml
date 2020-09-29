@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.waybill.mapper.CustomsClearanceMapper">
+
+    <resultMap type="CustomsClearance" id="CustomsClearanceResult">
+        <result property="id" column="id"/>
+        <result property="ccCustomsNumber" column="cc_customs_number"/>
+        <result property="ccLastWieght" column="cc_last_wieght"/>
+        <result property="ccCustomsBatchNumber" column="cc_customs_batch_number"/>
+        <result property="ccCustomsWieght" column="cc_customs_wieght"/>
+        <result property="useWieght" column="use_weight"/>
+        <result property="ccCorporation" column="cc_corporation"/>
+        <result property="version" column="VERSION"/>
+        <result property="crtime" column="CRTIME"/>
+        <result property="cruser" column="CRUSER"/>
+        <result property="crusername" column="CRUSERNAME"/>
+        <result property="del" column="DEL"/>
+        <!--        <collection property="SEnterpriseInfo" resultMap="SEnterpriseInfoResult"></collection>-->
+        <association property="enterpriseInfo" javaType="SEnterpriseInfo" resultMap="SEnterpriseInfoResult"/>
+    </resultMap>
+
+    <resultMap type="SEnterpriseInfo" id="SEnterpriseInfoResult">
+        <result property="id" column="cc_corporation"/>
+        <result property="eName" column="e_name"/>
+        <result property="eType" column="e_type"/>
+        <result property="eEname" column="e_ename"/>
+        <result property="eAbbreviation" column="e_abbreviation"/>
+        <result property="eAddress" column="e_address"/>
+        <result property="eLegalPerson" column="e_legal_person"/>
+        <result property="eLegalPersonPhone" column="e_legal_person_phone"/>
+        <result property="eBusinessPerson" column="e_business_person"/>
+        <result property="eBusinessPersonPhone" column="e_business_person_phone"/>
+        <result property="eRegisterTime" column="e_register_time"/>
+        <result property="eBusinessScope" column="e_business_scope"/>
+        <result property="eCustomsNo" column="e_customs_no"/>
+        <result property="eOrganizationNo" column="e_organization_no"/>
+        <result property="eIsMember" column="e_is_member"/>
+        <result property="eIsCargoOwner" column="e_is_cargo_owner"/>
+        <result property="eIsForwarder" column="e_is_forwarder"/>
+        <result property="eIsTrailer" column="e_is_trailer"/>
+        <result property="eRemarks" column="e_remarks"/>
+        <result property="version" column="VERSION"/>
+        <result property="crtime" column="CRTIME"/>
+        <result property="cruser" column="CRUSER"/>
+        <result property="crusername" column="CRUSERNAME"/>
+        <result property="del" column="DEL"/>
+    </resultMap>
+
+    <sql id="selectCustomsClearanceVo">
+        select scc.id, cc_customs_number, cc_customs_batch_number, cc_customs_wieght, e.id cc_corporation, e.e_name,cc_last_wieght,cc_customs_wieght-cc_last_wieght use_weight from s_customs_clearance scc LEFT JOIN s_enterprise_info e ON scc.cc_corporation = e.id
+    </sql>
+
+    <select id="selectCustomsClearanceList" parameterType="CustomsClearance" resultMap="CustomsClearanceResult">
+        <include refid="selectCustomsClearanceVo"/>
+        <where>
+            <if test="ccCustomsNumber != null  and ccCustomsNumber != ''">and cc_customs_number LIKE
+                CONCAT('%',#{ccCustomsNumber},'%')
+            </if>
+            <if test="ccCustomsBatchNumber != null  and ccCustomsBatchNumber != ''">and cc_customs_batch_number =
+                #{ccCustomsBatchNumber}
+            </if>
+            <if test="ccCustomsWieght != null  and ccCustomsWieght != ''">and cc_customs_wieght = #{ccCustomsWieght}
+            </if>
+            <if test="ccCorporation != null  and ccCorporation != ''">and cc_corporation = #{ccCorporation}</if>
+            and scc.DEL = 0
+            and scc.cc_last_wieght > 0
+        </where>
+        <if test="order == 'ascending'">order by cc_last_wieght</if>
+        <if test="order == 'descending'">order by cc_last_wieght desc</if>
+    </select>
+
+    <select id="selectCustomsClearanceById" parameterType="Long" resultMap="CustomsClearanceResult">
+        <include refid="selectCustomsClearanceVo"/>
+        where scc.id = #{id}
+    </select>
+
+    <insert id="insertCustomsClearance" parameterType="CustomsClearance">
+        insert into s_customs_clearance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="ccLastWieght != null and ccLastWieght != '' ">cc_last_wieght,</if>
+            <if test="ccCustomsNumber != null  and ccCustomsNumber != ''">cc_customs_number,</if>
+            <if test="ccCustomsBatchNumber != null  and ccCustomsBatchNumber != ''">cc_customs_batch_number,</if>
+            <if test="ccCustomsWieght != null  and ccCustomsWieght != ''">cc_customs_wieght,</if>
+            <if test="ccCorporation != null  and ccCorporation != ''">cc_corporation,</if>
+            <if test="version != null ">VERSION,</if>
+            <if test="crtime != null ">CRTIME,</if>
+            <if test="cruser != null  and cruser != ''">CRUSER,</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME,</if>
+            <if test="del != null ">DEL,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="ccLastWieght != null and ccLastWieght!='' ">#{ccLastWieght},</if>
+            <if test="ccCustomsNumber != null  and ccCustomsNumber != ''">#{ccCustomsNumber},</if>
+            <if test="ccCustomsBatchNumber != null  and ccCustomsBatchNumber != ''">#{ccCustomsBatchNumber},</if>
+            <if test="ccCustomsWieght != null  and ccCustomsWieght != ''">#{ccCustomsWieght},</if>
+            <if test="ccCorporation != null  and ccCorporation != ''">#{ccCorporation},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="crtime != null ">#{crtime},</if>
+            <if test="cruser != null  and cruser != ''">#{cruser},</if>
+            <if test="crusername != null  and crusername != ''">#{crusername},</if>
+            <if test="del != null ">#{del},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCustomsClearance" parameterType="CustomsClearance">
+        update s_customs_clearance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ccCustomsNumber != null  and ccCustomsNumber != ''">cc_customs_number = #{ccCustomsNumber},</if>
+            <if test="ccCustomsBatchNumber != null  and ccCustomsBatchNumber != ''">cc_customs_batch_number =
+                #{ccCustomsBatchNumber},
+            </if>
+            <if test="ccCustomsWieght != null  and ccCustomsWieght != ''">cc_customs_wieght = #{ccCustomsWieght},</if>
+            <if test="ccCorporation != null  and ccCorporation != ''">cc_corporation = #{ccCorporation},</if>
+            <if test="version != null ">VERSION = #{version},</if>
+            <if test="crtime != null ">CRTIME = #{crtime},</if>
+            <if test="cruser != null  and cruser != ''">CRUSER = #{cruser},</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME = #{crusername},</if>
+            <if test="del != null ">DEL = #{del},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCustomsClearanceById" parameterType="Long">
+        delete from s_customs_clearance where id = #{id}
+    </delete>
+
+    <delete id="deleteCustomsClearanceByIds" parameterType="String">
+        delete from s_customs_clearance where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectwaybillBodyadd" parameterType="CustomsClearance" resultMap="CustomsClearanceResult">
+   SELECT
+    	scc.id,
+    	cc_customs_number,
+    	cc_customs_batch_number,
+    	cc_customs_wieght,
+    	cc_last_wieght,
+    	cc_customs_wieght - cc_last_wieght use_weight
+    FROM
+    	s_customs_clearance scc
+    WHERE
+    	cc_customs_number = #{ccCustomsNumber}
+    AND cc_customs_batch_number = #{ccCustomsBatchNumber}
+    limit 1
+    </select>
+
+</mapper>

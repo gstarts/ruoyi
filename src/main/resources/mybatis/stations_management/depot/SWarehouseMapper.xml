@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.depot.mapper.SWarehouseContractMapper">
+
+    <resultMap type="SWarehouseContract" id="SWarehouseContractResult">
+        <result property="id"    column="id"    />
+        <result property="cWarehouseId"    column="c_warehouse_id"    />
+        <result property="cEnterpriseId"    column="c_enterprise_id"    />
+        <result property="cPrice"    column="c_price"    />
+        <result property="cEarnest"    column="c_earnest"    />
+        <result property="cPurpose"    column="c_purpose"    />
+        <result property="cEndTime"    column="c_end_time"    />
+        <result property="cIsPay"    column="c_is_pay"    />
+        <result property="cRemarks"    column="c_remarks"    />
+        <result property="version"    column="VERSION"    />
+        <result property="crtime"    column="CRTIME"    />
+        <result property="cruser"    column="CRUSER"    />
+        <result property="crusername"    column="CRUSERNAME"    />
+        <result property="del"    column="DEL"    />
+    </resultMap>
+
+    <sql id="selectSWarehouseContractVo">
+        select id, c_warehouse_id, c_enterprise_id, c_price, c_earnest, c_purpose, c_end_time, c_is_pay, c_remarks, VERSION, CRTIME, CRUSER, CRUSERNAME, DEL from s_warehouse_contract
+    </sql>
+
+    <select id="selectSWarehouseContractList" parameterType="SWarehouseContract" resultMap="SWarehouseContractResult">
+        <include refid="selectSWarehouseContractVo"/>
+        <where>
+            <if test="cWarehouseName != null "> and c_warehouse_id in(select id from s_warehouse_info where del=0 and  w_name like CONCAT('%',#{cWarehouseName},'%') ) </if>
+            <if test="cWType != null "> and c_warehouse_id in(select id from s_warehouse_info where del=0 and  w_type like CONCAT('%',#{cWType},'%') )</if>
+            <if test="cPrice != null "> and c_price = #{cPrice}</if>
+            <if test="cEarnest != null "> and c_earnest = #{cEarnest}</if>
+            <if test="cPurpose != null  and cPurpose != ''"> and c_purpose = #{cPurpose}</if>
+        </where>
+    </select>
+
+    <select id="selectSWarehouseContractById" parameterType="Long" resultMap="SWarehouseContractResult">
+        <include refid="selectSWarehouseContractVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSWarehouseContract" parameterType="SWarehouseContract" useGeneratedKeys="false">
+        insert into s_warehouse_contract
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cWarehouseId != null ">c_warehouse_id,</if>
+            <if test="cEnterpriseId != null ">c_enterprise_id,</if>
+            <if test="cPrice != null ">c_price,</if>
+            <if test="cEarnest != null ">c_earnest,</if>
+            <if test="cPurpose != null  and cPurpose != ''">c_purpose,</if>
+            <if test="cEndTime != null ">c_end_time,</if>
+            <if test="cIsPay != null  and cIsPay != ''">c_is_pay,</if>
+            <if test="cRemarks != null  and cRemarks != ''">c_remarks,</if>
+            <if test="version != null ">VERSION,</if>
+            <if test="crtime != null ">CRTIME,</if>
+            <if test="cruser != null  and cruser != ''">CRUSER,</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME,</if>
+            <if test="del != null ">DEL,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="cWarehouseId != null ">#{cWarehouseId},</if>
+            <if test="cEnterpriseId != null ">#{cEnterpriseId},</if>
+            <if test="cPrice != null ">#{cPrice},</if>
+            <if test="cEarnest != null ">#{cEarnest},</if>
+            <if test="cPurpose != null  and cPurpose != ''">#{cPurpose},</if>
+            <if test="cEndTime != null ">#{cEndTime},</if>
+            <if test="cIsPay != null  and cIsPay != ''">#{cIsPay},</if>
+            <if test="cRemarks != null  and cRemarks != ''">#{cRemarks},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="crtime != null ">#{crtime},</if>
+            <if test="cruser != null  and cruser != ''">#{cruser},</if>
+            <if test="crusername != null  and crusername != ''">#{crusername},</if>
+            <if test="del != null ">#{del},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSWarehouseContract" parameterType="SWarehouseContract">
+        update s_warehouse_contract
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cWarehouseId != null ">c_warehouse_id = #{cWarehouseId},</if>
+            <if test="cEnterpriseId != null ">c_enterprise_id = #{cEnterpriseId},</if>
+            <if test="cPrice != null ">c_price = #{cPrice},</if>
+            <if test="cEarnest != null ">c_earnest = #{cEarnest},</if>
+            <if test="cPurpose != null  and cPurpose != ''">c_purpose = #{cPurpose},</if>
+            <if test="cEndTime != null ">c_end_time = #{cEndTime},</if>
+            <if test="cIsPay != null  and cIsPay != ''">c_is_pay = #{cIsPay},</if>
+            <if test="cRemarks != null  and cRemarks != ''">c_remarks = #{cRemarks},</if>
+            <if test="version != null ">VERSION = #{version},</if>
+            <if test="crtime != null ">CRTIME = #{crtime},</if>
+            <if test="cruser != null  and cruser != ''">CRUSER = #{cruser},</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME = #{crusername},</if>
+            <if test="del != null ">DEL = #{del},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSWarehouseContractById" parameterType="Long">
+        delete from s_warehouse_contract where id = #{id}
+    </delete>
+
+    <delete id="deleteSWarehouseContractByIds" parameterType="String">
+        delete from s_warehouse_contract where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

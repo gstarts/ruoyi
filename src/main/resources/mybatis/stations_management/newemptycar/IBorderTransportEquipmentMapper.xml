@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.mt.mapper.IBorderTransportEquipmentMapper">
+    <resultMap type="BorderTransportEquipment" id="borderTransportEquipmentResult">
+        <result property="id" column="ID"/>
+        <result property="borderTransportMeansId" column="BorderTransportMeans_ID"/>
+        <result property="transportId" column="Transport_ID"/>
+        <result property="tareWeight" column="TareWeight"/>
+        <result property="typeCode" column="TypeCode"/>
+    </resultMap>
+
+    <sql id="selectBorderTransportEquipmentVo">
+        select ID, BorderTransportMeans_ID, Transport_ID, TareWeight, TypeCode from i_rmft4404_bordertransportequipment
+    </sql>
+
+    <select id="selectBorderTransportEquipmentList" parameterType="Long"
+            resultMap="borderTransportEquipmentResult">
+    SELECT
+	    ID,
+	    BorderTransportMeans_ID,
+	    Transport_ID,
+	    TareWeight,
+	    TypeCode
+    FROM
+	    i_rmft4404_bordertransportequipment
+    WHERE
+	    BorderTransportMeans_ID = #{borderTransportMeansId}
+    </select>
+
+    <select id="selectBorderTransportEquipmentById" parameterType="Long"
+            resultMap="borderTransportEquipmentResult">
+        <include refid="selectBorderTransportEquipmentVo"/>
+        where ID = #{id}
+    </select>
+
+    <insert id="insertBorderTransportEquipment" parameterType="BorderTransportEquipment"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into i_rmft4404_bordertransportequipment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="borderTransportMeansId != null ">BorderTransportMeans_ID,</if>
+            <if test="transportId != null  and transportId != ''">Transport_ID,</if>
+            <if test="tareWeight != null  and tareWeight != ''">TareWeight,</if>
+            <if test="typeCode != null  and typeCode != ''">TypeCode,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="borderTransportMeansId != null ">#{borderTransportMeansId},</if>
+            <if test="transportId != null  and transportId != ''">#{transportId},</if>
+            <if test="tareWeight != null  and tareWeight != ''">#{tareWeight},</if>
+            <if test="typeCode != null  and typeCode != ''">#{typeCode},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBorderTransportEquipment" parameterType="BorderTransportEquipment">
+        update i_rmft4404_bordertransportequipment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="borderTransportMeansId != null ">BorderTransportMeans_ID = #{borderTransportMeansId},</if>
+            <if test="transportId != null  and transportId != ''">Transport_ID = #{transportId},</if>
+            <if test="tareWeight != null  and tareWeight != ''">TareWeight = #{tareWeight},</if>
+            <if test="typeCode != null  and typeCode != ''">TypeCode = #{typeCode},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteBorderTransportEquipmentById" parameterType="Long">
+        delete from i_rmft4404_bordertransportequipment where ID = #{id}
+    </delete>
+
+    <delete id="deleteBorderTransportEquipmentByIds" parameterType="String">
+        delete from i_rmft4404_bordertransportequipment where ID in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

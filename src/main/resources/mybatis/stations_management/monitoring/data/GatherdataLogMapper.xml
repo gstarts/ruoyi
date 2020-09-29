@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.monitor.mapper.GatherDataLogMapper">
+
+    <resultMap type="GatherDataLog" id="GatherdataLogResult">
+        <result property="sessionId" column="session_id"/>
+        <result property="areaId" column="area_id"/>
+        <result property="chnlNo" column="chnl_no"/>
+        <result property="chnlName" column="c_chnl_name"/>
+        <result property="iEFlag" column="i_e_flag"/>
+        <result property="getherMode" column="gether_mode"/>
+        <result property="drCustomsNo" column="dr_customs_no"/>
+        <result property="veCustomsNo" column="ve_customs_no"/>
+        <result property="veLicenseNo" column="ve_license_no"/>
+        <result property="contaId" column="conta_id"/>
+        <result property="esealId" column="eseal_id"/>
+        <result property="grossWt" column="gross_wt"/>
+        <result property="operatorId" column="operator_id"/>
+        <result property="operateTime" column="operate_time"/>
+        <result property="rellistType" column="rellist_type"/>
+        <result property="rellistIdType" column="rellist_id_type"/>
+        <result property="rellistId" column="rellist_id"/>
+        <result property="feedbackTime" column="feedback_time"/>
+        <result property="checkResult" column="check_result"/>
+        <result property="instruction" column="instruction"/>
+        <result property="procErrorCode" column="proc_error_code"/>
+        <result property="procErrorDescription" column="proc_error_description"/>
+        <result property="techErrorCode" column="tech_error_code"/>
+        <result property="techErrorDescription" column="tech_error_description"/>
+        <result property="sealId" column="seal_id"/>
+        <result property="packNo" column="pack_no"/>
+        <result property="declPack" column="decl_pack"/>
+        <result property="declGoodsWeight" column="decl_goods_weight"/>
+        <result property="opHint" column="op_hint"/>
+        <result property="ledHint" column="led_hint"/>
+        <result property="extendedContent" column="extended_content"/>
+        <result property="x81Command" column="81_command"/>
+        <result property="x82Command" column="82_command"/>
+        <result property="inoutTime" column="inout_time"/>
+        <result property="gatheralldataFlg" column="gatheralldata_flg"/>
+        <collection property="photoList" resultMap="PhotoResult"></collection>
+        <collection property="rfid" resultMap="VeRfidResult"></collection>
+        <collection property="Info" resultMap="IcInfoResult"></collection>
+    </resultMap>
+    <resultMap type="VeRfid" id="VeRfidResult">
+        <result property="veLicenseNo" column="No"/>
+    </resultMap>
+    <resultMap type="IcInfo" id="IcInfoResult">
+        <result property="icNo" column="ic_no"/>
+    </resultMap>
+    <resultMap id="PhotoResult" type="photo">
+        <result property="id" column="id"></result>
+        <result property="sessionId" column="session_id"></result>
+        <result property="photoGuid" column="photo_guid"></result>
+        <result property="photoPerspective" column="photo_perspective"></result>
+    </resultMap>
+    <sql id="selectGatherdataLogVo">
+        select g.session_id, area_id, chnl_no, s.c_chnl_name,  i_e_flag, gether_mode, g.dr_customs_no, g.ve_customs_no, g.ve_license_no, conta_id, eseal_id, gross_wt, operator_id, operate_time, rellist_type, rellist_id_type, rellist_id, feedback_time, check_result, instruction, proc_error_code, proc_error_description, tech_error_code, tech_error_description, seal_id,
+        pack_no, decl_pack, decl_goods_weight, op_hint, led_hint, extended_content, inout_time, gatheralldata_flg from g_gatherdata_log g
+        left join s_chnl_info s  on  g.chnl_no = s.c_chnl_no
+    </sql>
+    <sql id="selectErrDetailsVo">
+       select  g.session_id , g.check_result ,s.c_chnl_name,proc_error_description,ve_license_no,photo_guid,photo_perspective, op_hint, area_id, chnl_no, i_e_flag, gether_mode, operator_id, operate_time, led_hint, g.tech_error_description
+        from g_gatherdata_log g left join s_chnl_info s on  g.chnl_no = s.c_chnl_no left join  g_photo gp  on  g.session_id=gp.session_id
+    </sql>
+
+    <!-- 放行信息 -->
+    <select id="selectGatherDataLogList" parameterType="gatherDataLog" resultMap="GatherdataLogResult">
+        <include refid="selectGatherdataLogVo"/>
+        <where>
+            g.check_result = 'Y' or  'y'
+            <if test="veLicenseNo != null  and veLicenseNo != ''">and g.ve_license_no like concat( #{veLicenseNo},'%')
+            </if>
+            <if test="chnlNo != null  and chnlNo != ''">and chnl_no = #{chnlNo}</if>
+            <if test="No != null and No  != ''">and
+                EXISTS (select 1 from g_ve_rfid gvr where gvr.session_id =g.session_id and gvr.rfid_id = #{No})
+            </if>
+
+            <if test="icNo != null and icNo  != ''">and EXISTS (select 1 from g_ic_info gic where gic.session_id
+                =g.session_id and gic.ic_no = #{icNo})
+            </if>
+
+
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(inout_time,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(inout_time,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+
+        </where>
+        order by inout_time desc
+
+    </select>
+
+    <select id="selectGatherDataLogById" parameterType="String" resultMap="GatherdataLogResult">
+        <include refid="selectGatherdataLogVo"/>
+        where session_id = #{sessionId}
+    </select>
+
+    <!-- 通关中数据 -->
+    <select id="selectDuringGatherDataLogList" resultMap="GatherdataLogResult">
+        <include refid="selectGatherdataLogVo"/>
+        <where>
+            check_result = ""
+            <if test="veLicenseNo != null  and veLicenseNo != ''">and g.ve_license_no like concat( #{veLicenseNo},'%')
+            </if>
+            <if test="chnlNo != null  and chnlNo != ''">and chnl_no = #{chnlNo}</if>
+            <if test="No != null and No  != ''">and
+                EXISTS (select 1 from g_ve_rfid gvr where gvr.session_id =g.session_id and gvr.rfid_id = #{No})
+            </if>
+
+            <if test="icNo != null and icNo  != ''">and EXISTS (select 1 from g_ic_info gic where gic.session_id
+                =g.session_id and gic.ic_no = #{icNo})
+            </if>
+
+
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(inout_time,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(inout_time,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+        </where>
+        order by inout_time desc
+
+    </select>
+    <!-- 异常信息 -->
+    <select id="selectErrGatherDataLogList" resultMap="GatherdataLogResult">
+        <include refid="selectGatherdataLogVo"/>
+        <where>
+            check_result = 'N'or 'M'or 'n'or 'm' and gatheralldata_flg = '12'or '11'or '30'or '31'
+            <if test="veLicenseNo != null  and veLicenseNo != ''">and g.ve_license_no like concat( #{veLicenseNo},'%')
+            </if>
+            <if test="chnlNo != null  and chnlNo != ''">and chnl_no = #{chnlNo}</if>
+            <if test="No != null and No  != ''">and
+                EXISTS (select 1 from g_ve_rfid gvr where gvr.session_id =g.session_id and gvr.rfid_id = #{No})
+            </if>
+
+            <if test="icNo != null and icNo  != ''">and EXISTS (select 1 from g_ic_info gic where gic.session_id
+                =g.session_id and gic.ic_no = #{icNo})
+            </if>
+
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(inout_time,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(inout_time,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+        </where>
+        order by inout_time desc
+
+    </select>
+
+    <insert id="insertGatherDataLog" parameterType="gatherDataLog">
+        insert into g_gatherdata_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null  and sessionId != ''">session_id,</if>
+            <if test="areaId != null  and areaId != ''">area_id,</if>
+            <if test="chnlNo != null  and chnlNo != ''">chnl_no,</if>
+            <if test="iEFlag != null  and iEFlag != ''">i_e_flag,</if>
+            <if test="getherMode != null  and getherMode != ''">gether_mode,</if>
+            <if test="drCustomsNo != null  and drCustomsNo != ''">dr_customs_no,</if>
+            <if test="veCustomsNo != null  and veCustomsNo != ''">ve_customs_no,</if>
+            <if test="veLicenseNo != null  and veLicenseNo != ''">ve_license_no,</if>
+            <if test="contaId != null  and contaId != ''">conta_id,</if>
+            <if test="esealId != null  and esealId != ''">eseal_id,</if>
+            <if test="grossWt != null  and grossWt != ''">gross_wt,</if>
+            <if test="operatorId != null  and operatorId != ''">operator_id,</if>
+            <if test="operateTime != null  and operateTime != ''">operate_time,</if>
+            <if test="rellistType != null  and rellistType != ''">rellist_type,</if>
+            <if test="rellistIdType != null  and rellistIdType != ''">rellist_id_type,</if>
+            <if test="rellistId != null  and rellistId != ''">rellist_id,</if>
+            <if test="feedbackTime != null  and feedbackTime != ''">feedback_time,</if>
+            <if test="checkResult != null  and checkResult != ''">check_result,</if>
+            <if test="instruction != null  and instruction != ''">instruction,</if>
+            <if test="procErrorCode != null  and procErrorCode != ''">proc_error_code,</if>
+            <if test="procErrorDescription != null  and procErrorDescription != ''">proc_error_description,</if>
+            <if test="techErrorCode != null  and techErrorCode != ''">tech_error_code,</if>
+            <if test="techErrorDescription != null  and techErrorDescription != ''">tech_error_description,</if>
+            <if test="sealId != null  and sealId != ''">seal_id,</if>
+            <if test="packNo != null  and packNo != ''">pack_no,</if>
+            <if test="declPack != null  and declPack != ''">decl_pack,</if>
+            <if test="declGoodsWeight != null  and declGoodsWeight != ''">decl_goods_weight,</if>
+            <if test="opHint != null  and opHint != ''">op_hint,</if>
+            <if test="ledHint != null  and ledHint != ''">led_hint,</if>
+            <if test="extendedContent != null  and extendedContent != ''">extended_content,</if>
+            <if test="inoutTime != null ">inout_time,</if>
+            <if test="gatheralldataFlg != null  and gatheralldataFlg != ''">gatheralldata_flg,</if>
+            <if test="x81Command != null  and x81Command != ''">81_command,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null  and sessionId != ''">#{sessionId},</if>
+            <if test="areaId != null  and areaId != ''">#{areaId},</if>
+            <if test="chnlNo != null  and chnlNo != ''">#{chnlNo},</if>
+            <if test="iEFlag != null  and iEFlag != ''">#{iEFlag},</if>
+            <if test="getherMode != null  and getherMode != ''">#{getherMode},</if>
+            <if test="drCustomsNo != null  and drCustomsNo != ''">#{drCustomsNo},</if>
+            <if test="veCustomsNo != null  and veCustomsNo != ''">#{veCustomsNo},</if>
+            <if test="veLicenseNo != null  and veLicenseNo != ''">#{veLicenseNo},</if>
+            <if test="contaId != null  and contaId != ''">#{contaId},</if>
+            <if test="esealId != null  and esealId != ''">#{esealId},</if>
+            <if test="grossWt != null  and grossWt != ''">#{grossWt},</if>
+            <if test="operatorId != null  and operatorId != ''">#{operatorId},</if>
+            <if test="operateTime != null  and operateTime != ''">#{operateTime},</if>
+            <if test="rellistType != null  and rellistType != ''">#{rellistType},</if>
+            <if test="rellistIdType != null  and rellistIdType != ''">#{rellistIdType},</if>
+            <if test="rellistId != null  and rellistId != ''">#{rellistId},</if>
+            <if test="feedbackTime != null  and feedbackTime != ''">#{feedbackTime},</if>
+            <if test="checkResult != null  and checkResult != ''">#{checkResult},</if>
+            <if test="instruction != null  and instruction != ''">#{instruction},</if>
+            <if test="procErrorCode != null  and procErrorCode != ''">#{procErrorCode},</if>
+            <if test="procErrorDescription != null  and procErrorDescription != ''">#{procErrorDescription},</if>
+            <if test="techErrorCode != null  and techErrorCode != ''">#{techErrorCode},</if>
+            <if test="techErrorDescription != null  and techErrorDescription != ''">#{techErrorDescription},</if>
+            <if test="sealId != null  and sealId != ''">#{sealId},</if>
+            <if test="packNo != null  and packNo != ''">#{packNo},</if>
+            <if test="declPack != null  and declPack != ''">#{declPack},</if>
+            <if test="declGoodsWeight != null  and declGoodsWeight != ''">#{declGoodsWeight},</if>
+            <if test="opHint != null  and opHint != ''">#{opHint},</if>
+            <if test="ledHint != null  and ledHint != ''">#{ledHint},</if>
+            <if test="extendedContent != null  and extendedContent != ''">#{extendedContent},</if>
+            <if test="inoutTime != null ">#{inoutTime},</if>
+            <if test="gatheralldataFlg != null  and gatheralldataFlg != ''">#{gatheralldataFlg},</if>
+            <if test="x81Command != null  and x81Command != ''">#{x81Command},</if>
+        </trim>
+    </insert>
+
+    <update id="updateGatherDataLog" parameterType="gatherDataLog">
+        update g_gatherdata_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaId != null  and areaId != ''">area_id = #{areaId},</if>
+            <if test="chnlNo != null  and chnlNo != ''">chnl_no = #{chnlNo},</if>
+            <if test="iEFlag != null  and iEFlag != ''">i_e_flag = #{iEFlag},</if>
+            <if test="getherMode != null  and getherMode != ''">gether_mode = #{getherMode},</if>
+            <if test="drCustomsNo != null  and drCustomsNo != ''">dr_customs_no = #{drCustomsNo},</if>
+            <if test="veCustomsNo != null  and veCustomsNo != ''">ve_customs_no = #{veCustomsNo},</if>
+            <if test="veLicenseNo != null  and veLicenseNo != ''">ve_license_no = #{veLicenseNo},</if>
+            <if test="contaId != null  and contaId != ''">conta_id = #{contaId},</if>
+            <if test="esealId != null  and esealId != ''">eseal_id = #{esealId},</if>
+            <if test="grossWt != null  and grossWt != ''">gross_wt = #{grossWt},</if>
+            <if test="operatorId != null  and operatorId != ''">operator_id = #{operatorId},</if>
+            <if test="operateTime != null  and operateTime != ''">operate_time = #{operateTime},</if>
+            <if test="rellistType != null  and rellistType != ''">rellist_type = #{rellistType},</if>
+            <if test="rellistIdType != null  and rellistIdType != ''">rellist_id_type = #{rellistIdType},</if>
+            <if test="rellistId != null  and rellistId != ''">rellist_id = #{rellistId},</if>
+            <if test="feedbackTime != null  and feedbackTime != ''">feedback_time = #{feedbackTime},</if>
+            <if test="checkResult != null  and checkResult != ''">check_result = #{checkResult},</if>
+            <if test="instruction != null  and instruction != ''">instruction = #{instruction},</if>
+            <if test="procErrorCode != null  and procErrorCode != ''">proc_error_code = #{procErrorCode},</if>
+            <if test="procErrorDescription != null  and procErrorDescription != ''">proc_error_description =
+                #{procErrorDescription},
+            </if>
+            <if test="techErrorCode != null  and techErrorCode != ''">tech_error_code = #{techErrorCode},</if>
+            <if test="techErrorDescription != null  and techErrorDescription != ''">tech_error_description =
+                #{techErrorDescription},
+            </if>
+            <if test="sealId != null  and sealId != ''">seal_id = #{sealId},</if>
+            <if test="packNo != null  and packNo != ''">pack_no = #{packNo},</if>
+            <if test="declPack != null  and declPack != ''">decl_pack = #{declPack},</if>
+            <if test="declGoodsWeight != null  and declGoodsWeight != ''">decl_goods_weight = #{declGoodsWeight},</if>
+            <if test="opHint != null  and opHint != ''">op_hint = #{opHint},</if>
+            <if test="ledHint != null  and ledHint != ''">led_hint = #{ledHint},</if>
+            <if test="extendedContent != null  and extendedContent != ''">extended_content = #{extendedContent},</if>
+            <if test="inoutTime != null ">inout_time = #{inoutTime},</if>
+            gatheralldata_flg = '12',
+
+        </trim>
+        where session_id = #{sessionId}
+    </update>
+
+    <!-- 将补采过的记录设置为失效记录  -->
+    <update id="updateErrGatherDataLog" parameterType="String">
+        update
+            g_gatherdata_log set  gatheralldata_flg = '14',
+            gether_mode = "M"
+        where  session_id = #{sessionId}
+    </update>
+
+    <delete id="deleteGatherDataLogById" parameterType="String">
+        delete from g_gatherdata_log where session_id = #{sessionId}
+    </delete>
+
+    <delete id="deleteGatherDataLogByIds" parameterType="String">
+        delete from g_gatherdata_log where session_id in
+        <foreach item="sessionId" collection="array" open="(" separator="," close=")">
+            #{sessionId}
+        </foreach>
+    </delete>
+    <select id="selectErrDetails" parameterType="String" resultMap="GatherdataLogResult">
+        <include refid="selectErrDetailsVo"/>
+        where g.session_id =#{sessionId}
+    </select>
+
+</mapper>

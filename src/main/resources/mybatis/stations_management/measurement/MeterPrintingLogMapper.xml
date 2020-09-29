@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.measurement.mapper.MeterPrintingLogMapper">
+    
+    <resultMap type="MeterPrintingLog" id="MeterPrintingLogResult">
+        <result property="id"    column="id"    />
+        <result property="measurementNum"    column="measurement_num"    />
+        <result property="printTime"    column="print_time"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectMeterPrintingLogVo">
+        select id, measurement_num, print_time, create_time from s_meter_printing_log
+    </sql>
+
+    <select id="selectMeterPrintingLogList" parameterType="MeterPrintingLog" resultMap="MeterPrintingLogResult">
+        <include refid="selectMeterPrintingLogVo"/>
+        <where>  
+            <if test="measurementNum != null  and measurementNum != ''"> and measurement_num = #{measurementNum}</if>
+            <if test="printTime != null "> and print_time = #{printTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectMeterPrintingLogById" parameterType="Long" resultMap="MeterPrintingLogResult">
+        <include refid="selectMeterPrintingLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMeterPrintingLog" parameterType="MeterPrintingLog">
+        insert into s_meter_printing_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="measurementNum != null  and measurementNum != ''">measurement_num,</if>
+            <if test="printTime != null ">print_time,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="measurementNum != null  and measurementNum != ''">#{measurementNum},</if>
+            <if test="printTime != null ">#{printTime},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMeterPrintingLog" parameterType="MeterPrintingLog">
+        update s_meter_printing_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="measurementNum != null  and measurementNum != ''">measurement_num = #{measurementNum},</if>
+            <if test="printTime != null ">print_time = #{printTime},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMeterPrintingLogById" parameterType="Long">
+        delete from s_meter_printing_log where id = #{id}
+    </delete>
+
+    <delete id="deleteMeterPrintingLogByIds" parameterType="String">
+        delete from s_meter_printing_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

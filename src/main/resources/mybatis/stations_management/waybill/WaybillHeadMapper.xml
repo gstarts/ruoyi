@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.waybill.mapper.WaybillHeadMapper">
+
+    <resultMap type="WaybillHead" id="WaybillHeadResult">
+        <result property="id" column="id"/>
+        <result property="functionCode" column="FunctionCode"/>
+        <result property="sureid" column="SureId"/>
+        <result property="optime" column="OpTime"/>
+        <result property="opuserid" column="OpUserId"/>
+        <result property="bindkeytype" column="BindKeyType"/>
+        <result property="bindkeyinfo" column="BindKeyInfo"/>
+        <result property="rdcode" column="RdCode"/>
+        <result property="decltrafmode" column="DeclTrafMode"/>
+        <result property="ieflag" column="IEFlag"/>
+        <result property="customsmaster" column="CustomsMaster"/>
+        <result property="contractorcode" column="ContractorCode"/>
+        <result property="contractorcodescc" column="ContractorCodeScc"/>
+        <result property="bayonetrdcode" column="BayonetRdCode"/>
+        <result property="vehicleweight" column="VehicleWeight"/>
+        <result property="trailerweight" column="TrailerWeight"/>
+        <result property="contaweight" column="ContaWeight"/>
+        <result property="feedback" column="feedback"/>
+        <result property="feedbackMsg" column="feedback_msg"/>
+        <result property="feedbackTime" column="feedback_time"/>
+        <result property="remark" column="remark"/>
+        <result property="enterpriseId" column="enterprise_id"/>
+        <result property="version" column="version"/>
+        <result property="crtime" column="crtime"/>
+        <result property="cruser" column="cruser"/>
+        <result property="crusername" column="crusername"/>
+        <result property="del" column="del"/>
+    </resultMap>
+    <parameterMap id="pm" type="java.util.Map">
+        <parameter property="id" mode="IN" javaType="string"></parameter>
+        <parameter property="res" mode="OUT" javaType="integer" jdbcType="INTEGER"></parameter>
+    </parameterMap>
+
+    <sql id="selectIWaybillHeadVo">
+        select id, FunctionCode, SureId, OpTime, OpUserId, BindKeyType, BindKeyInfo, RdCode, DeclTrafMode, IEFlag, CustomsMaster, ContractorCode, ContractorCodeScc, BayonetRdCode, VehicleWeight, TrailerWeight, ContaWeight, feedback, feedback_msg, feedback_time, remark, enterprise_id, version, crtime, cruser, crusername, del from i_waybill_head
+    </sql>
+
+    <select id="selectWaybillHeadList" parameterType="WaybillHead" resultMap="WaybillHeadResult">
+        <include refid="selectIWaybillHeadVo"/>
+        <where>
+            del =0
+            and BindKeyType != 'VE'
+            <if test="sureid != null  and sureid != ''">and SureId = #{sureid}</if>
+
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(OpTime,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(OpTime,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+            <if test="opuserid != null  and opuserid != ''">and OpUserId = #{opuserid}</if>
+            <if test="bindkeyinfo != null  and bindkeyinfo != ''">
+                AND BindKeyInfo like concat('%', #{bindkeyinfo}, '%')
+            </if>
+            <if test="rdcode != null  and rdcode != ''">and RdCode = #{rdcode}</if>
+            <if test="decltrafmode != null  and decltrafmode != ''">and DeclTrafMode = #{decltrafmode}</if>
+            <if test="ieflag != null  and ieflag != ''">and IEFlag = #{ieflag}</if>
+            <if test="customsmaster != null  and customsmaster != ''">and CustomsMaster = #{customsmaster}</if>
+            <if test="contractorcode != null  and contractorcode != ''">and ContractorCode = #{contractorcode}</if>
+            <if test="contractorcodescc != null  and contractorcodescc != ''">and ContractorCodeScc =
+                #{contractorcodescc}
+            </if>
+            <if test="bayonetrdcode != null  and bayonetrdcode != ''">and BayonetRdCode = #{bayonetrdcode}</if>
+            <if test="vehicleweight != null  and vehicleweight != ''">and VehicleWeight = #{vehicleweight}</if>
+            <if test="trailerweight != null  and trailerweight != ''">and TrailerWeight = #{trailerweight}</if>
+            <if test="contaweight != null  and contaweight != ''">and ContaWeight = #{contaweight}</if>
+            <if test="feedbackMsg != null  and feedbackMsg != ''">and feedback_msg = #{feedbackMsg}</if>
+            <if test="feedbackTime != null  and feedbackTime != ''">and feedback_time = #{feedbackTime}</if>
+            <if test="enterpriseId != null ">and enterprise_id = #{enterpriseId}</if>
+            <if test="version != null ">and version = #{version}</if>
+            <if test="crtime != null ">and crtime = #{crtime}</if>
+            <if test="cruser != null  and cruser != ''">and cruser = #{cruser}</if>
+            <if test="crusername != null  and crusername != ''">and crusername like concat('%', #{crusername}, '%')</if>
+            <if test='feedback != null and feedback != ""  and feedback != "E"'>and feedback = #{feedback}</if>
+            <if test='feedback == "E" '>and feedback in('20','FF')</if>
+        </where>
+        order by OpTime desc
+    </select>
+
+    <select id="selectWaybillHeadById" parameterType="Long" resultMap="WaybillHeadResult">
+        <include refid="selectIWaybillHeadVo"/>
+        where id = #{id}
+        order by id desc
+
+    </select>
+
+
+    <select id="undoneWaybillByVehicleNo" resultType="java.lang.Integer">
+        select count(1) from  i_waybill_head   where  BindKeyInfo = #{vehicleNo} and feedback !=43 and feedback != 50 and feedback != 40
+
+    </select>
+
+
+    <insert id="insertWaybillHead" parameterType="WaybillHead" useGeneratedKeys="true" keyProperty="id">
+        insert into i_waybill_head
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">id,</if>
+            <if test="functionCode != null  and functionCode != ''">FunctionCode,</if>
+            <if test="sureid != null  and sureid != ''">SureId,</if>
+            <if test="optime != null  and optime != ''">OpTime,</if>
+            <if test="opuserid != null  and opuserid != ''">OpUserId,</if>
+            <if test="bindkeytype != null  and bindkeytype != ''">BindKeyType,</if>
+            <if test="bindkeyinfo != null  and bindkeyinfo != ''">BindKeyInfo,</if>
+            <if test="rdcode != null  and rdcode != ''">RdCode,</if>
+            <if test="decltrafmode != null  and decltrafmode != ''">DeclTrafMode,</if>
+            <if test="ieflag != null  and ieflag != ''">IEFlag,</if>
+            <if test="customsmaster != null  and customsmaster != ''">CustomsMaster,</if>
+            <if test="contractorcode != null  and contractorcode != ''">ContractorCode,</if>
+            <if test="contractorcodescc != null  and contractorcodescc != ''">ContractorCodeScc,</if>
+            <if test="bayonetrdcode != null  and bayonetrdcode != ''">BayonetRdCode,</if>
+            <if test="vehicleweight != null  and vehicleweight != ''">VehicleWeight,</if>
+            <if test="trailerweight != null  and trailerweight != ''">TrailerWeight,</if>
+            <if test="contaweight != null  and contaweight != ''">ContaWeight,</if>
+            <if test="feedback != null  and feedback != ''">feedback,</if>
+            <if test="feedbackMsg != null  and feedbackMsg != ''">feedback_msg,</if>
+            <if test="feedbackTime != null  and feedbackTime != ''">feedback_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="enterpriseId != null ">enterprise_id,</if>
+            <if test="version != null ">version,</if>
+            <if test="crtime != null ">crtime,</if>
+            <if test="cruser != null  and cruser != ''">cruser,</if>
+            <if test="crusername != null  and crusername != ''">crusername,</if>
+            <if test="del != null ">del,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="functionCode != null  and functionCode != ''">#{functionCode},</if>
+            <if test="sureid != null  and sureid != ''">#{sureid},</if>
+            <if test="optime != null  and optime != ''">#{optime},</if>
+            <if test="opuserid != null  and opuserid != ''">#{opuserid},</if>
+            <if test="bindkeytype != null  and bindkeytype != ''">#{bindkeytype},</if>
+            <if test="bindkeyinfo != null  and bindkeyinfo != ''">#{bindkeyinfo},</if>
+            <if test="rdcode != null  and rdcode != ''">#{rdcode},</if>
+            <if test="decltrafmode != null  and decltrafmode != ''">#{decltrafmode},</if>
+            <if test="ieflag != null  and ieflag != ''">#{ieflag},</if>
+            <if test="customsmaster != null  and customsmaster != ''">#{customsmaster},</if>
+            <if test="contractorcode != null  and contractorcode != ''">#{contractorcode},</if>
+            <if test="contractorcodescc != null  and contractorcodescc != ''">#{contractorcodescc},</if>
+            <if test="bayonetrdcode != null  and bayonetrdcode != ''">#{bayonetrdcode},</if>
+            <if test="vehicleweight != null  and vehicleweight != ''">#{vehicleweight},</if>
+            <if test="trailerweight != null  and trailerweight != ''">#{trailerweight},</if>
+            <if test="contaweight != null  and contaweight != ''">#{contaweight},</if>
+            <if test="feedback != null  and feedback != ''">#{feedback},</if>
+            <if test="feedbackMsg != null  and feedbackMsg != ''">#{feedbackMsg},</if>
+            <if test="feedbackTime != null  and feedbackTime != ''">#{feedbackTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="enterpriseId != null ">#{enterpriseId},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="crtime != null ">#{crtime},</if>
+            <if test="cruser != null  and cruser != ''">#{cruser},</if>
+            <if test="crusername != null  and crusername != ''">#{crusername},</if>
+            <if test="del != null ">#{del},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWaybillHead" parameterType="WaybillHead">
+        update i_waybill_head
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="feedbackMsg != null ">feedback_msg = #{feedbackMsg},</if>
+            <if test="sureid != null  and sureid != ''">SureId = #{sureid},</if>
+            <if test="optime != null  and optime != ''">OpTime = #{optime},</if>
+            <if test="opuserid != null  and opuserid != ''">OpUserId = #{opuserid},</if>
+            <if test="bindkeytype != null  and bindkeytype != ''">BindKeyType = #{bindkeytype},</if>
+            <if test="bindkeyinfo != null  and bindkeyinfo != ''">BindKeyInfo = #{bindkeyinfo},</if>
+            <if test="rdcode != null  and rdcode != ''">RdCode = #{rdcode},</if>
+            <if test="decltrafmode != null  and decltrafmode != ''">DeclTrafMode = #{decltrafmode},</if>
+            <if test="ieflag != null  and ieflag != ''">IEFlag = #{ieflag},</if>
+            <if test="customsmaster != null  and customsmaster != ''">CustomsMaster = #{customsmaster},</if>
+            <if test="contractorcode != null  and contractorcode != ''">ContractorCode = #{contractorcode},</if>
+            <if test="contractorcodescc != null  and contractorcodescc != ''">ContractorCodeScc =
+                #{contractorcodescc},
+            </if>
+            <if test="bayonetrdcode != null  and bayonetrdcode != ''">BayonetRdCode = #{bayonetrdcode},</if>
+            <if test="vehicleweight != null  and vehicleweight != ''">VehicleWeight = #{vehicleweight},</if>
+            <if test="trailerweight != null  and trailerweight != ''">TrailerWeight = #{trailerweight},</if>
+            <if test="contaweight != null  and contaweight != ''">ContaWeight = #{contaweight},</if>
+            <if test="feedback != null  and feedback != ''">feedback = #{feedback},</if>
+            <if test="feedbackTime != null  and feedbackTime != ''">feedback_time = #{feedbackTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="enterpriseId != null ">enterprise_id = #{enterpriseId},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="crtime != null ">crtime = #{crtime},</if>
+            <if test="cruser != null  and cruser != ''">cruser = #{cruser},</if>
+            <if test="crusername != null  and crusername != ''">crusername = #{crusername},</if>
+            <if test="del != null ">del = #{del},</if>
+        </trim>
+        where id = #{id}
+        order by id desc
+    </update>
+    <update id="updateFeedback" parameterType="Long">
+        update i_waybill_head set feedback='0'   where id = #{id}
+    </update>
+    <update id="reject" parameterType="String">
+        update i_waybill_head set feedback='ZZ', feedback_msg=#{message} where id =#{id}
+    </update>
+    <update id="artificial" parameterType="String">
+        update i_waybill_head set feedback='43', feedback_msg='场站人工办结'  where id =#{id}
+    </update>
+
+
+    <delete id="decWaybillHeadByIds" parameterType="String">
+        update i_waybill_head
+        <set>
+            feedback = 1
+        </set>
+        where id in
+        <foreach collection="array" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="deleteWaybillHeadById" parameterMap="pm" statementType="CALLABLE">
+        CALL bill_head_del(#{id,mode=IN},#{res,mode=OUT,jdbcType=INTEGER});
+
+    </select>
+</mapper>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.monitor.mapper.EquipmentInfoMapper">
+
+    <resultMap type="EquipmentInfo" id="EquipmentInfoResult">
+        <result property="id" column="id"/>
+        <result property="chnlId" column="chnl_id"/>
+        <result property="chnlName" column="c_chnl_name"/>
+        <result property="equipmentType" column="equipment_type"/>
+        <result property="equipmentAddr" column="equipment_addr"/>
+        <result property="equipmentStatus" column="equipment_status"/>
+        <result property="equipmentParm" column="equipment_parm"/>
+        <result property="equipmentBrand" column="equipment_brand"/>
+        <result property="equipmentValue1" column="equipment_value1"/>
+        <result property="equipmentValue2" column="equipment_value2"/>
+        <result property="dwtimeout" column="DWTIMEOUT"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="hostip" column="HOSTIP"/>
+        <result property="hostport" column="HOSTPORT"/>
+        <result property="parity" column="PARITY"/>
+        <result property="wtwaittime" column="WTWAITTIME"/>
+        <result property="veuser" column="VEUSER"/>
+        <result property="vepwd" column="VEPWD"/>
+        <result property="vetimeout" column="VETIMEOUT"/>
+        <result property="veimagedir" column="VEIMAGEDIR"/>
+    </resultMap>
+
+    <sql id="selectEquipmentInfoVo">
+        select ei.id, ci.c_chnl_name,  chnl_id, equipment_type, equipment_addr, equipment_status, equipment_parm, equipment_brand, equipment_value1, equipment_value2,DWTIMEOUT, PASSWORD, HOSTIP, HOSTPORT, PARITY, WTWAITTIME, VEUSER, VEPWD, VETIMEOUT, VEIMAGEDIR from e_equipment_info  ei left join s_chnl_info ci
+        on ei.chnl_id=ci.id
+    </sql>
+
+    <select id="selectEquipmentInfoList" parameterType="EquipmentInfo" resultMap="EquipmentInfoResult">
+        <include refid="selectEquipmentInfoVo"/>
+        <where>
+            <if test="chnlId != null ">and chnl_id = #{chnlId}</if>
+            <if test="equipmentType != null  and equipmentType != ''">and equipment_type = #{equipmentType}</if>
+            <if test="equipmentAddr != null  and equipmentAddr != ''">and equipment_addr = #{equipmentAddr}</if>
+            <if test="equipmentStatus != null  and equipmentStatus != ''">and equipment_status = #{equipmentStatus}</if>
+            <if test="equipmentParm != null  and equipmentParm != ''">and equipment_parm = #{equipmentParm}</if>
+            <if test="equipmentBrand != null  and equipmentBrand != ''">and equipment_brand = #{equipmentBrand}</if>
+            <if test="equipmentValue1 != null  and equipmentValue1 != ''">and equipment_value1 = #{equipmentValue1}</if>
+            <if test="equipmentValue2 != null  and equipmentValue2 != ''">and equipment_value2 = #{equipmentValue2}</if>
+            <if test="stationId != null  and stationId != ''">and ci.id in (
+                select
+                id
+                from
+                s_chnl_info ci
+                where
+                ci.station_id=#{stationId} )
+            </if>
+        </where>
+        order by ci.id,chnl_id,equipment_type
+    </select>
+
+    <select id="selectEquipmentInfoById" parameterType="Long" resultMap="EquipmentInfoResult">
+        <include refid="selectEquipmentInfoVo"/>
+        where ei.id = #{id}
+    </select>
+
+    <insert id="insertEquipmentInfo" parameterType="EquipmentInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into e_equipment_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="chnlId != null ">chnl_id,</if>
+            <if test="equipmentType != null  and equipmentType != ''">equipment_type,</if>
+            <if test="equipmentAddr != null  and equipmentAddr != ''">equipment_addr,</if>
+            <if test="equipmentStatus != null  and equipmentStatus != ''">equipment_status,</if>
+            <if test="equipmentParm != null  and equipmentParm != ''">equipment_parm,</if>
+            <if test="equipmentBrand != null  and equipmentBrand != ''">equipment_brand,</if>
+            <if test="equipmentValue1 != null  and equipmentValue1 != ''">equipment_value1,</if>
+            <if test="equipmentValue2 != null  and equipmentValue2 != ''">equipment_value2,</if>
+            <if test="dwtimeout != null  and dwtimeout != ''">DWTIMEOUT,</if>
+            <if test="password != null  and password != ''">PASSWORD,</if>
+            <if test="hostip != null  and hostip != ''">HOSTIP,</if>
+            <if test="hostport != null  and hostport != ''">HOSTPORT,</if>
+            <if test="parity != null  and parity != ''">PARITY,</if>
+            <if test="wtwaittime != null  and wtwaittime != ''">WTWAITTIME,</if>
+            <if test="veuser != null  and veuser != ''">VEUSER,</if>
+            <if test="vepwd != null  and vepwd != ''">VEPWD,</if>
+            <if test="vetimeout != null  and vetimeout != ''">VETIMEOUT,</if>
+            <if test="veimagedir != null  and veimagedir != ''">VEIMAGEDIR,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="chnlId != null ">#{chnlId},</if>
+            <if test="equipmentType != null  and equipmentType != ''">#{equipmentType},</if>
+            <if test="equipmentAddr != null  and equipmentAddr != ''">#{equipmentAddr},</if>
+            <if test="equipmentStatus != null  and equipmentStatus != ''">#{equipmentStatus},</if>
+            <if test="equipmentParm != null  and equipmentParm != ''">#{equipmentParm},</if>
+            <if test="equipmentBrand != null  and equipmentBrand != ''">#{equipmentBrand},</if>
+            <if test="equipmentValue1 != null  and equipmentValue1 != ''">#{equipmentValue1},</if>
+            <if test="equipmentValue2 != null  and equipmentValue2 != ''">#{equipmentValue2},</if>
+            <if test="dwtimeout != null  and dwtimeout != ''">#{dwtimeout},</if>
+            <if test="password != null  and password != ''">#{password},</if>
+            <if test="hostip != null  and hostip != ''">#{hostip},</if>
+            <if test="hostport != null  and hostport != ''">#{hostport},</if>
+            <if test="parity != null  and parity != ''">#{parity},</if>
+            <if test="wtwaittime != null  and wtwaittime != ''">#{wtwaittime},</if>
+            <if test="veuser != null  and veuser != ''">#{veuser},</if>
+            <if test="vepwd != null  and vepwd != ''">#{vepwd},</if>
+            <if test="vetimeout != null  and vetimeout != ''">#{vetimeout},</if>
+            <if test="veimagedir != null  and veimagedir != ''">#{veimagedir},</if>
+        </trim>
+    </insert>
+
+    <update id="updateEquipmentInfo" parameterType="EquipmentInfo">
+        update e_equipment_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="chnlId != null ">chnl_id = #{chnlId},</if>
+            <if test="equipmentType != null  and equipmentType != ''">equipment_type = #{equipmentType},</if>
+            <if test="equipmentAddr != null  and equipmentAddr != ''">equipment_addr = #{equipmentAddr},</if>
+            <if test="equipmentStatus != null  and equipmentStatus != ''">equipment_status = #{equipmentStatus},</if>
+            <if test="equipmentParm != null  and equipmentParm != ''">equipment_parm = #{equipmentParm},</if>
+            <if test="equipmentBrand != null  and equipmentBrand != ''">equipment_brand = #{equipmentBrand},</if>
+            <if test="equipmentValue1 != null  and equipmentValue1 != ''">equipment_value1 = #{equipmentValue1},</if>
+            <if test="equipmentValue2 != null  and equipmentValue2 != ''">equipment_value2 = #{equipmentValue2},</if>
+            <if test="dwtimeout != null  and dwtimeout != ''">DWTIMEOUT = #{dwtimeout},</if>
+            <if test="password != null  and password != ''">PASSWORD = #{password},</if>
+            <if test="hostip != null  and hostip != ''">HOSTIP = #{hostip},</if>
+            <if test="hostport != null  and hostport != ''">HOSTPORT = #{hostport},</if>
+            <if test="parity != null  and parity != ''">PARITY = #{parity},</if>
+            <if test="wtwaittime != null  and wtwaittime != ''">WTWAITTIME = #{wtwaittime},</if>
+            <if test="veuser != null  and veuser != ''">VEUSER = #{veuser},</if>
+            <if test="vepwd != null  and vepwd != ''">VEPWD = #{vepwd},</if>
+            <if test="vetimeout != null  and vetimeout != ''">VETIMEOUT = #{vetimeout},</if>
+            <if test="veimagedir != null  and veimagedir != ''">VEIMAGEDIR = #{veimagedir},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="restartEquipmentById" parameterType="Long">
+        update e_equipment_info set equipment_status = 2 where id = #{id}
+    </update>
+
+    <delete id="deleteEquipmentInfoById" parameterType="Long">
+        delete from e_equipment_info where id = #{id}
+    </delete>
+
+    <delete id="deleteEquipmentInfoByIds" parameterType="String">
+        delete from e_equipment_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

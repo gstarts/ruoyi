@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.declare.mapper.AnimalsBodyMapper">
+
+    <resultMap type="AnimalsBody" id="AnimalsBodyResult">
+        <result property="id"    column="id"    />
+        <result property="headId"    column="head_id"    />
+        <result property="goodsclassify"    column="goodsclassify"    />
+        <result property="goodssubclass"    column="goodssubclass"    />
+        <result property="goodscode"    column="goodscode"    />
+        <result property="goodsname"    column="goodsname"    />
+        <result property="goodsmodel"    column="goodsmodel"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="unit"    column="unit"    />
+        <result property="contaid"    column="contaid"    />
+        <result property="entrancedate"    column="entrancedate"    />
+        <result property="datadealflag"    column="datadealflag"    />
+        <result property="billno"    column="billno"    />
+        <result property="entryid"    column="entryid"    />
+        <result property="preno"    column="preno"    />
+        <result property="mtapplyblno"    column="mtapplyblno"    />
+        <result property="remark"    column="remark"    />
+        <result property="version"    column="version"    />
+        <result property="crtime"    column="crtime"    />
+        <result property="cruser"    column="cruser"    />
+        <result property="crusername"    column="crusername"    />
+        <result property="del"    column="del"    />
+    </resultMap>
+
+    <sql id="selectAnimalsBodyVo">
+        select id, head_id, goodsclassify, goodssubclass, goodscode, goodsname, goodsmodel, quantity, unit, contaid, entrancedate, datadealflag, billno, entryid, preno, mtapplyblno, remark, version, crtime, cruser, crusername, del from i_animals_body
+    </sql>
+
+    <select id="selectAnimalsBodyList" parameterType="AnimalsBody" resultMap="AnimalsBodyResult">
+        <include refid="selectAnimalsBodyVo"/>
+        <where>
+            <if test="headId != null "> and head_id = #{headId}</if>
+            <if test="goodsclassify != null  and goodsclassify != ''"> and goodsclassify = #{goodsclassify}</if>
+            <if test="goodssubclass != null  and goodssubclass != ''"> and goodssubclass = #{goodssubclass}</if>
+            <if test="goodscode != null  and goodscode != ''"> and goodscode = #{goodscode}</if>
+            <if test="goodsname != null  and goodsname != ''"> and goodsname like concat('%', #{goodsname}, '%')</if>
+            <if test="goodsmodel != null  and goodsmodel != ''"> and goodsmodel = #{goodsmodel}</if>
+            <if test="quantity != null  and quantity != ''"> and quantity = #{quantity}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="contaid != null  and contaid != ''"> and contaid = #{contaid}</if>
+            <if test="entrancedate != null  and entrancedate != ''"> and entrancedate = #{entrancedate}</if>
+            <if test="datadealflag != null  and datadealflag != ''"> and datadealflag = #{datadealflag}</if>
+            <if test="billno != null  and billno != ''"> and billno = #{billno}</if>
+            <if test="entryid != null  and entryid != ''"> and entryid = #{entryid}</if>
+            <if test="preno != null  and preno != ''"> and preno = #{preno}</if>
+            <if test="mtapplyblno != null  and mtapplyblno != ''"> and mtapplyblno = #{mtapplyblno}</if>
+            <if test="version != null "> and version = #{version}</if>
+            <if test="crtime != null "> and crtime = #{crtime}</if>
+            <if test="cruser != null  and cruser != ''"> and cruser = #{cruser}</if>
+            <if test="crusername != null  and crusername != ''"> and crusername like concat('%', #{crusername}, '%')</if>
+            <if test="del != null "> and del = #{del}</if>
+        </where>
+    </select>
+
+    <select id="selectAnimalsBodyById" parameterType="Long" resultMap="AnimalsBodyResult">
+        <include refid="selectAnimalsBodyVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAnimalsBody" parameterType="AnimalsBody">
+        insert into i_animals_body
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="headId != null ">head_id,</if>
+            <if test="goodsclassify != null  and goodsclassify != ''">goodsclassify,</if>
+            <if test="goodssubclass != null  and goodssubclass != ''">goodssubclass,</if>
+            <if test="goodscode != null  and goodscode != ''">goodscode,</if>
+            <if test="goodsname != null  and goodsname != ''">goodsname,</if>
+            <if test="goodsmodel != null  and goodsmodel != ''">goodsmodel,</if>
+            <if test="quantity != null  and quantity != ''">quantity,</if>
+            <if test="unit != null  and unit != ''">unit,</if>
+            <if test="contaid != null  and contaid != ''">contaid,</if>
+            <if test="entrancedate != null  and entrancedate != ''">entrancedate,</if>
+            <if test="datadealflag != null  and datadealflag != ''">datadealflag,</if>
+            <if test="billno != null  and billno != ''">billno,</if>
+            <if test="entryid != null  and entryid != ''">entryid,</if>
+            <if test="preno != null  and preno != ''">preno,</if>
+            <if test="mtapplyblno != null  and mtapplyblno != ''">mtapplyblno,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="version != null ">version,</if>
+            <if test="crtime != null ">crtime,</if>
+            <if test="cruser != null  and cruser != ''">cruser,</if>
+            <if test="crusername != null  and crusername != ''">crusername,</if>
+            <if test="del != null ">del,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="headId != null ">#{headId},</if>
+            <if test="goodsclassify != null  and goodsclassify != ''">#{goodsclassify},</if>
+            <if test="goodssubclass != null  and goodssubclass != ''">#{goodssubclass},</if>
+            <if test="goodscode != null  and goodscode != ''">#{goodscode},</if>
+            <if test="goodsname != null  and goodsname != ''">#{goodsname},</if>
+            <if test="goodsmodel != null  and goodsmodel != ''">#{goodsmodel},</if>
+            <if test="quantity != null  and quantity != ''">#{quantity},</if>
+            <if test="unit != null  and unit != ''">#{unit},</if>
+            <if test="contaid != null  and contaid != ''">#{contaid},</if>
+            <if test="entrancedate != null  and entrancedate != ''">#{entrancedate},</if>
+            <if test="datadealflag != null  and datadealflag != ''">#{datadealflag},</if>
+            <if test="billno != null  and billno != ''">#{billno},</if>
+            <if test="entryid != null  and entryid != ''">#{entryid},</if>
+            <if test="preno != null  and preno != ''">#{preno},</if>
+            <if test="mtapplyblno != null  and mtapplyblno != ''">#{mtapplyblno},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="crtime != null ">#{crtime},</if>
+            <if test="cruser != null  and cruser != ''">#{cruser},</if>
+            <if test="crusername != null  and crusername != ''">#{crusername},</if>
+            <if test="del != null ">#{del},</if>
+         </trim>
+    </insert>
+    <insert id="insertBatchAnimalsBody" useGeneratedKeys="true">
+        insert into i_animals_body
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            head_id,
+            goodsclassify,
+           goodssubclass,
+            goodscode,
+            goodsname,
+            goodsmodel,
+           quantity,
+            unit,
+            contaid,
+            entrancedate,
+            datadealflag,
+            billno,
+            entryid,
+            preno,
+            mtapplyblno,
+            remark,
+            del,
+        </trim>
+        VALUES
+        <foreach item="item" collection="items" separator=",">
+          (#{item.headId},#{item.goodsclassify},#{item.goodssubclass},#{item.goodscode},#{item.goodsname},#{item.goodsmodel},#{item.quantity},#{item.unit},#{item.contaid},#{item.entrancedate},#{item.datadealflag},#{item.billno},#{item.entryid},#{item.preno},
+            #{item.mtapplyblno},#{item.remark},0)
+        </foreach>
+    </insert>
+
+    <update id="updateAnimalsBody" parameterType="AnimalsBody">
+        update i_animals_body
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="headId != null ">head_id = #{headId},</if>
+            <if test="goodsclassify != null  and goodsclassify != ''">goodsclassify = #{goodsclassify},</if>
+            <if test="goodssubclass != null  and goodssubclass != ''">goodssubclass = #{goodssubclass},</if>
+            <if test="goodscode != null  and goodscode != ''">goodscode = #{goodscode},</if>
+            <if test="goodsname != null  and goodsname != ''">goodsname = #{goodsname},</if>
+            <if test="goodsmodel != null  and goodsmodel != ''">goodsmodel = #{goodsmodel},</if>
+            <if test="quantity != null  and quantity != ''">quantity = #{quantity},</if>
+            <if test="unit != null  and unit != ''">unit = #{unit},</if>
+            <if test="contaid != null  and contaid != ''">contaid = #{contaid},</if>
+            <if test="entrancedate != null  and entrancedate != ''">entrancedate = #{entrancedate},</if>
+            <if test="datadealflag != null  and datadealflag != ''">datadealflag = #{datadealflag},</if>
+            <if test="billno != null  and billno != ''">billno = #{billno},</if>
+            <if test="entryid != null  and entryid != ''">entryid = #{entryid},</if>
+            <if test="preno != null  and preno != ''">preno = #{preno},</if>
+            <if test="mtapplyblno != null  and mtapplyblno != ''">mtapplyblno = #{mtapplyblno},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="crtime != null ">crtime = #{crtime},</if>
+            <if test="cruser != null  and cruser != ''">cruser = #{cruser},</if>
+            <if test="crusername != null  and crusername != ''">crusername = #{crusername},</if>
+            <if test="del != null ">del = #{del},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAnimalsBodyById" parameterType="Long">
+        delete from i_animals_body where id = #{id}
+    </delete>
+
+    <delete id="deleteAnimalsBodyByIds" parameterType="String">
+        delete from i_animals_body where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

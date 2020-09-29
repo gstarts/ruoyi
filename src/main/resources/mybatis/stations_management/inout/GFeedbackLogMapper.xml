@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.inout.mapper.GFeedbackLogMapper">
+
+    <resultMap type="GFeedbackLog" id="GFeedbackLogResult">
+        <result property="sessionId"    column="session_id"    />
+        <result property="areaId"    column="area_id"    />
+        <result property="chnlNo"    column="chnl_no"    />
+        <result property="iEFlag"    column="i_e_flag"    />
+        <result property="getherMode"    column="gether_mode"    />
+        <result property="drCustomsNo"    column="dr_customs_no"    />
+        <result property="veCustomsNo"    column="ve_customs_no"    />
+        <result property="veLicenseNo"    column="ve_license_no"    />
+        <result property="contaId"    column="conta_id"    />
+        <result property="esealId"    column="eseal_id"    />
+        <result property="grossWt"    column="gross_wt"    />
+        <result property="operatorId"    column="operator_id"    />
+        <result property="operateTime"    column="operate_time"    />
+        <result property="rellistType"    column="rellist_type"    />
+        <result property="rellistIdType"    column="rellist_id_type"    />
+        <result property="rellistId"    column="rellist_id"    />
+        <result property="feedbackTime"    column="feedback_time"    />
+        <result property="checkResult"    column="check_result"    />
+        <result property="instruction"    column="instruction"    />
+        <result property="procErrorCode"    column="proc_error_code"    />
+        <result property="procErrorDescription"    column="proc_error_description"    />
+        <result property="techErrorCode"    column="tech_error_code"    />
+        <result property="techErrorDescription"    column="tech_error_description"    />
+        <result property="sealId"    column="seal_id"    />
+        <result property="packNo"    column="pack_no"    />
+        <result property="declPack"    column="decl_pack"    />
+        <result property="declGoodsWeight"    column="decl_goods_weight"    />
+        <result property="opHint"    column="op_hint"    />
+        <result property="ledHint"    column="led_hint"    />
+        <result property="extendedContent"    column="extended_content"    />
+        <result property="inoutTime"    column="inout_time"    />
+        <result property="gatheralldataFlg"    column="gatheralldata_flg"    />
+    </resultMap>
+
+    <sql id="selectGFeedbackLogVo">
+        select session_id, area_id, chnl_no, i_e_flag, gether_mode, dr_customs_no, ve_customs_no, ve_license_no, conta_id, eseal_id, gross_wt, operator_id, operate_time, rellist_type, rellist_id_type, rellist_id, feedback_time, check_result, instruction, proc_error_code, proc_error_description, tech_error_code, tech_error_description, seal_id, pack_no, decl_pack, decl_goods_weight, op_hint, led_hint, extended_content, inout_time, gatheralldata_flg from g_gatherdata_log
+     </sql>
+
+    <select id="selectGFeedbackLogList" parameterType="GFeedbackLog" resultMap="GFeedbackLogResult">
+        <include refid="selectGFeedbackLogVo"/>
+        <where>
+            <if test="veLicenseNo != null  and areaId != ''"> and ve_license_no = #{areaId}</if>
+            <if test="veType != null  and veType != ''"> and ve_license_no in(select v_license from s_vehicle_info where del=0 and v_type = #{veType})</if>
+        </where>
+    </select>
+
+
+
+</mapper>

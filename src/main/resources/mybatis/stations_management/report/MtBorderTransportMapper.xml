@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.report.mapper.MtBorderTransportMapper">
+    <!--  s_mt_border_transport  -->
+    <resultMap type="MtBorderTransport" id="MtBorderTransportResult">
+        <result property="pId" column="p_id"/>
+        <result property="arrivaldatetime" column="ArrivalDateTime"/>
+        <result property="id" column="ID"/>
+        <result property="name" column="Name"/>
+        <result property="typecode" column="TypeCode"/>
+        <association property="mtHead" javaType="MtHead" resultMap="MtHeadResult"></association>
+    </resultMap>
+    <!-- s_mt_head -->
+    <resultMap type="MtHead" id="MtHeadResult">
+        <result property="pid" column="pid"/>
+        <result property="id" column="ID"/>
+        <result property="messageid" column="MessageID"/>
+        <result property="functioncode" column="FunctionCode"/>
+        <result property="messagetype" column="MessageType"/>
+        <result property="senderid" column="SenderID"/>
+        <result property="receiverid" column="ReceiverID"/>
+        <result property="sendtime" column="SendTime"/>
+        <result property="version" column="Version"/>
+        <result property="declarationofficeid" column="DeclarationOfficeID"/>
+        <result property="feedback" column="feedback"/>
+        <result property="feedbackMsg" column="feedback_msg"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectMtBorderTransportVo">
+        select p_id, ArrivalDateTime, ID, Name, TypeCode from i_mt_border_transport
+    </sql>
+    <!--Head 和bor两张表联查-->
+    <sql id="selectBorHeadVo">
+    SELECT
+        head.pid,
+        bor.p_id,
+	    head.ID,
+	    bor.`Name`,
+	    bor.TypeCode,
+	    bor.ArrivalDateTime,
+	    head.feedback_msg,
+	    head.remark
+    FROM
+	    i_mt_border_transport bor
+    LEFT JOIN
+        i_mt_head head
+    ON
+        bor.p_id = head.pid
+    </sql>
+    <!--异常车辆信息-->
+    <!--  表已重新规划，此sql暂留借鉴  -->
+    <select id="selectErrList1" parameterType="MtBorderTransport" resultMap="MtBorderTransportResult">
+        <include refid="selectBorHeadVo"/>
+        <where>
+            <if test="id != null  and id != ''">and head.ID = #{id}</if>
+            <if test="name != null  and name != ''">and bor.Name like concat('%', #{name}, '%')</if>
+            <if test="typecode != null  and typecode != ''">and bor.TypeCode = #{typecode}</if>
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+            AND feedback ='FF' or feedback='20'
+        </where>
+        ORDER BY
+        bor.ArrivalDateTime DESC
+    </select>
+
+    <select id="selectMtBorderTransportList" parameterType="MtBorderTransport" resultMap="MtBorderTransportResult">
+        <include refid="selectBorHeadVo"/>
+        <where>
+            feedback ='FF' or feedback='20'
+            <if test="id != null  and id != ''">and ID = #{id}</if>
+            <if test="name != null  and name != ''">and Name like concat('%', #{name}, '%')</if>
+            <if test="typecode != null  and typecode != ''">and TypeCode = #{typecode}</if>
+        </where>
+    </select>
+
+    <select id="selectMtBorderTransportById" parameterType="Long" resultMap="MtBorderTransportResult">
+        <include refid="selectMtBorderTransportVo"/>
+        where p_id = #{pId}
+    </select>
+
+    <insert id="insertMtBorderTransport" parameterType="MtBorderTransport">
+        insert into s_mt_border_transport
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pId != null ">p_id,</if>
+            <if test="arrivaldatetime != null  and arrivaldatetime != ''">ArrivalDateTime,</if>
+            <if test="id != null  and id != ''">ID,</if>
+            <if test="name != null  and name != ''">Name,</if>
+            <if test="typecode != null  and typecode != ''">TypeCode,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pId != null ">#{pId},</if>
+            <if test="arrivaldatetime != null  and arrivaldatetime != ''">#{arrivaldatetime},</if>
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="typecode != null  and typecode != ''">#{typecode},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMtBorderTransport" parameterType="MtBorderTransport">
+        update s_mt_border_transport
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="arrivaldatetime != null  and arrivaldatetime != ''">ArrivalDateTime = #{arrivaldatetime},</if>
+            <if test="id != null  and id != ''">ID = #{id},</if>
+            <if test="name != null  and name != ''">Name = #{name},</if>
+            <if test="typecode != null  and typecode != ''">TypeCode = #{typecode},</if>
+        </trim>
+        where p_id = #{pId}
+    </update>
+
+    <delete id="deleteMtBorderTransportById" parameterType="Long">
+        delete from s_mt_border_transport where p_id = #{pId}
+    </delete>
+
+    <delete id="deleteMtBorderTransportByIds" parameterType="String">
+        delete from s_mt_border_transport where p_id in
+        <foreach item="pId" collection="array" open="(" separator="," close=")">
+            #{pId}
+        </foreach>
+    </delete>
+
+</mapper>

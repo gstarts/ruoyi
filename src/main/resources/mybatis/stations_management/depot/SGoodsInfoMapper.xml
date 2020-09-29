@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.depot.mapper.SGoodsInfoMapper">
+
+    <resultMap type="SGoodsInfos" id="SGoodsInfoResult">
+        <result property="id" column="id"/>
+        <result property="gVehicleId" column="g_vehicle_id"/>
+        <result property="gName" column="g_name"/>
+        <result property="gUnit" column="g_unit"/>
+        <result property="gWeight" column="g_weight"/>
+        <result property="gVolume" column="g_volume"/>
+        <result property="gNumber" column="g_number"/>
+        <result property="gWarehouseId" column="g_warehouse_id"/>
+        <result property="gIEStatus" column="g_i_e_status"/>
+        <result property="gRemarks" column="g_remarks"/>
+        <result property="version" column="VERSION"/>
+        <result property="crtime" column="CRTIME"/>
+        <result property="cruser" column="CRUSER"/>
+        <result property="crusername" column="CRUSERNAME"/>
+        <result property="del" column="DEL"/>
+        <association property="vehicle"    column="g_vehicle_id" javaType="SVehicleInfo" resultMap="SVehicleInfoResult" />
+        <association property="warehouse"    column="g_warehouse_id" javaType="SWarehouseInfo" resultMap="SWarehouseInfoResult" />
+    </resultMap>
+    <resultMap type="SVehicleInfo" id="SVehicleInfoResult">
+        <result property="id"    column="id"    />
+        <result property="vLicense"    column="v_license"    />
+        <result property="vType"    column="v_type"    />
+        <result property="vEnterpriseId"    column="v_enterprise_id"    />
+        <result property="vOwner"    column="v_owner"    />
+        <result property="vChargeTypeId"    column="v_charge_type_id"    />
+        <result property="vTrailerNo"    column="v_trailer_no"    />
+        <result property="vFrontNumber"    column="v_front_number"    />
+        <result property="vRearNumber"    column="v_rear_number"    />
+        <result property="vHeadstockWeight"    column="v_headstock_weight"    />
+        <result property="vRemarks"    column="v_remarks"    />
+        <result property="vPayTime"    column="v_pay_time"    />
+        <result property="version"    column="VERSION"    />
+        <result property="crtime"    column="CRTIME"    />
+        <result property="cruser"    column="CRUSER"    />
+        <result property="crusername"    column="CRUSERNAME"    />
+        <result property="del"    column="DEL"    />
+    </resultMap>
+
+    <resultMap type="SWarehouseInfo" id="SWarehouseInfoResult">
+        <result property="id"    column="id"    />
+        <result property="wName"    column="w_name"    />
+        <result property="wType"    column="w_type"    />
+        <result property="wMeasure"    column="w_measure"    />
+        <result property="wAddr"    column="w_addr"    />
+        <result property="version"    column="VERSION"    />
+        <result property="crtime"    column="CRTIME"    />
+        <result property="cruser"    column="CRUSER"    />
+        <result property="crusername"    column="CRUSERNAME"    />
+        <result property="del"    column="DEL"    />
+    </resultMap>
+    <sql id="selectSGoodsInfoVo">
+        SELECT g.id,	g.g_vehicle_id,	v.v_license,	g.g_name,	g.g_unit,	g.g_weight,	g.g_volume,	g.g_number,	g.g_warehouse_id,	w.w_name,	g.g_i_e_status,	g.g_remarks,	g.VERSION,	g.CRTIME,	g.CRUSER,	g.CRUSERNAME,	g.DEL
+        FROM	s_goods_infos g
+        LEFT JOIN s_vehicle_info v ON g.g_vehicle_id = v.id
+        LEFT JOIN s_warehouse_info w ON g.g_warehouse_id = w.id
+    </sql>
+
+    <select id="selectSGoodsInfoList" parameterType="SGoodsInfos" resultMap="SGoodsInfoResult">
+        <include refid="selectSGoodsInfoVo"/>
+        <where>
+            and g.DEL = 0
+            <if test="gName != null  and gName != ''">and g.g_name like concat('%', #{gName}, '%')</if>
+            <if test="gWarehouseId != null ">and g.g_warehouse_id = #{gWarehouseId}</if>
+            <if test="gVehicleId != null ">and g.g_vehicle_id = #{gVehicleId}</if>
+            <if test="gIEStatus != null ">and g.g_i_e_status = #{gIEStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectSGoodsInfoById" parameterType="Long" resultMap="SGoodsInfoResult">
+        <include refid="selectSGoodsInfoVo"/>
+        where g.id = #{id}
+        and g.DEL = 0
+    </select>
+
+    <insert id="insertSGoodsInfo" parameterType="SGoodsInfos">
+        insert into s_goods_infos
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="gVehicleId != null ">g_vehicle_id,</if>
+            <if test="gName != null  and gName != ''">g_name,</if>
+            <if test="gUnit != null  and gUnit != ''">g_unit,</if>
+            <if test="gWeight != null ">g_weight,</if>
+            <if test="gVolume != null  and gVolume != ''">g_volume,</if>
+            <if test="gNumber != null ">g_number,</if>
+            <if test="gWarehouseId != null ">g_warehouse_id,</if>
+            <if test="gIEStatus != null  and gIEStatus != ''">g_i_e_status,</if>
+            <if test="gRemarks != null  and gRemarks != ''">g_remarks,</if>
+            <if test="version != null ">VERSION,</if>
+            <if test="crtime != null ">CRTIME,</if>
+            <if test="cruser != null  and cruser != ''">CRUSER,</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME,</if>
+            <if test="del != null ">DEL,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="gVehicleId != null ">#{gVehicleId},</if>
+            <if test="gName != null  and gName != ''">#{gName},</if>
+            <if test="gUnit != null  and gUnit != ''">#{gUnit},</if>
+            <if test="gWeight != null ">#{gWeight},</if>
+            <if test="gVolume != null  and gVolume != ''">#{gVolume},</if>
+            <if test="gNumber != null ">#{gNumber},</if>
+            <if test="gWarehouseId != null ">#{gWarehouseId},</if>
+            <if test="gIEStatus != null  and gIEStatus != ''">#{gIEStatus},</if>
+            <if test="gRemarks != null  and gRemarks != ''">#{gRemarks},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="crtime != null ">#{crtime},</if>
+            <if test="cruser != null  and cruser != ''">#{cruser},</if>
+            <if test="crusername != null  and crusername != ''">#{crusername},</if>
+            <if test="del != null ">#{del},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSGoodsInfo" parameterType="SGoodsInfos">
+        update s_goods_infos
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="gVehicleId != null ">g_vehicle_id = #{gVehicleId},</if>
+            <if test="gName != null  and gName != ''">g_name = #{gName},</if>
+            <if test="gUnit != null  and gUnit != ''">g_unit = #{gUnit},</if>
+            <if test="gWeight != null ">g_weight = #{gWeight},</if>
+            <if test="gVolume != null  and gVolume != ''">g_volume = #{gVolume},</if>
+            <if test="gNumber != null ">g_number = #{gNumber},</if>
+            <if test="gWarehouseId != null ">g_warehouse_id = #{gWarehouseId},</if>
+            <if test="gIEStatus != null  and gIEStatus != ''">g_i_e_status = #{gIEStatus},</if>
+            <if test="gRemarks != null  and gRemarks != ''">g_remarks = #{gRemarks},</if>
+            <if test="version != null ">VERSION = #{version},</if>
+            <if test="crtime != null ">CRTIME = #{crtime},</if>
+            <if test="cruser != null  and cruser != ''">CRUSER = #{cruser},</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME = #{crusername},</if>
+            <if test="del != null ">DEL = #{del},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSGoodsInfoById" parameterType="Long">
+        update s_goods_infos set DEL = 1 where id = #{id}
+    </delete>
+
+    <delete id="deleteSGoodsInfoByIds" parameterType="String">
+        update s_goods_infos set DEL = 1 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

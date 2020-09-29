@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.mt.mapper.IHeadMapper">
+    <!--  报文体resultMap  -->
+    <resultMap type="Head" id="HeadResult">
+        <result property="messageId" column="MessageIDH"/>
+        <result property="functionCode" column="FunctionCode"/>
+        <result property="messageType" column="MessageType"/>
+        <result property="senderId" column="SenderID"/>
+        <result property="receiverId" column="ReceiverID"/>
+        <result property="sendTime" column="SendTime"/>
+        <result property="version" column="Version"/>
+        <result property="declarationOfficeId" column="DeclarationOfficeID"/>
+        <result property="id" column="IDH"/>
+        <result property="additionalInformation" column="AdditionalInformation"/>
+        <result property="carrier" column="Carrier"/>
+        <result property="loadingLocation" column="LoadingLocation"/>
+        <result property="representativePerson" column="RepresentativePerson"/>
+        <result property="unloadingLocation" column="UnloadingLocation"/>
+        <result property="statementCode" column="StatementCode"/>
+        <result property="statementDescription" column="StatementDescription"/>
+        <result property="customsMaster" column="CustomsMaster"/>
+        <result property="contractorCodeScc" column="ContractorCodeScc"/>
+        <result property="StationPersonName" column="station_person_name"/>
+        <association property="consignment" resultMap="consignmentResult"/>
+        <association property="borderTransportMeans" javaType="BorderTransportMeans"
+                     resultMap="BorderTransportMeansResult"/>
+        <association property="borderTransportEquipments" resultMap="BorderTransportEquipmentResult"/>
+    </resultMap>
+
+    <!--  提（运）单数据对象resultMap  -->
+    <resultMap type="Consignment" id="consignmentResult">
+        <result property="id" column="IDC"/>
+        <result property="messageId" column="MessageID"/>
+        <result property="governmentProcedure" column="GovernmentProcedure"/>
+    </resultMap>
+    <!--  驾驶员信息对象  -->
+    <resultMap type="BorderTransportMeans" id="BorderTransportMeansResult">
+        <result property="id" column="IDS"/>
+        <result property="consignmentId" column="Consignment_ID"/>
+        <result property="arrivalDateTime" column="ArrivalDateTime"/>
+        <result property="borderId" column="border_ID"/>
+        <result property="name" column="Name"/>
+        <result property="typeCode" column="TypeCode"/>
+        <result property="masterId" column="Master_ID"/>
+        <result property="masterName" column="Master_Name"/>
+    </resultMap>
+    <!--  托架或拖挂车信息  -->
+    <resultMap type="BorderTransportEquipment" id="BorderTransportEquipmentResult">
+        <result property="id" column="IDT"/>
+        <result property="borderTransportMeansId" column="BorderTransportMeans_ID"/>
+        <result property="transportId" column="Transport_ID"/>
+        <result property="tareWeight" column="TareWeight"/>
+        <result property="typeCode" column="TypeCodeP"/>
+    </resultMap>
+
+    <!--  空载确报XML查询  -->
+    <sql id="Confirmation">
+        SELECT
+	        head.MessageID MessageIDH,
+	        head.FunctionCode,
+	        head.MessageType,
+	        head.SenderID,
+	        head.ReceiverID,
+	        head.SendTime,
+	        head.Version,
+	        head.DeclarationOfficeID,
+	        head.ContractorCodeScc,
+	        head.ID IDH,
+	        head.AdditionalInformation,
+	        head.Carrier,
+	        head.RepresentativePerson,
+	        border.ArrivalDateTime,
+	        border.border_ID,
+	        border.`Name`,
+	        border.TypeCode,
+	        border.Master_ID,
+	        border.Master_Name,
+	        pment.Transport_ID,
+	        pment.TareWeight,
+	        pment.TypeCode TypeCodeP
+        FROM
+	        i_rmft4404_head head
+LEFT JOIN   i_rmft4404_consignment consig ON head.MessageID = consig.MessageID
+LEFT JOIN   i_rmft4404_bordertransportmeans border ON consig.ID = border.Consignment_ID
+LEFT JOIN   i_rmft4404_bordertransportequipment pment ON border.ID = pment.BorderTransportMeans_ID
+    </sql>
+
+    <sql id="selectHeadVo">
+        select MessageID, FunctionCode, MessageType, SenderID, ReceiverID, SendTime, Version, DeclarationOfficeID, ID, AdditionalInformation, Carrier, LoadingLocation, RepresentativePerson, UnloadingLocation, StatementCode, StatementDescription from i_rmft4404_head
+    </sql>
+
+    <sql id="selectAllByid">
+        SELECT
+            head.messageId MessageIDH,
+	        head.ID IDH,
+	        head.DeclarationOfficeID,
+	        head.RepresentativePerson,
+	        head.Carrier,
+	        head.AdditionalInformation,
+	        head.LoadingLocation,
+	        border.id IDS,
+	        border.border_ID,
+	        border.`Name`,
+	        border.Master_ID,
+	        border.Master_Name,
+	        border.ArrivalDateTime,
+	        border.TypeCode,
+	        consig.id IDS,
+	        consig.messageId MessageID,
+	        consig.GovernmentProcedure,
+	        pment.BorderTransportMeans_ID,
+	        pment.Transport_ID,
+	        pment.TypeCode,
+	        pment.TareWeight
+        FROM
+	        i_rmft4404_head head
+LEFT JOIN   i_rmft4404_consignment consig ON head.MessageID = consig.MessageID
+LEFT JOIN   i_rmft4404_bordertransportmeans border ON consig.ID = border.Consignment_ID
+LEFT JOIN   i_rmft4404_bordertransportequipment pment ON border.ID = pment.BorderTransportMeans_ID
+    </sql>
+
+    <sql id="selectMtHeadVo">
+        SELECT
+	        head.ID IDH,
+	        head.StatementDescription,
+	        head.AdditionalInformation,
+	        head.StatementCode,
+	        head.MessageID MessageIDH,
+	        head.StatementDescription,
+	        means.id IDS,
+	        means.`Name`,
+	        means.ArrivalDateTime,
+	        means.TypeCode,
+	        means.Consignment_ID
+        FROM
+	        i_rmft4404_head head
+LEFT JOIN   i_rmft4404_consignment consig ON head.MessageID = consig.MessageID
+LEFT JOIN   i_rmft4404_bordertransportmeans means ON consig.ID = means.Consignment_ID
+    </sql>
+
+    <!--  确报查询  -->
+    <select id="ConfirmationXML" parameterType="Head" resultMap="HeadResult">
+        <include refid="Confirmation"/>
+        WHERE StatementCode='1'
+    </select>
+    <!--  修改上传结束的确报字段状态 修改为2  -->
+    <update id="updateEmptyCarCode" parameterType="Head">
+         UPDATE  i_rmft4404_head
+        SET     i_rmft4404_head.StatementCode = '2'
+        WHERE
+                MessageID = #{messageId} AND
+	            StatementCode = '1'
+    </update>
+    <update id="updateStatus" parameterType="Head">
+        UPDATE i_rmft4404_head head
+        SET    head.StatementCode=#{statementCode},head.StatementDescription=#{statementDescription}
+        WHERE head.MessageID=#{messageId}
+    </update>
+    <!--  空载查询  -->
+    <select id="selectHeadList" parameterType="Head" resultMap="HeadResult">
+        <include refid="selectMtHeadVo"/>
+        <where>
+            <if test="functionCode != null  and functionCode != ''">and FunctionCode = #{functionCode}</if>
+            <if test="messageType != null  and messageType != ''">and MessageType = #{messageType}</if>
+            <if test="senderId != null  and senderId != ''">and SenderID = #{senderId}</if>
+            <if test="receiverId != null  and receiverId != ''">and ReceiverID = #{receiverId}</if>
+            <if test="sendTime != null  and sendTime != ''">and SendTime = #{sendTime}</if>
+            <if test="version != null  and version != ''">and Version = #{version}</if>
+            <if test="declarationOfficeId != null  and declarationOfficeId != ''">and DeclarationOfficeID =
+                #{declarationOfficeId}
+            </if>
+            <if test="id != null  and id != ''">and head.ID LIKE CONCAT('%',#{id},'%')</if>
+            <if test="name != null  and name != ''">and Name LIKE CONCAT('%',#{name},'%')</if>
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+            <if test="additionalInformation != null  and additionalInformation != ''">and AdditionalInformation =
+                #{additionalInformation}
+            </if>
+            <if test="carrier != null  and carrier != ''">and Carrier = #{carrier}</if>
+            <if test="loadingLocation != null  and loadingLocation != ''">and LoadingLocation = #{loadingLocation}</if>
+            <if test="representativePerson != null  and representativePerson != ''">and RepresentativePerson =
+                #{representativePerson}
+            </if>
+            <if test="unloadingLocation != null  and unloadingLocation != ''">and UnloadingLocation =
+                #{unloadingLocation}
+            </if>
+            <if test="statementCode != null  and statementCode != ''">and StatementCode = #{statementCode}</if>
+            <if test="statementDescription != null  and statementDescription != ''">and StatementDescription =
+                #{statementDescription}
+            </if>
+            and StatementCode != 'FF' and StatementCode != '20'
+        </where>
+    </select>
+    <!--  空载异常SQL  -->
+    <select id="selectErrList" parameterType="Head" resultMap="HeadResult">
+        <include refid="selectMtHeadVo"/>
+        <where>
+            <if test="functionCode != null  and functionCode != ''">and FunctionCode = #{functionCode}</if>
+            <if test="messageType != null  and messageType != ''">and MessageType = #{messageType}</if>
+            <if test="senderId != null  and senderId != ''">and SenderID = #{senderId}</if>
+            <if test="receiverId != null  and receiverId != ''">and ReceiverID = #{receiverId}</if>
+            <if test="sendTime != null  and sendTime != ''">and SendTime = #{sendTime}</if>
+            <if test="version != null  and version != ''">and Version = #{version}</if>
+            <if test="declarationOfficeId != null  and declarationOfficeId != ''">and DeclarationOfficeID =
+                #{declarationOfficeId}
+            </if>
+            <if test="id != null  and id != ''">and head.ID LIKE CONCAT('%',#{id},'%')</if>
+            <if test="name != null  and name != ''">and Name LIKE CONCAT('%',#{name},'%')</if>
+            <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &gt;= date_format(#{beginTime},'%Y%m%d%H%i%s')
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(ArrivalDateTime,'%Y%m%d%H%i%s') &lt;= date_format(#{endTime},'%Y%m%d%H%i%s')
+            </if>
+            <if test="additionalInformation != null  and additionalInformation != ''">and AdditionalInformation =
+                #{additionalInformation}
+            </if>
+            <if test="carrier != null  and carrier != ''">and Carrier = #{carrier}</if>
+            <if test="loadingLocation != null  and loadingLocation != ''">and LoadingLocation = #{loadingLocation}</if>
+            <if test="representativePerson != null  and representativePerson != ''">and RepresentativePerson =
+                #{representativePerson}
+            </if>
+            <if test="unloadingLocation != null  and unloadingLocation != ''">and UnloadingLocation =
+                #{unloadingLocation}
+            </if>
+            <if test="statementCode != null  and statementCode != ''">and StatementCode = #{statementCode}</if>
+            <if test="statementDescription != null  and statementDescription != ''">and StatementDescription =
+                #{statementDescription}
+            </if>
+            and StatementCode in ('FF','20')
+            ORDER BY
+            arrivalDateTime DESC
+        </where>
+    </select>
+    <!--  查询空车表头信息  -->
+    <select id="selectHeadById" parameterType="String" resultMap="HeadResult">
+        <include refid="selectAllByid"/>
+        where
+        head.messageId=#{messageId}
+    </select>
+    <!--Head表 insert-->
+    <insert id="insertHead" parameterType="Head" useGeneratedKeys="true" keyProperty="id">
+        insert into i_rmft4404_head
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="messageId != null  and messageId != ''">MessageID,</if>
+            <if test="functionCode != null  and functionCode != ''">FunctionCode,</if>
+            <if test="messageType != null  and messageType != ''">MessageType,</if>
+            <if test="senderId != null  and senderId != ''">SenderID,</if>
+            <if test="receiverId != null  and receiverId != ''">ReceiverID,</if>
+            <if test="sendTime != null  and sendTime != ''">SendTime,</if>
+            <if test="version != null  and version != ''">Version,</if>
+            <if test="declarationOfficeId != null  and declarationOfficeId != ''">DeclarationOfficeID,</if>
+            <if test="contractorCodeScc != null  and contractorCodeScc != ''">ContractorCodeScc,</if>
+            <if test="id != null  and id != ''">ID,</if>
+            <if test="additionalInformation != null  and additionalInformation != ''">AdditionalInformation,</if>
+            <if test="carrier != null  and carrier != ''">Carrier,</if>
+            <if test="loadingLocation != null  and loadingLocation != ''">LoadingLocation,</if>
+            <if test="representativePerson != null  and representativePerson != ''">RepresentativePerson,</if>
+            <if test="unloadingLocation != null  and unloadingLocation != ''">UnloadingLocation,</if>
+            <if test="statementCode != null  and statementCode != ''">StatementCode,</if>
+            <if test="statementDescription != null  and statementDescription != ''">StatementDescription,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="messageId != null  and messageId != ''">#{messageId},</if>
+            <if test="functionCode != null  and functionCode != ''">#{functionCode},</if>
+            <if test="messageType != null  and messageType != ''">#{messageType},</if>
+            <if test="senderId != null  and senderId != ''">#{senderId},</if>
+            <if test="receiverId != null  and receiverId != ''">#{receiverId},</if>
+            <if test="sendTime != null  and sendTime != ''">#{sendTime},</if>
+            <if test="version != null  and version != ''">#{version},</if>
+            <if test="declarationOfficeId != null  and declarationOfficeId != ''">#{declarationOfficeId},</if>
+            <if test="contractorCodeScc != null  and contractorCodeScc != ''">#{contractorCodeScc},</if>
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="additionalInformation != null  and additionalInformation != ''">#{additionalInformation},</if>
+            <if test="carrier != null  and carrier != ''">#{carrier},</if>
+            <if test="loadingLocation != null  and loadingLocation != ''">#{loadingLocation},</if>
+            <if test="representativePerson != null  and representativePerson != ''">#{representativePerson},</if>
+            <if test="unloadingLocation != null  and unloadingLocation != ''">#{unloadingLocation},</if>
+            <if test="statementCode != null  and statementCode != ''">#{statementCode},</if>
+            <if test="statementDescription != null  and statementDescription != ''">#{statementDescription},</if>
+        </trim>
+    </insert>
+    <!--  修改报文申报状态  -->
+    <update id="updateCode" parameterType="Head">
+        UPDATE  i_rmft4404_head
+        SET     i_rmft4404_head.StatementCode = '1'
+        WHERE
+	            MessageID = #{messageId}
+        AND
+                StatementCode = '0'
+    </update>
+    <!--Head表-->
+    <update id="updateHead" parameterType="Head">
+        update i_rmft4404_head
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="functionCode != null  and functionCode != ''">FunctionCode = #{functionCode},</if>
+            <if test="messageType != null  and messageType != ''">MessageType = #{messageType},</if>
+            <if test="senderId != null  and senderId != ''">SenderID = #{senderId},</if>
+            <if test="receiverId != null  and receiverId != ''">ReceiverID = #{receiverId},</if>
+            <if test="sendTime != null  and sendTime != ''">SendTime = #{sendTime},</if>
+            <if test="version != null  and version != ''">Version = #{version},</if>
+            <if test="declarationOfficeId != null  and declarationOfficeId != ''">DeclarationOfficeID =
+                #{declarationOfficeId},
+            </if>
+            <if test="id != null  and id != ''">ID = #{id},</if>
+            <if test="additionalInformation != null  and additionalInformation != ''">AdditionalInformation =
+                #{additionalInformation},
+            </if>
+            <if test="carrier != null  and carrier != ''">Carrier = #{carrier},</if>
+            <if test="loadingLocation != null  and loadingLocation != ''">LoadingLocation = #{loadingLocation},</if>
+            <if test="representativePerson != null  and representativePerson != ''">RepresentativePerson =
+                #{representativePerson},
+            </if>
+            <if test="unloadingLocation != null  and unloadingLocation != ''">UnloadingLocation =
+                #{unloadingLocation},
+            </if>
+            <if test="statementCode != null  and statementCode != ''">StatementCode = #{statementCode},</if>
+            <if test="statementDescription != null  and statementDescription != ''">StatementDescription =
+                #{statementDescription},
+            </if>
+        </trim>
+        where MessageID = #{messageId}
+    </update>
+    <!--consig表-->
+    <update id="updateConsignment" parameterType="Consignment">
+        update i_rmft4404_consignment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="governmentProcedure != null  and governmentProcedure != ''">GovernmentProcedure =
+                #{governmentProcedure},
+            </if>
+        </trim>
+        where id=#{id}
+    </update>
+    <!--  border表  -->
+    <update id="updateBorderTransportMeans" parameterType="BorderTransportMeans">
+        update i_rmft4404_bordertransportmeans
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consignmentId != null ">Consignment_ID = #{consignmentId},</if>
+            <if test="arrivalDateTime != null  and arrivalDateTime != ''">ArrivalDateTime = #{arrivalDateTime},</if>
+            <if test="borderId != null  and borderId != ''">border_ID = #{borderId},</if>
+            <if test="name != null  and name != ''">Name = #{name},</if>
+            <if test="typeCode != null  and typeCode != ''">TypeCode = #{typeCode},</if>
+            <if test="masterId != null  and masterId != ''">Master_ID = #{masterId},</if>
+            <if test="masterName != null  and masterName != ''">Master_Name = #{masterName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <!--  查询挂车列表  -->
+    <select id="selectCarById" parameterType="Long" resultMap="BorderTransportEquipmentResult">
+        SELECT
+            pment.ID IDT,
+	        pment.Transport_ID,
+	        pment.TypeCode TypeCodeP,
+	        pment.TareWeight
+        FROM
+	        i_rmft4404_bordertransportequipment pment
+        WHERE
+	        pment.BorderTransportMeans_ID = #{borderTransportMeansId}
+    </select>
+    <!--  查询挂车详细  -->
+    <select id="selectCarAllById" parameterType="Long" resultMap="BorderTransportEquipmentResult">
+        SELECT
+            pment.ID IDT,
+	        pment.Transport_ID,
+	        pment.TypeCode TypeCodeP,
+	        pment.TareWeight
+        FROM
+	        i_rmft4404_bordertransportequipment pment
+        WHERE
+	        pment.ID = #{id}
+    </select>
+    <!--  修改挂车详细  -->
+    <update id="updateCarById" parameterType="BorderTransportEquipment">
+        update i_rmft4404_bordertransportequipment st
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="transportId != null ">st.Transport_ID = #{transportId},</if>
+            <if test="typeCode != null  and typeCode != ''">st.typeCode = #{typeCode},</if>
+            <if test="tareWeight != null  and tareWeight != ''">st.TareWeight = #{tareWeight},</if>
+        </trim>
+        where st.id = #{id}
+    </update>
+    <delete id="deleteHeadById" parameterType="String">
+        delete from i_rmft4404_head where MessageID = #{messageId}
+    </delete>
+
+    <delete id="deleteHeadByIds" parameterType="String">
+        delete from i_rmft4404_head where MessageID in
+        <foreach item="messageId" collection="array" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </delete>
+
+
+</mapper>

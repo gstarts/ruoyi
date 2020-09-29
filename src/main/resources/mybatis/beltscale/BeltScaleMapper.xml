@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.beltscale.mapper.BeltScaleMapper">
+    
+    <resultMap type="BeltScale" id="BeltScaleResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="team"    column="team"    />
+        <result property="time"    column="time"    />
+        <result property="weight"    column="weight"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBeltScaleVo">
+        select id, name, team, time, weight, del_flag, create_by, create_time, update_by, update_time from s_belt_scale
+    </sql>
+
+    <select id="selectBeltScaleList" parameterType="BeltScale" resultMap="BeltScaleResult">
+        <include refid="selectBeltScaleVo"/>
+        <where>
+            del_flag ='0'
+            <if test="name != null  and name != ''"> and name = #{name}</if>
+            <if test="time !=null and time !=''"> and time = #{time} </if>
+        </where>
+    </select>
+    
+    <select id="selectBeltScaleById" parameterType="String" resultMap="BeltScaleResult">
+        <include refid="selectBeltScaleVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBeltScale" parameterType="BeltScale" >
+        insert into s_belt_scale
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">id,</if>
+            <if test="name != null  and name != ''">name,</if>
+            <if test="team != null  and team != ''">team,</if>
+            <if test="time != null ">time,</if>
+            <if test="weight != null  and weight != ''">weight,</if>
+            <if test="delFlag != null  and delFlag != ''">del_flag,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="team != null  and team != ''">#{team},</if>
+            <if test="time != null ">#{time},</if>
+            <if test="weight != null  and weight != ''">#{weight},</if>
+            <if test="delFlag != null  and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBeltScale" parameterType="BeltScale">
+        update s_belt_scale
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="team != null  and team != ''">team = #{team},</if>
+            <if test="time != null ">time = #{time},</if>
+            <if test="weight != null  and weight != ''">weight = #{weight},</if>
+            <if test="delFlag != null  and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBeltScaleById" parameterType="Long">
+        update  s_belt_scale set  del_flag ='1' where id = #{id}
+    </delete>
+
+    <delete id="deleteBeltScaleByIds" parameterType="String">
+        update  s_belt_scale set  del_flag ='1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

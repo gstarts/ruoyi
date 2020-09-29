@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.report.mapper.Rmft4406TransportequipmentMapper">
+    
+    <resultMap type="Rmft4406Transportequipment" id="Rmft4406TransportequipmentResult">
+        <result property="id"    column="ID"    />
+        <result property="consignmentId"    column="Consignment_ID"    />
+        <result property="characteristicCode"    column="CharacteristicCode"    />
+        <result property="fullnessCode"    column="FullnessCode"    />
+        <result property="transportEquipmentId"    column="TransportEquipment_ID"    />
+        <result property="sealId"    column="SealID"    />
+        <result property="supplierPartyTypeCode"    column="SupplierPartyTypeCode"    />
+        <result property="tareWeight"    column="TareWeight"    />
+    </resultMap>
+
+    <sql id="selectRmft4406TransportequipmentVo">
+        select ID, irt.Consignment_ID, CharacteristicCode, FullnessCode, TransportEquipment_ID, SealID, SupplierPartyTypeCode, TareWeight from i_rmft4406_transportequipment irt
+    </sql>
+
+    <select id="selectRmft4406TransportequipmentList" parameterType="Rmft4406Transportequipment" resultMap="Rmft4406TransportequipmentResult">
+        <include refid="selectRmft4406TransportequipmentVo"/>
+        <where>  
+            <if test="consignmentId != null "> and Consignment_ID = #{consignmentId}</if>
+            <if test="characteristicCode != null  and characteristicCode != ''"> and CharacteristicCode = #{characteristicCode}</if>
+            <if test="fullnessCode != null  and fullnessCode != ''"> and FullnessCode = #{fullnessCode}</if>
+            <if test="transportEquipmentId != null  and transportEquipmentId != ''"> and TransportEquipment_ID = #{transportEquipmentId}</if>
+            <if test="sealId != null  and sealId != ''"> and SealID = #{sealId}</if>
+            <if test="supplierPartyTypeCode != null  and supplierPartyTypeCode != ''"> and SupplierPartyTypeCode = #{supplierPartyTypeCode}</if>
+            <if test="tareWeight != null  and tareWeight != ''"> and TareWeight = #{tareWeight}</if>
+        </where>
+    </select>
+    
+    <select id="selectRmft4406TransportequipmentById" parameterType="Long" resultMap="Rmft4406TransportequipmentResult">
+        <include refid="selectRmft4406TransportequipmentVo"/>
+        where ID = #{id}
+    </select>
+
+    <select id="selectRmft4406TransportequipmentByConsignmentId" parameterType="Long" resultMap="Rmft4406TransportequipmentResult">
+        <include refid="selectRmft4406TransportequipmentVo"/>
+        where Consignment_ID = #{consignmentId}
+    </select>
+    <insert id="insertRmft4406Transportequipment" parameterType="Rmft4406Transportequipment" useGeneratedKeys="true" keyProperty="id">
+        insert into i_rmft4406_transportequipment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="consignmentId != null ">Consignment_ID,</if>
+            <if test="characteristicCode != null  and characteristicCode != ''">CharacteristicCode,</if>
+            <if test="fullnessCode != null  and fullnessCode != ''">FullnessCode,</if>
+            <if test="transportEquipmentId != null  and transportEquipmentId != ''">TransportEquipment_ID,</if>
+            <if test="sealId != null  and sealId != ''">SealID,</if>
+            <if test="supplierPartyTypeCode != null  and supplierPartyTypeCode != ''">SupplierPartyTypeCode,</if>
+            <if test="tareWeight != null  and tareWeight != ''">TareWeight,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="consignmentId != null ">#{consignmentId},</if>
+            <if test="characteristicCode != null  and characteristicCode != ''">#{characteristicCode},</if>
+            <if test="fullnessCode != null  and fullnessCode != ''">#{fullnessCode},</if>
+            <if test="transportEquipmentId != null  and transportEquipmentId != ''">#{transportEquipmentId},</if>
+            <if test="sealId != null  and sealId != ''">#{sealId},</if>
+            <if test="supplierPartyTypeCode != null  and supplierPartyTypeCode != ''">#{supplierPartyTypeCode},</if>
+            <if test="tareWeight != null  and tareWeight != ''">#{tareWeight},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRmft4406Transportequipment" parameterType="Rmft4406Transportequipment">
+        update i_rmft4406_transportequipment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consignmentId != null ">Consignment_ID = #{consignmentId},</if>
+            <if test="characteristicCode != null  and characteristicCode != ''">CharacteristicCode = #{characteristicCode},</if>
+            <if test="fullnessCode != null  and fullnessCode != ''">FullnessCode = #{fullnessCode},</if>
+            <if test="transportEquipmentId != null  and transportEquipmentId != ''">TransportEquipment_ID = #{transportEquipmentId},</if>
+            <if test="sealId != null  and sealId != ''">SealID = #{sealId},</if>
+            <if test="supplierPartyTypeCode != null  and supplierPartyTypeCode != ''">SupplierPartyTypeCode = #{supplierPartyTypeCode},</if>
+            <if test="tareWeight != null  and tareWeight != ''">TareWeight = #{tareWeight},</if>
+        </trim>
+        where Consignment_ID = #{consignmentId}
+    </update>
+
+    <delete id="deleteRmft4406TransportequipmentById" parameterType="Long">
+        delete from i_rmft4406_transportequipment
+        where Consignment_ID = #{consignmentId}
+        and CharacteristicCode = ""
+        and TransportEquipment_ID = ""
+        and SupplierPartyTypeCode = ""
+        and TareWeight = ""
+        and FullnessCode = ""
+    </delete>
+
+    <delete id="deleteRmft4406TransportequipmentByIds" parameterType="String">
+        delete from i_rmft4406_transportequipment where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

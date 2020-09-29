@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.declare.mapper.ContainerBodyMapper">
+    
+    <resultMap type="ContainerBody" id="ContainerBodyResult">
+        <result property="id"    column="id"    />
+        <result property="headId"    column="head_id"    />
+        <result property="contaid"    column="contaid"    />
+        <result property="contatypecode"    column="contatypecode"    />
+        <result property="seat"    column="seat"    />
+        <result property="trademark"    column="trademark"    />
+        <result property="ieflag"    column="ieflag"    />
+        <result property="contamark"    column="contamark"    />
+        <result property="loadmark"    column="loadmark"    />
+        <result property="dangermark"    column="dangermark"    />
+        <result property="entrancedate"    column="entrancedate"    />
+        <result property="departturedate"    column="departturedate"    />
+        <result property="workmark"    column="workmark"    />
+        <result property="datadealflag"    column="datadealflag"    />
+        <result property="billno"    column="billno"    />
+        <result property="entryid"    column="entryid"    />
+        <result property="preno"    column="preno"    />
+        <result property="mtapplyblno"    column="mtapplyblno"    />
+        <result property="remark"    column="remark"    />
+        <result property="version"    column="version"    />
+        <result property="crtime"    column="crtime"    />
+        <result property="cruser"    column="cruser"    />
+        <result property="crusername"    column="crusername"    />
+        <result property="del"    column="del"    />
+    </resultMap>
+
+    <sql id="selectContainerBodyVo">
+        select id, head_id, contaid, contatypecode, seat, trademark, ieflag, contamark, loadmark, dangermark, entrancedate, departturedate, workmark, datadealflag, billno, entryid, preno, mtapplyblno, remark, version, crtime, cruser, crusername, del from i_container_body
+    </sql>
+
+    <select id="selectContainerBodyList" parameterType="ContainerBody" resultMap="ContainerBodyResult">
+        <include refid="selectContainerBodyVo"/>
+        <where>  
+            <if test="headId != null "> and head_id = #{headId}</if>
+            <if test="contaid != null  and contaid != ''"> and contaid = #{contaid}</if>
+            <if test="contatypecode != null  and contatypecode != ''"> and contatypecode = #{contatypecode}</if>
+            <if test="seat != null  and seat != ''"> and seat = #{seat}</if>
+            <if test="trademark != null  and trademark != ''"> and trademark = #{trademark}</if>
+            <if test="ieflag != null  and ieflag != ''"> and ieflag = #{ieflag}</if>
+            <if test="contamark != null  and contamark != ''"> and contamark = #{contamark}</if>
+            <if test="loadmark != null  and loadmark != ''"> and loadmark = #{loadmark}</if>
+            <if test="dangermark != null  and dangermark != ''"> and dangermark = #{dangermark}</if>
+            <if test="entrancedate != null  and entrancedate != ''"> and entrancedate = #{entrancedate}</if>
+            <if test="departturedate != null  and departturedate != ''"> and departturedate = #{departturedate}</if>
+            <if test="workmark != null  and workmark != ''"> and workmark = #{workmark}</if>
+            <if test="datadealflag != null  and datadealflag != ''"> and datadealflag = #{datadealflag}</if>
+            <if test="billno != null  and billno != ''"> and billno = #{billno}</if>
+            <if test="entryid != null  and entryid != ''"> and entryid = #{entryid}</if>
+            <if test="preno != null  and preno != ''"> and preno = #{preno}</if>
+            <if test="mtapplyblno != null  and mtapplyblno != ''"> and mtapplyblno = #{mtapplyblno}</if>
+            <if test="version != null "> and version = #{version}</if>
+            <if test="crtime != null "> and crtime = #{crtime}</if>
+            <if test="cruser != null  and cruser != ''"> and cruser = #{cruser}</if>
+            <if test="crusername != null  and crusername != ''"> and crusername like concat('%', #{crusername}, '%')</if>
+            <if test="del != null "> and del = #{del}</if>
+        </where>
+    </select>
+    
+    <select id="selectContainerBodyById" parameterType="Long" resultMap="ContainerBodyResult">
+        <include refid="selectContainerBodyVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertContainerBody" parameterType="ContainerBody">
+        insert into i_container_body
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="headId != null ">head_id,</if>
+            <if test="contaid != null  and contaid != ''">contaid,</if>
+            <if test="contatypecode != null  and contatypecode != ''">contatypecode,</if>
+            <if test="seat != null  and seat != ''">seat,</if>
+            <if test="trademark != null  and trademark != ''">trademark,</if>
+            <if test="ieflag != null  and ieflag != ''">ieflag,</if>
+            <if test="contamark != null  and contamark != ''">contamark,</if>
+            <if test="loadmark != null  and loadmark != ''">loadmark,</if>
+            <if test="dangermark != null  and dangermark != ''">dangermark,</if>
+            <if test="entrancedate != null  and entrancedate != ''">entrancedate,</if>
+            <if test="departturedate != null  and departturedate != ''">departturedate,</if>
+            <if test="workmark != null  and workmark != ''">workmark,</if>
+            <if test="datadealflag != null  and datadealflag != ''">datadealflag,</if>
+            <if test="billno != null  and billno != ''">billno,</if>
+            <if test="entryid != null  and entryid != ''">entryid,</if>
+            <if test="preno != null  and preno != ''">preno,</if>
+            <if test="mtapplyblno != null  and mtapplyblno != ''">mtapplyblno,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="version != null ">version,</if>
+            <if test="crtime != null ">crtime,</if>
+            <if test="cruser != null  and cruser != ''">cruser,</if>
+            <if test="crusername != null  and crusername != ''">crusername,</if>
+            <if test="del != null ">del,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="headId != null ">#{headId},</if>
+            <if test="contaid != null  and contaid != ''">#{contaid},</if>
+            <if test="contatypecode != null  and contatypecode != ''">#{contatypecode},</if>
+            <if test="seat != null  and seat != ''">#{seat},</if>
+            <if test="trademark != null  and trademark != ''">#{trademark},</if>
+            <if test="ieflag != null  and ieflag != ''">#{ieflag},</if>
+            <if test="contamark != null  and contamark != ''">#{contamark},</if>
+            <if test="loadmark != null  and loadmark != ''">#{loadmark},</if>
+            <if test="dangermark != null  and dangermark != ''">#{dangermark},</if>
+            <if test="entrancedate != null  and entrancedate != ''">#{entrancedate},</if>
+            <if test="departturedate != null  and departturedate != ''">#{departturedate},</if>
+            <if test="workmark != null  and workmark != ''">#{workmark},</if>
+            <if test="datadealflag != null  and datadealflag != ''">#{datadealflag},</if>
+            <if test="billno != null  and billno != ''">#{billno},</if>
+            <if test="entryid != null  and entryid != ''">#{entryid},</if>
+            <if test="preno != null  and preno != ''">#{preno},</if>
+            <if test="mtapplyblno != null  and mtapplyblno != ''">#{mtapplyblno},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="crtime != null ">#{crtime},</if>
+            <if test="cruser != null  and cruser != ''">#{cruser},</if>
+            <if test="crusername != null  and crusername != ''">#{crusername},</if>
+            <if test="del != null ">#{del},</if>
+         </trim>
+    </insert>
+
+    <update id="updateContainerBody" parameterType="ContainerBody">
+        update i_container_body
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="headId != null ">head_id = #{headId},</if>
+            <if test="contaid != null  and contaid != ''">contaid = #{contaid},</if>
+            <if test="contatypecode != null  and contatypecode != ''">contatypecode = #{contatypecode},</if>
+            <if test="seat != null  and seat != ''">seat = #{seat},</if>
+            <if test="trademark != null  and trademark != ''">trademark = #{trademark},</if>
+            <if test="ieflag != null  and ieflag != ''">ieflag = #{ieflag},</if>
+            <if test="contamark != null  and contamark != ''">contamark = #{contamark},</if>
+            <if test="loadmark != null  and loadmark != ''">loadmark = #{loadmark},</if>
+            <if test="dangermark != null  and dangermark != ''">dangermark = #{dangermark},</if>
+            <if test="entrancedate != null  and entrancedate != ''">entrancedate = #{entrancedate},</if>
+            <if test="departturedate != null  and departturedate != ''">departturedate = #{departturedate},</if>
+            <if test="workmark != null  and workmark != ''">workmark = #{workmark},</if>
+            <if test="datadealflag != null  and datadealflag != ''">datadealflag = #{datadealflag},</if>
+            <if test="billno != null  and billno != ''">billno = #{billno},</if>
+            <if test="entryid != null  and entryid != ''">entryid = #{entryid},</if>
+            <if test="preno != null  and preno != ''">preno = #{preno},</if>
+            <if test="mtapplyblno != null  and mtapplyblno != ''">mtapplyblno = #{mtapplyblno},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="crtime != null ">crtime = #{crtime},</if>
+            <if test="cruser != null  and cruser != ''">cruser = #{cruser},</if>
+            <if test="crusername != null  and crusername != ''">crusername = #{crusername},</if>
+            <if test="del != null ">del = #{del},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteContainerBodyById" parameterType="Long">
+        delete from i_container_body where id = #{id}
+    </delete>
+
+    <delete id="deleteContainerBodyByIds" parameterType="String">
+        delete from i_container_body where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertContainerBodys" useGeneratedKeys="true">
+        insert into i_container_body
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            head_id,
+            contaid,
+            contatypecode,
+            seat,
+            trademark,
+            ieflag,
+            contamark,
+            loadmark,
+            dangermark,
+            entrancedate,
+            departturedate,
+            workmark,
+            datadealflag,
+            billno,
+            entryid,
+            preno,
+            mtapplyblno,
+            remark,
+            version,
+            crtime,
+            cruser,
+            crusername,
+            del,
+        </trim>
+        VALUES
+        <foreach item="item" collection="items" separator=",">
+            (#{item.headId},#{item.contaid},#{item.contatypecode},#{item.seat},#{item.trademark},#{item.ieflag},#{item.contamark},#{item.loadmark},#{item.dangermark},#{item.entrancedate},
+            #{item.departturedate},#{item.workmark},#{item.datadealflag},#{item.billno},#{item.entryid},#{item.preno},#{item.mtapplyblno},
+            #{item.remark},#{item.version},#{item.crtime},#{item.cruser},#{item.crusername},0)
+        </foreach>
+    </insert>
+    
+</mapper>

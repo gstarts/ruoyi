@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.stations_management.waybill.mapper.WaybillBodyMapper">
+
+    <resultMap type="WaybillBody" id="WaybillBodyResult">
+        <result property="id" column="id"/>
+        <result property="gno" column="GNo"/>
+        <result property="headId" column="head_id"/>
+        <result property="bindobjtype" column="BindObjType"/>
+        <result property="bindobjid" column="BindObjId"/>
+        <result property="iedirection" column="IEDirection"/>
+        <result property="transportid" column="TransportId"/>
+        <result property="voyageno" column="VoyageNo"/>
+        <result property="rdcode" column="RdCode"/>
+        <result property="billtype" column="BillType"/>
+        <result property="goodswt" column="GoodsWt"/>
+        <result property="contaid1" column="ContaId1"/>
+        <result property="contaid2" column="ContaId2"/>
+        <result property="esealid1" column="EsealId1"/>
+        <result property="esealid2" column="EsealId2"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="remark" column="remark"/>
+        <result property="outRealityWt" column="out_reality_wt"/>
+        <result property="version" column="VERSION"/>
+        <result property="crtime" column="CRTIME"/>
+        <result property="cruser" column="CRUSER"/>
+        <result property="crusername" column="CRUSERNAME"/>
+        <result property="del" column="DEL"/>
+    </resultMap>
+
+    <sql id="selectWaybillBodyVo">
+        select id, GNo,head_id, BindObjType, BindObjId, IEDirection, TransportId, VoyageNo, RdCode, BillType, GoodsWt, ContaId1, ContaId2, EsealId1, EsealId2,goods_name, warehouse_id,remark, out_reality_wt, VERSION, CRTIME, CRUSER, CRUSERNAME, DEL from i_waybill_body
+    </sql>
+
+    <select id="selectWaybillBodyList" parameterType="Long" resultMap="WaybillBodyResult">
+        <include refid="selectWaybillBodyVo"/>
+        <where>
+            del=0 and head_id = #{id}
+
+        </where>
+    </select>
+
+    <select id="selectWaybillBodyById" parameterType="Long" resultMap="WaybillBodyResult">
+        <include refid="selectWaybillBodyVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectMaxGnoByHeadId" parameterType="long" resultType="java.lang.Integer">
+        SELECT count(1) from i_waybill_body i where i.head_id =#{id}
+
+    </select>
+
+    <insert id="insertWaybillBody" parameterType="WaybillBody" useGeneratedKeys="true" keyProperty="id">
+        insert into i_waybill_body
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="headId != null ">head_id,</if>
+            <if test="gno != null ">GNo,</if>
+            <if test="bindobjtype != null  and bindobjtype != ''">BindObjType,</if>
+            <if test="bindobjid != null  and bindobjid != ''">BindObjId,</if>
+            <if test="iedirection != null  and iedirection != ''">IEDirection,</if>
+            <if test="transportid != null  and transportid != ''">TransportId,</if>
+            <if test="voyageno != null  and voyageno != ''">VoyageNo,</if>
+            <if test="rdcode != null  and rdcode != ''">RdCode,</if>
+            <if test="billtype != null  and billtype != ''">BillType,</if>
+            <if test="goodswt != null  and goodswt != ''">GoodsWt,</if>
+            <if test="contaid1 != null  and contaid1 != ''">ContaId1,</if>
+            <if test="contaid2 != null  and contaid2 != ''">ContaId2,</if>
+            <if test="esealid1 != null  and esealid1 != ''">EsealId1,</if>
+            <if test="esealid2 != null  and esealid2 != ''">EsealId2,</if>
+            <if test="goodsName != null  and goodsName != ''">goods_name,</if>
+            <if test="warehouseId != null  and warehouseId != ''">warehouse_id,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="outRealityWt != null  and outRealityWt != ''">out_reality_wt,</if>
+            <if test="version != null ">VERSION,</if>
+            <if test="crtime != null ">CRTIME,</if>
+            <if test="cruser != null  and cruser != ''">CRUSER,</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME,</if>
+            <if test="del != null ">DEL,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="headId != null ">#{headId},</if>
+            <if test="gno != null ">#{gno},</if>
+            <if test="bindobjtype != null  and bindobjtype != ''">#{bindobjtype},</if>
+            <if test="bindobjid != null  and bindobjid != ''">#{bindobjid},</if>
+            <if test="iedirection != null  and iedirection != ''">#{iedirection},</if>
+            <if test="transportid != null  and transportid != ''">#{transportid},</if>
+            <if test="voyageno != null  and voyageno != ''">#{voyageno},</if>
+            <if test="rdcode != null  and rdcode != ''">#{rdcode},</if>
+            <if test="billtype != null  and billtype != ''">#{billtype},</if>
+            <if test="goodswt != null  and goodswt != ''">#{goodswt},</if>
+            <if test="contaid1 != null  and contaid1 != ''">#{contaid1},</if>
+            <if test="contaid2 != null  and contaid2 != ''">#{contaid2},</if>
+            <if test="esealid1 != null  and esealid1 != ''">#{esealid1},</if>
+            <if test="esealid2 != null  and esealid2 != ''">#{esealid2},</if>
+            <if test="goodsName != null  and goodsName != ''">#{goodsName},</if>
+            <if test="warehouseId != null  and warehouseId != ''">#{warehouseId},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="outRealityWt != null  and outRealityWt != ''">#{outRealityWt},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="crtime != null ">#{crtime},</if>
+            <if test="cruser != null  and cruser != ''">#{cruser},</if>
+            <if test="crusername != null  and crusername != ''">#{crusername},</if>
+            <if test="del != null ">#{del},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWaybillBody" parameterType="WaybillBody">
+        update i_waybill_body
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="headId != null ">head_id = #{headId},</if>
+            <if test="bindobjtype != null  and bindobjtype != ''">BindObjType = #{bindobjtype},</if>
+            <if test="bindobjid != null  and bindobjid != ''">BindObjId = #{bindobjid},</if>
+            <if test="iedirection != null  and iedirection != ''">IEDirection = #{iedirection},</if>
+            <if test="transportid != null  and transportid != ''">TransportId = #{transportid},</if>
+            <if test="voyageno != null  and voyageno != ''">VoyageNo = #{voyageno},</if>
+            <if test="rdcode != null  and rdcode != ''">RdCode = #{rdcode},</if>
+            <if test="billtype != null  and billtype != ''">BillType = #{billtype},</if>
+            <if test="goodswt != null  and goodswt != ''">GoodsWt = #{goodswt},</if>
+            <if test="contaid1 != null  and contaid1 != ''">ContaId1 = #{contaid1},</if>
+            <if test="contaid2 != null  and contaid2 != ''">ContaId2 = #{contaid2},</if>
+            <if test="esealid1 != null  and esealid1 != ''">EsealId1 = #{esealid1},</if>
+            <if test="esealid2 != null  and esealid2 != ''">EsealId2 = #{esealid2},</if>
+            <if test="goodsName != null  and goodsName != ''">goods_name =  #{goodsName},</if>
+            <if test="warehouseId != null  and warehouseId != ''">warehouse_id = #{warehouseId},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="outRealityWt != null  and outRealityWt != ''">out_reality_wt = #{outRealityWt},</if>
+            <if test="version != null ">VERSION = #{version},</if>
+            <if test="crtime != null ">CRTIME = #{crtime},</if>
+            <if test="cruser != null  and cruser != ''">CRUSER = #{cruser},</if>
+            <if test="crusername != null  and crusername != ''">CRUSERNAME = #{crusername},</if>
+            <if test="del != null ">DEL = #{del},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWaybillBodyById" parameterType="Long">
+        delete from i_waybill_body where id = #{id}
+    </delete>
+
+    <update id="delBefore" parameterType="Map">
+          update i_waybill_body i set i.GNo = i.GNo-1 where i.head_id = #{headId} and i.GNo > #{Gno}
+    </update>
+
+    <delete id="deleteWaybillBodyByIds" parameterType="String">
+        delete from i_waybill_body where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>
