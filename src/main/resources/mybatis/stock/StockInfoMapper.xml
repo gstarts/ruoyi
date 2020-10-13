@@ -69,5 +69,29 @@
             order by time desc
         </if>
     </select>
+    <!-- 首页场内货物数-->
+    <select id="stockTotal" resultType="long">
+     SELECT
+	       sum(
+	       	CASE stf.direction
+	       	WHEN 'I' THEN
+	       		cast(stf.weight AS signed)
+	       	ELSE
+	       		0
+	       	END
+	       ) -
+	       sum(
+	       	CASE stf.direction
+	       	WHEN 'E' THEN
+	       		cast(stf.weight AS signed)
+	       	ELSE
+	       		0
+	       	END
+	       ) t_weight
+     FROM
+	    s_stock_flow stf
+    </select>
+
+
 
 </mapper>

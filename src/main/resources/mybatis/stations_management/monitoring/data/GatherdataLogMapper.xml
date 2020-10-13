@@ -56,6 +56,15 @@
         <result property="photoGuid" column="photo_guid"></result>
         <result property="photoPerspective" column="photo_perspective"></result>
     </resultMap>
+    <resultMap id="mainPictureResult" type="MainPicture">
+        <result column="hour" property="hour"></result>
+        <result column="administrative_vehicle" property="freightVehicle"></result>
+        <result column="administrative_vehicle" property="administrativeVehicle"></result>
+    </resultMap>
+    <resultMap id="vehicleResult" type="Vehicle">
+        <result property="licenseNo" column="ve_license_no"></result>
+        <result property="inoutTime" column="inout_time"></result>
+    </resultMap>
     <sql id="selectGatherdataLogVo">
         select g.session_id, area_id, chnl_no, s.c_chnl_name,  i_e_flag, gether_mode, g.dr_customs_no, g.ve_customs_no, g.ve_license_no, conta_id, eseal_id, gross_wt, operator_id, operate_time, rellist_type, rellist_id_type, rellist_id, feedback_time, check_result, instruction, proc_error_code, proc_error_description, tech_error_code, tech_error_description, seal_id,
         pack_no, decl_pack, decl_goods_weight, op_hint, led_hint, extended_content, inout_time, gatheralldata_flg from g_gatherdata_log g
@@ -70,7 +79,7 @@
     <select id="selectGatherDataLogList" parameterType="gatherDataLog" resultMap="GatherdataLogResult">
         <include refid="selectGatherdataLogVo"/>
         <where>
-            g.check_result = 'Y' or  'y'
+            g.check_result = 'Y' or 'y'
             <if test="veLicenseNo != null  and veLicenseNo != ''">and g.ve_license_no like concat( #{veLicenseNo},'%')
             </if>
             <if test="chnlNo != null  and chnlNo != ''">and chnl_no = #{chnlNo}</if>
@@ -295,6 +304,110 @@
     <select id="selectErrDetails" parameterType="String" resultMap="GatherdataLogResult">
         <include refid="selectErrDetailsVo"/>
         where g.session_id =#{sessionId}
+    </select>
+    <resultMap id="abnormalResult" type="IndexDao">
+        <result property="firstNum" javaType="int" column="first_num"></result>
+        <result property="secondNum" javaType="int" column="second_num"></result>
+        <result property="thirdNum" javaType="int" column="third_num"></result>
+        <result property="fourthNum" javaType="int" column="fourth_num"></result>
+    </resultMap>
+    <!--  通关异常数据每4小时为一个时间段  -->
+    <select id="abnormal" resultMap="abnormalResult">
+        SELECT
+        sum(
+        CASE
+        WHEN FLOOR(HOUR(inout_time)) >= 0
+        AND FLOOR(HOUR(inout_time))<![CDATA[< ]]> 6 THEN
+        1
+        ELSE
+        0
+        END
+        ) first_num,
+        sum(
+        CASE
+        WHEN FLOOR(HOUR(inout_time)) <![CDATA[< ]]> 12 and FLOOR(HOUR(inout_time)) >= 6
+        THEN
+        1
+        ELSE
+        0
+        END
+        ) second_num,
+        sum(
+        CASE
+        WHEN FLOOR(HOUR(inout_time)) >= 12
+        AND FLOOR(HOUR(inout_time)) <![CDATA[< ]]> 18 THEN
+        1
+        ELSE
+        0
+        END
+        ) third_num,
+        sum(
+        CASE
+        WHEN FLOOR(HOUR(inout_time)) >= 18
+        AND FLOOR(HOUR(inout_time)) <![CDATA[< ]]> 24 THEN
+        1
+        ELSE
+        0
+        END
+        ) fourth_num
+        FROM
+        g_gatherdata_log
+        WHERE
+        check_result = 'N'
+        AND date(inout_time) = DATE_FORMAT(NOW(), '%Y-%m-%d')
+    </select>
+    <!--场内车辆信息-->
+    <select id="siteVehicleInformation" resultMap="vehicleResult">
+   SELECT
+	ve_license_no,
+	inout_time
+   FROM
+	g_gatherdata_log g
+   WHERE
+	i_e_flag = 'I'
+	and date(inout_time)=DATE_FORMAT(NOW(), '%Y-%m-%d')
+   AND  NOT EXISTS (
+	SELECT
+		1
+	FROM
+		g_gatherdata_log GL
+	WHERE
+		i_e_flag = 'E'
+	AND GL.inout_time > g.inout_time
+	AND g.ve_license_no = GL.ve_license_no
+)
+
+    </select>
+
+<!--  首页前8小时的车辆数  -->
+    <select id="mainPicture" resultMap="mainPictureResult">
+        SELECT
+	HOUR (inout_time) - HOUR (
+		DATE_ADD(NOW(), INTERVAL - 7 HOUR)
+	 ) `hour`,
+	SUM(
+		CASE
+		WHEN c_chnl_type = 1 THEN
+			1
+		ELSE
+			0
+		END
+	) freight_vehicle,
+	SUM(
+		CASE
+		WHEN c_chnl_type = 0 THEN
+			1
+		ELSE
+			0
+		END
+	)administrative_vehicle
+FROM
+	g_gatherdata_log g
+LEFT JOIN s_chnl_info s ON g.chnl_no = s.c_chnl_no
+WHERE
+	inout_time > DATE_ADD(NOW(), INTERVAL - 7 HOUR)
+GROUP BY
+	HOUR (inout_time)
     </select>
 
 </mapper>

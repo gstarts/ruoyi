@@ -141,4 +141,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
 
+    <select id="statistics" resultType="int">
+      SELECT
+      	COUNT(1)
+      FROM
+      	i_animals_head
+      WHERE
+      	result = '3'
+    </select>
+
 </mapper>

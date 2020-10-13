@@ -35,6 +35,10 @@ public class StockInfo extends BaseEntity {
      */
     @Excel(name = "货运企业")
     private String enterpriseName;
+    /**
+     *  货物名称
+     */
+    private String name;
 
     /**
      * 入库重量
@@ -158,6 +162,14 @@ public class StockInfo extends BaseEntity {
 
     public void setDirection(String direction) {
         this.direction = direction;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

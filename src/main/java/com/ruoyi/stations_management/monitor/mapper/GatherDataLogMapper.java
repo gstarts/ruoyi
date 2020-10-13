@@ -1,6 +1,10 @@
 package com.ruoyi.stations_management.monitor.mapper;
 
 import java.util.List;
+
+import com.ruoyi.stations_management.index.domain.IndexDao;
+import com.ruoyi.stations_management.index.domain.MainPicture;
+import com.ruoyi.stations_management.index.domain.Vehicle;
 import com.ruoyi.stations_management.monitor.domain.GatherDataLog;
 
 /**
@@ -88,4 +92,10 @@ public interface GatherDataLogMapper
      * @return 结果
      */
      int deleteGatherDataLogByIds(String[] sessionIds);
+
+    IndexDao abnormal();
+
+    List<MainPicture> mainPicture();
+
+    List<Vehicle> siteVehicleInformation();
 }

@@ -17,7 +17,7 @@ public interface ContainerHeadMapper
      * @param id 集装箱头ID
      * @return 集装箱头
      */
-    public ContainerHead selectContainerHeadById(Long id);
+     ContainerHead selectContainerHeadById(Long id);
 
     /**
      * 查询集装箱头列表
@@ -25,7 +25,7 @@ public interface ContainerHeadMapper
      * @param containerHead 集装箱头
      * @return 集装箱头集合
      */
-    public List<ContainerHead> selectContainerHeadList(ContainerHead containerHead);
+     List<ContainerHead> selectContainerHeadList(ContainerHead containerHead);
 
     /**
      * 新增集装箱头
@@ -33,7 +33,7 @@ public interface ContainerHeadMapper
      * @param containerHead 集装箱头
      * @return 结果
      */
-    public int insertContainerHead(ContainerHead containerHead);
+     int insertContainerHead(ContainerHead containerHead);
 
     /**
      * 修改集装箱头
@@ -41,7 +41,7 @@ public interface ContainerHeadMapper
      * @param containerHead 集装箱头
      * @return 结果
      */
-    public int updateContainerHead(ContainerHead containerHead);
+     int updateContainerHead(ContainerHead containerHead);
 
     /**
      * 删除集装箱头
@@ -49,7 +49,7 @@ public interface ContainerHeadMapper
      * @param id 集装箱头ID
      * @return 结果
      */
-    public int deleteContainerHeadById(Long id);
+     int deleteContainerHeadById(Long id);
 
     /**
      * 批量申报集装箱头
@@ -57,5 +57,11 @@ public interface ContainerHeadMapper
      * @param ids 需要申报的数据ID
      * @return 结果
      */
-    public int declareContainers(Long[] ids);
+     int declareContainers(Long[] ids);
+
+    /**
+     *  统计申报成功总数
+     * @return 结果
+     */
+    int statistics();
 }

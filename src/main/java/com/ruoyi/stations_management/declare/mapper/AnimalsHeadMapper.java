@@ -17,7 +17,7 @@ public interface AnimalsHeadMapper
      * @param id 动物头ID
      * @return 动物头
      */
-    public AnimalsHead selectAnimalsHeadById(Long id);
+     AnimalsHead selectAnimalsHeadById(Long id);
 
     /**
      * 查询动物头列表
@@ -25,7 +25,7 @@ public interface AnimalsHeadMapper
      * @param animalsHead 动物头
      * @return 动物头集合
      */
-    public List<AnimalsHead> selectAnimalsHeadList(AnimalsHead animalsHead);
+     List<AnimalsHead> selectAnimalsHeadList(AnimalsHead animalsHead);
 
     /**
      * 新增动物头
@@ -33,7 +33,7 @@ public interface AnimalsHeadMapper
      * @param animalsHead 动物头
      * @return 结果
      */
-    public int insertAnimalsHead(AnimalsHead animalsHead);
+     int insertAnimalsHead(AnimalsHead animalsHead);
 
     /**
      * 修改动物头
@@ -41,7 +41,7 @@ public interface AnimalsHeadMapper
      * @param animalsHead 动物头
      * @return 结果
      */
-    public int updateAnimalsHead(AnimalsHead animalsHead);
+     int updateAnimalsHead(AnimalsHead animalsHead);
 
     /**
      * 删除动物头
@@ -49,7 +49,7 @@ public interface AnimalsHeadMapper
      * @param id 动物头ID
      * @return 结果
      */
-    public int deleteAnimalsHeadById(Long id);
+     int deleteAnimalsHeadById(Long id);
 
     /**
      * 批量删除动物头
@@ -57,5 +57,11 @@ public interface AnimalsHeadMapper
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-    public int declareAnimals(Long[] ids);
+     int declareAnimals(Long[] ids);
+
+    /**
+     *  统计申报成功总数
+     * @return 结果
+     */
+    int statistics();
 }

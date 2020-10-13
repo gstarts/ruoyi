@@ -8,6 +8,7 @@
         <result property="id"    column="id"    />
         <result property="sourceId"    column="source_id"    />
         <result property="name"    column="name"    />
+        <result property="warehouseName"    column="warehouse_name"    />
         <result property="direction"    column="direction"    />
         <result property="optime"    column="optime"    />
         <result property="weight"    column="weight"    />
@@ -131,5 +132,34 @@
             #{id}
         </foreach>
     </delete>
+
+    <!--首页货物详细信息  -->
+    <select id="cargoDetails" resultMap="StockFlowResult">
+        SELECT
+	 ssf.`name` name,
+	 swi.w_name warehouse_name ,
+	sum(
+	       	CASE ssf.direction
+	       	WHEN 'I' THEN
+	       		cast(ssf.weight AS signed)
+	       	ELSE
+	       		0
+	       	END
+	       ) -
+	       sum(
+	       	CASE ssf.direction
+	       	WHEN 'E' THEN
+	       		cast(ssf.weight AS signed)
+	       	ELSE
+	       		0
+	       	END
+	       )  weight
+FROM
+	s_stock_flow ssf
+	LEFT JOIN s_warehouse_info swi ON ssf.warehouse_id = swi.id
+GROUP BY
+	ssf.`name`,
+	ssf.warehouse_id
+    </select>
 
 </mapper>
