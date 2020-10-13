@@ -58,10 +58,18 @@ public class IndexServiceImpl implements Indexservice {
     public Map<String, Integer> getAbnormalData() {
         Map<String, Integer> map = new HashedMap();
         IndexDao abnormal = gatherDataLogMapper.abnormal();
-        map.put("first", abnormal.getFirstNum());
-        map.put("second",abnormal.getSecondNum());
-        map.put("third", abnormal.getThirdNum());
-        map.put("fourth", abnormal.getFourthNum());
+        if (null == abnormal) {
+            map.put("first", 0);
+            map.put("second", 0);
+            map.put("third", 0);
+            map.put("fourth", 0);
+        } else {
+            map.put("first", abnormal.getFirstNum());
+            map.put("second", abnormal.getSecondNum());
+            map.put("third", abnormal.getThirdNum());
+            map.put("fourth", abnormal.getFourthNum());
+        }
+
         return map;
     }
 
