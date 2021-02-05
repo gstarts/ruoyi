@@ -71,7 +71,7 @@
         left join s_chnl_info s  on  g.chnl_no = s.c_chnl_no
     </sql>
     <sql id="selectErrDetailsVo">
-       select  g.session_id , g.check_result ,s.c_chnl_name,g.proc_error_description,g.ve_license_no,gp.photo_guid,gp.photo_perspective, g.op_hint, g.area_id, g.chnl_no, g.i_e_flag, g.gether_mode, g.operator_id, g.operate_time, g.led_hint, g.tech_error_description,vr.rfid_id,vr.session_id as vsession_id
+       select  g.session_id ,g.gross_wt, g.check_result ,s.c_chnl_name,g.proc_error_description,g.ve_license_no,gp.photo_guid,gp.photo_perspective, g.op_hint, g.area_id, g.chnl_no, g.i_e_flag, g.gether_mode, g.operator_id, g.operate_time, g.led_hint, g.tech_error_description,vr.rfid_id,vr.session_id as vsession_id
         from g_gatherdata_log g
         left join s_chnl_info s on  g.chnl_no = s.c_chnl_no
         left join  g_photo gp  on  g.session_id=gp.session_id
@@ -147,6 +147,8 @@
         <include refid="selectGatherdataLogVo"/>
         <where>
             check_result in ('N', 'M')
+            and
+            gatheralldata_flg !='14'
             <if test="veLicenseNo != null  and veLicenseNo != ''">and g.ve_license_no like concat( #{veLicenseNo},'%')
             </if>
             <if test="chnlNo != null  and chnlNo != ''">and chnl_no = #{chnlNo}</if>
