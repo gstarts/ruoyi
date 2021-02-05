@@ -8,6 +8,7 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.stations_management.monitor.domain.GatherDataLog;
 import com.ruoyi.stations_management.monitor.service.IGatherDataLogService;
+import com.ruoyi.stations_management.monitor.service.ILicenseRfidRelatedService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +31,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/monitor/data")
 public class GatherDataLogController extends BaseController {
-    @Autowired
+    @Resource
     private IGatherDataLogService gatherDataLogService;
-
+    @Resource
+    private ILicenseRfidRelatedService relatedService;
     /**
      * 查询数据监控列表
      */
@@ -168,6 +171,8 @@ public class GatherDataLogController extends BaseController {
         GatherDataLog errDetails = gatherDataLogService.selectErrDetails(sessionId);
         return AjaxResult.success(errDetails);
     }
-
-
+    @GetMapping("/related")
+    public AjaxResult getDetails() {
+        return AjaxResult.success(relatedService.selectAll());
+    }
 }

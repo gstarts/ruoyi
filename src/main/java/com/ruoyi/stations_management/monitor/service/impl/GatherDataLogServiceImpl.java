@@ -323,10 +323,14 @@ public class GatherDataLogServiceImpl implements IGatherDataLogService {
         // 形成新的的 sessionId 插入使用
         String newSessionIde = chnlNo + dateTime;
         gatherDataLog.setSessionId(newSessionIde);
+        gatherDataLog.setGatheralldataFlg("10");
+        gatherDataLog.getRfid().setRfidId(gatherDataLog.getSealId());
+        gatherDataLog.getRfid().setSessionId(newSessionIde);
         // 清空原纪录的处理结果
         gatherDataLog.setCheckResult("");
         // 新增要补采的记录
         int rows = gatherdataLogMapper.insertGatherDataLog(gatherDataLog);
+         rows = veRfidMapper.insertVeRfid(gatherDataLog.getRfid());
         // 设置原记录为失效
         gatherdataLogMapper.updateErrGatherDataLog(sessionId);
 

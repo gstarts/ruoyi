@@ -29,7 +29,7 @@
         <result property="procErrorDescription" column="proc_error_description"/>
         <result property="techErrorCode" column="tech_error_code"/>
         <result property="techErrorDescription" column="tech_error_description"/>
-        <result property="sealId" column="seal_id"/>
+        <result property="sealId" column="rfid_id"/>
         <result property="packNo" column="pack_no"/>
         <result property="declPack" column="decl_pack"/>
         <result property="declGoodsWeight" column="decl_goods_weight"/>
@@ -40,12 +40,12 @@
         <result property="x82Command" column="82_command"/>
         <result property="inoutTime" column="inout_time"/>
         <result property="gatheralldataFlg" column="gatheralldata_flg"/>
+        <association property="rfid" resultMap="VeRfidResult"></association>
         <collection property="photoList" resultMap="PhotoResult"></collection>
-        <collection property="rfid" resultMap="VeRfidResult"></collection>
-        <collection property="Info" resultMap="IcInfoResult"></collection>
     </resultMap>
     <resultMap type="VeRfid" id="VeRfidResult">
-        <result property="veLicenseNo" column="No"/>
+        <result property="sessionId" column="vsession_id"></result>
+        <result property="rfidId" column="rfid_id"/>
     </resultMap>
     <resultMap type="IcInfo" id="IcInfoResult">
         <result property="icNo" column="ic_no"/>
@@ -71,15 +71,19 @@
         left join s_chnl_info s  on  g.chnl_no = s.c_chnl_no
     </sql>
     <sql id="selectErrDetailsVo">
-       select  g.session_id , g.check_result ,s.c_chnl_name,proc_error_description,ve_license_no,photo_guid,photo_perspective, op_hint, area_id, chnl_no, i_e_flag, gether_mode, operator_id, operate_time, led_hint, g.tech_error_description
-        from g_gatherdata_log g left join s_chnl_info s on  g.chnl_no = s.c_chnl_no left join  g_photo gp  on  g.session_id=gp.session_id
+       select  g.session_id , g.check_result ,s.c_chnl_name,g.proc_error_description,g.ve_license_no,gp.photo_guid,gp.photo_perspective, g.op_hint, g.area_id, g.chnl_no, g.i_e_flag, g.gether_mode, g.operator_id, g.operate_time, g.led_hint, g.tech_error_description,vr.rfid_id,vr.session_id as vsession_id
+        from g_gatherdata_log g
+        left join s_chnl_info s on  g.chnl_no = s.c_chnl_no
+        left join  g_photo gp  on  g.session_id=gp.session_id
+        left join g_ve_rfid vr on vr.session_id = g.session_id
     </sql>
 
     <!-- 放行信息 -->
     <select id="selectGatherDataLogList" parameterType="gatherDataLog" resultMap="GatherdataLogResult">
         <include refid="selectGatherdataLogVo"/>
         <where>
-            g.check_result = 'Y' or 'y'
+--             g.check_result in ('Y' , 'y')
+            g.check_result = 'Y'
             <if test="veLicenseNo != null  and veLicenseNo != ''">and g.ve_license_no like concat( #{veLicenseNo},'%')
             </if>
             <if test="chnlNo != null  and chnlNo != ''">and chnl_no = #{chnlNo}</if>
@@ -114,7 +118,7 @@
     <select id="selectDuringGatherDataLogList" resultMap="GatherdataLogResult">
         <include refid="selectGatherdataLogVo"/>
         <where>
-            check_result = ""
+            gatheralldata_flg not like ('11')
             <if test="veLicenseNo != null  and veLicenseNo != ''">and g.ve_license_no like concat( #{veLicenseNo},'%')
             </if>
             <if test="chnlNo != null  and chnlNo != ''">and chnl_no = #{chnlNo}</if>
@@ -142,7 +146,7 @@
     <select id="selectErrGatherDataLogList" resultMap="GatherdataLogResult">
         <include refid="selectGatherdataLogVo"/>
         <where>
-            check_result = 'N'or 'M'or 'n'or 'm' and gatheralldata_flg = '12'or '11'or '30'or '31'
+            check_result in ('N', 'M')
             <if test="veLicenseNo != null  and veLicenseNo != ''">and g.ve_license_no like concat( #{veLicenseNo},'%')
             </if>
             <if test="chnlNo != null  and chnlNo != ''">and chnl_no = #{chnlNo}</if>
